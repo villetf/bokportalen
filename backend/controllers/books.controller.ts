@@ -1,12 +1,11 @@
-import express from 'express';
 import type { Request, Response } from 'express';
-import { AppDataSource } from '../data-source.js';
+import { BooksService } from '../services/books.services.js';
 
-export class BookController {
-   // static async getAll(req: Request, res: Response) {
-   //    const users = await AppDataSource.getRepository(User).find();
-   //    res.json(users);
-   // }
+export class BooksController {
+   static async getAllBooks(req: Request, res: Response) {
+      const books = await BooksService.getAllBooks();
+      res.json(books);
+   }
 
    // static async create(req: Request, res: Response) {
    //    const user = AppDataSource.getRepository(User).create(req.body);

@@ -1,11 +1,11 @@
 import express from 'express';
-import bookRoutes from './routes/book.routes.js';
+import bookRoutes from './routes/books.routes.js';
 import { AppDataSource } from './data-source.js';
 
 const app = express();
 app.use(express.json());
 
-app.use('/users', bookRoutes);
+app.use('/books', bookRoutes);
 
 AppDataSource.initialize()
    .then(() => {
