@@ -48,6 +48,9 @@ export class Book {
    @Column('float', { name: 'rating', nullable: true, precision: 12 })
       rating!: number | null;
 
+   @Column('boolean', { name: 'is_deleted', nullable: true })
+      isDeleted!: boolean | null;
+
    @ManyToMany(() => Author, (authors) => authors.books)
    @JoinTable({
       name: 'book_authors',
