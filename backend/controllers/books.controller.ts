@@ -1,6 +1,7 @@
 import type { Request, Response } from 'express';
 import { BooksService } from '../services/books.services.js';
 import { Book } from '../entities/Book.js';
+import { BookRequestDTO } from '../dto/BookRequestDTO.js';
 
 export class BooksController {
    static async getAllBooks(req: Request, res: Response) {
@@ -36,9 +37,8 @@ export class BooksController {
       }
    }
 
-   // static async create(req: Request, res: Response) {
-   //    const user = AppDataSource.getRepository(User).create(req.body);
-   //    const result = await AppDataSource.getRepository(User).save(user);
-   //    res.status(201).json(result);
-   // }
+   static async createBook(req: Request, res: Response) {
+      const newBook = BooksService.createBook(req.body as BookRequestDTO);
+      res.status(201).json(newBook);
+   }
 }

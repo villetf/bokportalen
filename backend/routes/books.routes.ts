@@ -1,9 +1,11 @@
 import { Router } from 'express';
 import { BooksController } from '../controllers/books.controller.js';
+import { validateDto } from '../middleware/validate.js';
+import { BookRequestDTO } from '../dto/BookRequestDTO.js';
 
 const router = Router();
 
 router.get('/', BooksController.getAllBooks);
-// router.post('/', UserController.create);
+router.post('/', validateDto(BookRequestDTO), BooksController.createBook);
 
 export default router;
