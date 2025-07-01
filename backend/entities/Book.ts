@@ -39,7 +39,7 @@ export class Book {
    @Column('varchar', { name: 'format', nullable: true, length: 255 })
       format!: string | null;
 
-   @Column('int', { name: 'isbn', nullable: true })
+   @Column('bigint', { name: 'isbn', nullable: true })
       isbn!: number | null;
 
    @Column('varchar', { name: 'status', nullable: true, length: 255 })
@@ -50,6 +50,15 @@ export class Book {
 
    @Column('boolean', { name: 'is_deleted', nullable: true })
       isDeleted!: boolean | null;
+
+   @Column('int', { name: 'copies', nullable: true })
+      copies!: number | null;
+
+   @Column('datetime', { name: 'created_at', nullable: true })
+      createdAt!: Date | null;
+
+   @Column('boolean', { name: 'added_with_scanner', nullable: true })
+      addedWithScanner!: boolean | null;
 
    @ManyToMany(() => Author, (authors) => authors.books)
    @JoinTable({
@@ -65,19 +74,19 @@ export class Book {
       onUpdate: 'RESTRICT',
    })
    @JoinColumn([{ name: 'language_id', referencedColumnName: 'id' }])
-      language!: Language;
+      language!: Language | null;
 
    @ManyToOne(() => Language, (languages) => languages.books2, {
       onDelete: 'SET NULL',
       onUpdate: 'RESTRICT',
    })
    @JoinColumn([{ name: 'original_language_id', referencedColumnName: 'id' }])
-      originalLanguage!: Language;
+      originalLanguage!: Language | null;
 
    @ManyToOne(() => Genre, (genres) => genres.books, {
       onDelete: 'SET NULL',
       onUpdate: 'RESTRICT',
    })
    @JoinColumn([{ name: 'genre_id', referencedColumnName: 'id' }])
-      genre!: Genre;
+      genre!: Genre | null;
 }
