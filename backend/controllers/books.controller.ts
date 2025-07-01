@@ -38,7 +38,7 @@ export class BooksController {
    }
 
    static async createBook(req: Request, res: Response) {
-      const newBook = BooksService.createBook(req.body as BookRequestDTO);
+      const newBook = await BooksService.createBook(req.body as BookRequestDTO);
       res.status(201).json(newBook);
    }
 }

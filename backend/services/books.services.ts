@@ -80,16 +80,16 @@ export class BooksService {
 
       const newBook = new Book();
       newBook.title = inputBook.title;
-      inputBook.authors = [];
-      inputBook.authors.forEach(async(authorId: number) => {
+      newBook.authors = [];
+      for (const authorId of inputBook.authors) {
          const author = await AuthorsService.getAuthorById(authorId);
          newBook.authors.push(author);
-      });
+      }
       newBook.yearWritten = inputBook.yearWritten ? inputBook.yearWritten : null;
       newBook.isbn = inputBook.isbn ? inputBook.isbn : null;
-      newBook.language = inputBook.language ? await LanguagesService.getLanguageByName(inputBook.language) : null;
-      newBook.originalLanguage = inputBook.originalLanguage ? await LanguagesService.getLanguageByName(inputBook.originalLanguage) : null;
-      newBook.genre = inputBook.genre ? await GenresService.getGenreByName(inputBook.genre) : null;
+      newBook.language = language;
+      newBook.originalLanguage = originalLanguage;
+      newBook.genre = genre;
       newBook.format = inputBook.format ? inputBook.format : null;
       newBook.status = null;
       newBook.rating = null;
