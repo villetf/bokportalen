@@ -83,6 +83,9 @@ export class BooksService {
       newBook.authors = [];
       for (const authorId of inputBook.authors) {
          const author = await AuthorsService.getAuthorById(authorId);
+         if (!author) {
+            throw new Error(`Author with ID ${authorId} not found`);
+         }
          newBook.authors.push(author);
       }
       newBook.yearWritten = inputBook.yearWritten ? inputBook.yearWritten : null;
