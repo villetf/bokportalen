@@ -1,43 +1,40 @@
 import { AppDataSource } from '../data-source.js';
 import { Author } from '../entities/Author.js';
-import { FindOptionsWhere, ILike } from 'typeorm';
+import { FindOptionsWhere, Like } from 'typeorm';
+
 export class AuthorsService {
+   static async getAllAuthors(): Promise<Author[]> {
+      const authors = await AppDataSource.getRepository(Author).find({
+         relations: ['country']
+      });
+      return authors;
+   }
+
    static async getAuthorById(authorId: number): Promise<Author | null> {
       const author = await AppDataSource.getRepository(Author).findOne({
          where: { id: authorId },
+         relations: ['country'],
       });
 
-
       return author;
    }
 
-   static async getAuthorByName(firstName: string, lastName?: string): Promise<Author | null> {
-      const where: FindOptionsWhere<Author> = {
-         firstName: ILike(firstName),
-      };
-
-      if (lastName) {
-         where.lastName = ILike(lastName);
-      }
-
-      return await AppDataSource.getRepository(Author).findOne({ where });
-   }
-
-   static async getAuthorsByQuery(firstName: string, lastName: string): Promise<Author | null> {
-      let authorQuery = AppDataSource.getRepository(Author)
-         .createQueryBuilder('author');
+   static async getAuthorsByQuery(firstName: string, lastName: string): Promise<Author[]> {
+      const where: FindOptionsWhere<Author> = {};
 
       if (firstName) {
-         authorQuery = authorQuery.where('LOWER(author.firstName) = LOWER(:firstName)', { firstName });
+         where.firstName = Like(firstName);
       }
 
       if (lastName) {
-         authorQuery = authorQuery
-            .andWhere('LOWER(author.lastName) = LOWER(:lastName)', { lastName });
+         where.lastName = Like(lastName);
       }
 
-      const author = await authorQuery.getOne();
+      const authors = await AppDataSource.getRepository(Author).find({
+         where,
+         relations: ['country'],
+      });
 
-      return author;
+      return authors;
    }
 }

@@ -44,5 +44,5 @@ export class Author {
       onUpdate: 'RESTRICT',
    })
    @JoinColumn([{ name: 'country_id', referencedColumnName: 'id' }])
-      country!: Country;
+      country!: Country | null;
 }
