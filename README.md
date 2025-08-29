@@ -34,3 +34,7 @@ http://localhost:3000/authors?firstName=Vilhelm&lastName=Moberg
 ### GET /authors/{id}
 
 Hämtar en författare baserat på ID. Returnerar ett objekt med författaren.
+
+### GET /countries
+
+Hämtar alla länder.
