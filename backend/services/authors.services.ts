@@ -1,3 +1,4 @@
+import { plainToInstance } from 'class-transformer';
 import { AppDataSource } from '../data-source.js';
 import { Author } from '../entities/Author.js';
 import { FindOptionsWhere, Like } from 'typeorm';
@@ -7,7 +8,7 @@ export class AuthorsService {
       const authors = await AppDataSource.getRepository(Author).find({
          relations: ['country']
       });
-      return authors;
+      return plainToInstance(Author, authors);
    }
 
    static async getAuthorById(authorId: number): Promise<Author | null> {
@@ -16,7 +17,7 @@ export class AuthorsService {
          relations: ['country'],
       });
 
-      return author;
+      return plainToInstance(Author, author);
    }
 
    static async getAuthorsByQuery(firstName: string, lastName: string): Promise<Author[]> {
@@ -35,6 +36,6 @@ export class AuthorsService {
          relations: ['country'],
       });
 
-      return authors;
+      return plainToInstance(Author, authors);
    }
 }
