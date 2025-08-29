@@ -6,4 +6,14 @@ export class LanguagesController {
       const languages = await LanguagesService.getAllLanguages();
       res.json(languages);
    }
+
+   static async getLanguageById(req: Request, res: Response) {
+      const { id } = req.params;
+      const language = await LanguagesService.getLanguageById(Number.parseInt(id));
+      if (language) {
+         res.json(language);
+      } else {
+         res.status(404).json({ message: 'Language not found' });
+      }
+   }
 }
