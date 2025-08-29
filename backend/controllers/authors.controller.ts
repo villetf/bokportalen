@@ -1,11 +1,15 @@
 import type { Request, Response } from 'express';
 import { AuthorsService } from '../services/authors.services.js';
+import { plainToInstance } from 'class-transformer';
+import { Author } from '../entities/Author.js';
 
 export class AuthorsController {
    static async getAuthors(req: Request, res: Response) {
       if (req.query === undefined || Object.keys(req.query).length === 0) {
          const allAuthors = await AuthorsService.getAllAuthors();
-         res.json(allAuthors);
+         res.json(plainToInstance(Author, allAuthors, {
+            excludeExtraneousValues: true,
+         }));
          return;
       }
 
@@ -16,6 +20,20 @@ export class AuthorsController {
          return;
       }
 
-      res.json(authors);
+      res.json(plainToInstance(Author, authors, {
+         excludeExtraneousValues: true,
+      }));
+   }
+
+   static async getAuthorById(req: Request, res: Response) {
+      const { id } = req.params;
+      const author = await AuthorsService.getAuthorById(Number(id));
+      if (!author) {
+         res.status(404).json({ error: 'Author not found' });
+         return;
+      }
+      res.json(plainToInstance(Author, author, {
+         excludeExtraneousValues: true,
+      }));
    }
 }
