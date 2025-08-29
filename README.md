@@ -30,3 +30,7 @@ Hämtar alla författare. Kan filtreras utifrån för- och efternamn med firstNa
 http://localhost:3000/authors?lastName=Andersson
 http://localhost:3000/authors?firstName=Vilhelm&lastName=Moberg
 ```
+
+### GET /authors/{id}
+
+Hämtar en författare baserat på ID. Returnerar ett objekt med författaren.
