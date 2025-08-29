@@ -38,3 +38,7 @@ Hämtar en författare baserat på ID. Returnerar ett objekt med författaren.
 ### GET /countries
 
 Hämtar alla länder.
+
+### GET /languages
+
+Hämtar alla språk.
