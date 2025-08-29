@@ -3,6 +3,10 @@ import { Language } from '../entities/Language.js';
 import { capitalizeWord } from '../helpers/helpers.js';
 
 export class LanguagesService {
+   static async getAllLanguages(): Promise<Language[]> {
+      return await AppDataSource.getRepository(Language).find();
+   }
+
    static async getLanguageByName(languageName: string): Promise<Language | null> {
       const language = await AppDataSource.getRepository(Language)
          .createQueryBuilder('language')
