@@ -42,3 +42,7 @@ Hämtar alla länder.
 ### GET /languages
 
 Hämtar alla språk.
+
+### GET /languages/{id}
+
+Hämtar språk baserat på ID.

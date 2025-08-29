@@ -23,4 +23,9 @@ export class LanguagesService {
 
       return await AppDataSource.getRepository(Language).save(newLanguage);
    }
+
+   static async getLanguageById(id: number): Promise<Language | null> {
+      const language = await AppDataSource.getRepository(Language).findOneBy({ id });
+      return language;
+   }
 }
