@@ -50,6 +50,13 @@ export class BooksService {
       return books;
    }
 
+   static async getBookById(id: number) {
+      return AppDataSource.getRepository(Book).findOne({
+         where: { id },
+         relations: ['authors', 'language', 'originalLanguage', 'genre']
+      });
+   }
+
    static async createBook(inputBook: BookRequestDTO) {
       console.log('Creating book with data:', inputBook);
 

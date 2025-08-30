@@ -4,7 +4,26 @@
 
 ### GET /books
 
-Hämtar alla böcker.
+Hämtar alla böcker. Kan filtreras med hjälp av parameterar. Svaret är dock alltid en array. Följande filtreringar är tillåtna:
+
+* title
+* authorFirstName
+* authorLastName
+* yearWritten
+* language
+* originalLanguage
+* genre
+* format
+* isbn
+* status
+* rating
+
+T.ex.:
+`http://localhost:3000/books?authorFirstName=Helene&authorLastName=Gullberg`
+
+### GET /books/{id}
+
+Hämtar bok baserat på ID. Returnerar ett objekt.
 
 ### POST /books
 
