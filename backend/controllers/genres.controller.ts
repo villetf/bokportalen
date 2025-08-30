@@ -6,4 +6,13 @@ export class GenresController {
       const genres = await GenresService.getAllGenres();
       res.json(genres);
    }
+
+   static async addGenre(req: Request, res: Response) {
+      if (await GenresService.getGenreByName(req.body.name)) {
+         res.status(409).json({ message: 'Genre already exists' });
+         return;
+      }
+      const newGenre = await GenresService.addGenre(req.body.name);
+      res.status(201).json(newGenre);
+   }
 }

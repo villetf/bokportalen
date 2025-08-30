@@ -69,3 +69,13 @@ Hämtar språk baserat på ID.
 ### GET /genres
 
 Hämtar alla genrer.
+
+### POST /genres
+
+Lägger till en genre. Kräver en body i följande format:
+
+```json
+{
+   "name": "Barnbok"
+}
+```
