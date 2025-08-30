@@ -36,4 +36,16 @@ export class AuthorsController {
          excludeExtraneousValues: true,
       }));
    }
+
+   static async createAuthor(req: Request, res: Response) {
+      if (await AuthorsService.getAuthorsByQuery(req.body.firstName, req.body.lastName).then(authors => authors.length > 0)) {
+         res.status(409).json({ error: 'Author already exists' });
+         return;
+      }
+
+      const newAuthor = await AuthorsService.createAuthor(req.body);
+      res.status(201).json(plainToInstance(Author, newAuthor, {
+         excludeExtraneousValues: true,
+      }));
+   }
 }

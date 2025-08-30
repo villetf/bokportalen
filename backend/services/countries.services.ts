@@ -8,4 +8,12 @@ export class CountriesService {
 
       return countries;
    }
+
+   static async getCountryById(countryId: number): Promise<Country | null> {
+      const country = await AppDataSource.getRepository(Country).findOne({
+         where: { id: countryId },
+      });
+
+      return country;
+   }
 }

@@ -2,6 +2,8 @@ import { plainToInstance } from 'class-transformer';
 import { AppDataSource } from '../data-source.js';
 import { Author } from '../entities/Author.js';
 import { FindOptionsWhere, Like } from 'typeorm';
+import { AuthorRequestDTO } from '../dto/AuthorRequestDTO.js';
+import { CountriesService } from './countries.services.js';
 
 export class AuthorsService {
    static async getAllAuthors(): Promise<Author[]> {
@@ -37,5 +39,17 @@ export class AuthorsService {
       });
 
       return plainToInstance(Author, authors);
+   }
+
+   static async createAuthor(author: AuthorRequestDTO): Promise<Author> {
+      const newAuthor = new Author();
+      newAuthor.firstName = author.firstName;
+      newAuthor.lastName = author.lastName;
+      newAuthor.gender = author.gender;
+      newAuthor.birthYear = author.birthYear;
+      const country = await CountriesService.getCountryById(author.country!);
+      newAuthor.country = country;
+      const createdAuthor = await AppDataSource.getRepository(Author).save(newAuthor);
+      return plainToInstance(Author, createdAuthor);
    }
 }
