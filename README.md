@@ -56,6 +56,20 @@ http://localhost:3000/authors?firstName=Vilhelm&lastName=Moberg
 
 Hämtar en författare baserat på ID. Returnerar ett objekt med författaren.
 
+### POST /authors
+
+Lägger till en författare. Kräver body i följande format:
+
+```json
+{
+    "firstName": "Wilhelm",
+    "lastName": "Agrell",
+    "gender": "Man",
+    "birthYear": 1950,
+    "country": 167
+}
+```
+
 ---
 
 ### GET /countries
