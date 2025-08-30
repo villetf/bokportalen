@@ -2,6 +2,7 @@ import type { Request, Response } from 'express';
 import { BooksService } from '../services/books.services.js';
 import { Book } from '../entities/Book.js';
 import { BookRequestDTO } from '../dto/BookRequestDTO.js';
+import { BookUpdateDTO } from '../dto/BookUpdateDTO.js';
 
 export class BooksController {
    static async getAllBooks(req: Request, res: Response) {
@@ -62,6 +63,19 @@ export class BooksController {
    static async createBook(req: Request, res: Response) {
       const newBook = await BooksService.createBook(req.body as BookRequestDTO);
       res.status(201).json(newBook);
+   }
+
+   static async updateBook(req: Request, res: Response) {
+      const bookToUpdate = await BooksService.getBookById(Number.parseInt(req.params.id));
+      if (!bookToUpdate) {
+         res.status(404).json({ error: 'Book not found' });
+         return;
+      }
+      await BooksService.updateBook(bookToUpdate, req.body as BookUpdateDTO);
+
+      const updatedBook = await BooksService.getBookById(Number.parseInt(req.params.id));
+
+      res.json(updatedBook);
    }
 
    static async markBookAsDeleted(req: Request, res: Response) {
