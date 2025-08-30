@@ -42,6 +42,8 @@ Lägger till bok. Kräver body i följande format:
 }
 ```
 
+---
+
 ### GET /authors
 
 Hämtar alla författare. Kan filtreras utifrån för- och efternamn med firstName och lastName som query-parameterar. Returnerar dock alltid en array. T.ex.: 
@@ -54,9 +56,13 @@ http://localhost:3000/authors?firstName=Vilhelm&lastName=Moberg
 
 Hämtar en författare baserat på ID. Returnerar ett objekt med författaren.
 
+---
+
 ### GET /countries
 
 Hämtar alla länder.
+
+---
 
 ### GET /languages
 
@@ -65,6 +71,18 @@ Hämtar alla språk.
 ### GET /languages/{id}
 
 Hämtar språk baserat på ID.
+
+### POST /languages
+
+Lägger till ett nytt språk. Kräver en body i följande format:
+
+```json
+{
+   "name": "Spanska"
+}
+```
+
+---
 
 ### GET /genres
 

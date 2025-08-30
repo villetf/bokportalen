@@ -16,4 +16,14 @@ export class LanguagesController {
          res.status(404).json({ message: 'Language not found' });
       }
    }
+
+   static async addLanguage(req: Request, res: Response) {
+      if (await LanguagesService.getLanguageByName(req.body.name)) {
+         res.status(409).json({ message: 'Language already exists' });
+         return;
+      }
+
+      const newLanguage = await LanguagesService.addLanguage(req.body.name);
+      res.status(201).json(newLanguage);
+   }
 }
