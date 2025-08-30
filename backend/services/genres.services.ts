@@ -3,6 +3,11 @@ import { Genre } from '../entities/Genre.js';
 import { capitalizeWord } from '../helpers/helpers.js';
 
 export class GenresService {
+   static async getAllGenres() : Promise<Genre[]> {
+      const allGenres = await AppDataSource.getRepository(Genre).find();
+      return allGenres;
+   }
+
    static async getGenreByName(genreName: string): Promise<Genre | null> {
       const genre = await AppDataSource.getRepository(Genre)
          .createQueryBuilder('genre')
