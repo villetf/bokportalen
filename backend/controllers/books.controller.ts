@@ -7,7 +7,7 @@ export class BooksController {
    static async getAllBooks(req: Request, res: Response) {
       try {
          const books = await BooksService.getBooksByQuery(req);
-         
+
          res.json(books.map((book: Book) => ({
             id: book.id,
             title: book.title,
@@ -34,6 +34,28 @@ export class BooksController {
             console.error('Unexpected error:', error);
             res.status(500).json({ error: 'An unexpected error occurred' });
          }
+      }
+   }
+
+   static async getBookById(req: Request, res: Response) {
+      const book = await BooksService.getBookById(Number.parseInt(req.params.id));
+      if (book) {
+         res.json({
+            id: book.id,
+            title: book.title,
+            author: book.authors,
+            yearWritten: book.yearWritten,
+            language: book.language,
+            originalLanguage: book.originalLanguage,
+            genre: book.genre,
+            format: book.format,
+            isbn: book.isbn,
+            status: book.status,
+            rating: book.rating,
+            isDeleted: book.isDeleted
+         });
+      } else {
+         res.status(404).json({ error: 'Book not found' });
       }
    }
 

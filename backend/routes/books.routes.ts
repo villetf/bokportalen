@@ -6,6 +6,7 @@ import { BookRequestDTO } from '../dto/BookRequestDTO.js';
 const router = Router();
 
 router.get('/', BooksController.getAllBooks);
+router.get('/:id', BooksController.getBookById);
 router.post('/', validateDto(BookRequestDTO), BooksController.createBook);
 
 export default router;
