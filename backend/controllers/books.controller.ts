@@ -63,4 +63,14 @@ export class BooksController {
       const newBook = await BooksService.createBook(req.body as BookRequestDTO);
       res.status(201).json(newBook);
    }
+
+   static async markBookAsDeleted(req: Request, res: Response) {
+      const book = await BooksService.getBookById(Number.parseInt(req.params.id));
+      if (book) {
+         await BooksService.markBookAsDeleted(book);
+         res.status(204).send();
+      } else {
+         res.status(404).json({ error: 'Book not found' });
+      }
+   }
 }

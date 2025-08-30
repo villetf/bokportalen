@@ -21,6 +21,8 @@ Hämtar alla böcker. Kan filtreras med hjälp av parameterar. Svaret är dock a
 T.ex.:
 `http://localhost:3000/books?authorFirstName=Helene&authorLastName=Gullberg`
 
+Man kan även välja ifall man vill visa raderade böcker eller inte genom att använda includeDeleted med false eller true. Default är false, alltså att raderade böcker inte visas.
+
 ### GET /books/{id}
 
 Hämtar bok baserat på ID. Returnerar ett objekt.
@@ -41,6 +43,10 @@ Lägger till bok. Kräver body i följande format:
    "format": "Pocket"
 }
 ```
+
+### DELETE /books/{id}
+
+Raderar boken mjukt. Den finns alltså kvar i databasen, men isDeleted sätts till true.
 
 ---
 

@@ -8,5 +8,6 @@ const router = Router();
 router.get('/', BooksController.getAllBooks);
 router.get('/:id', BooksController.getBookById);
 router.post('/', validateDto(BookRequestDTO), BooksController.createBook);
+router.delete('/:id', BooksController.markBookAsDeleted);
 
 export default router;

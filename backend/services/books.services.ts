@@ -31,7 +31,9 @@ export class BooksService {
 
       for (const key in req.query) {
          if (!validFilters[key]) {
-            throw new Error(`Invalid filter: ${key}`);
+            if (key != 'includeDeleted') {
+               throw new Error(`Invalid filter: ${key}`);
+            }
          }
       }
 
@@ -42,6 +44,10 @@ export class BooksService {
                [paramKey]: value
             });
          }
+      }
+
+      if (req.query.includeDeleted != 'true') {
+         queryBuilder.andWhere('book.isDeleted = :isDeleted', { isDeleted: false });
       }
 
       const books = await queryBuilder.getMany();
@@ -111,5 +117,10 @@ export class BooksService {
       console.log('New book to be saved:', newBook);
 
       return AppDataSource.getRepository(Book).save(newBook);
+   }
+
+   static async markBookAsDeleted(book: Book) {
+      book.isDeleted = true;
+      return AppDataSource.getRepository(Book).save(book);
    }
 }
