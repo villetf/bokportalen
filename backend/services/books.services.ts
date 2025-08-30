@@ -5,6 +5,7 @@ import type { Request } from 'express';
 import { AuthorsService } from './authors.services.js';
 import { GenresService } from './genres.services.js';
 import { LanguagesService } from './languages.services.js';
+import { BookUpdateDTO } from '../dto/BookUpdateDTO.js';
 
 export class BooksService {
    static async getBooksByQuery(req: Request) {
@@ -117,6 +118,11 @@ export class BooksService {
       console.log('New book to be saved:', newBook);
 
       return AppDataSource.getRepository(Book).save(newBook);
+   }
+
+   static async updateBook(book: Book, updateData: Partial<BookUpdateDTO>) {
+      Object.assign(book, updateData);
+      AppDataSource.getRepository(Book).save(book);
    }
 
    static async markBookAsDeleted(book: Book) {

@@ -40,9 +40,31 @@ Lägger till bok. Kräver body i följande format:
    "language": "Svenska",
    "originalLanguage": "Svenska",
    "genre": "Roman",
-   "format": "Pocket"
+   "format": "Pocket",
+   "addedWithScanner": true,
 }
 ```
+
+### PATCH /books/{id}
+
+Uppdaterar fält på boken. Kräver body i följande format (man behöver såklart inte inkludera alla):
+
+```json
+   "title": "Hemvandrarna",
+   "authors": [7034],
+   "yearWritten": 2003,
+   "isbn": 873874287438,
+   "language": "Svenska",
+   "originalLanguage": "Svenska",
+   "genre": "Roman",
+   "format": "Pocket",
+   "addedWithScanner": true,
+   "copies": 3,
+   "status": "Läser",
+   "rating": 7
+```
+
+Notera att copies, status och rating alltså bara kan läggas till vid en patch, och inte post.
 
 ### DELETE /books/{id}
 
