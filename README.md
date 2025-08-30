@@ -46,3 +46,7 @@ Hämtar alla språk.
 ### GET /languages/{id}
 
 Hämtar språk baserat på ID.
+
+### GET /genres
+
+Hämtar alla genrer.
