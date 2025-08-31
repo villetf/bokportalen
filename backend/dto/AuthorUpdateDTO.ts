@@ -1,8 +1,9 @@
 import { Expose } from 'class-transformer';
 import { IsIn, IsInt, IsOptional, IsString } from 'class-validator';
 
-export class AuthorRequestDTO {
+export class AuthorUpdateDTO {
    @Expose()
+   @IsOptional()
    @IsString()
       firstName!: string;
 

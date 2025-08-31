@@ -48,4 +48,19 @@ export class AuthorsController {
          excludeExtraneousValues: true,
       }));
    }
+
+   static async updateAuthor(req: Request, res: Response) {
+      const author = await AuthorsService.getAuthorById(Number(req.params.id));
+      if (!author) {
+         res.status(404).json({ error: 'Author not found' });
+         return;
+      }
+
+      await AuthorsService.updateAuthor(author, req.body);
+
+      const updatedAuthor = await AuthorsService.getAuthorById(author.id);
+      res.json(plainToInstance(Author, updatedAuthor, {
+         excludeExtraneousValues: true,
+      }));
+   }
 }

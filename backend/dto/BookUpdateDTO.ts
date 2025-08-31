@@ -1,5 +1,5 @@
 import { Exclude, Expose } from 'class-transformer';
-import { IsString, IsInt, IsOptional, IsArray, IsBoolean, IsDate } from 'class-validator';
+import { IsString, IsInt, IsOptional, IsArray, IsBoolean } from 'class-validator';
 
 @Exclude()
 export class BookUpdateDTO {
