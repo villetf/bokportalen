@@ -98,6 +98,11 @@ Lägger till en författare. Kräver body i följande format:
 }
 ```
 
+### PATCH /authors/{id}
+
+Redigerar fält på den valda författaren. Kräver en body som innehåller en eller flera nycklar från bodyn för post-anropet.
+
+
 ---
 
 ### GET /countries

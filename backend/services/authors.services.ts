@@ -4,6 +4,7 @@ import { Author } from '../entities/Author.js';
 import { FindOptionsWhere, Like } from 'typeorm';
 import { AuthorRequestDTO } from '../dto/AuthorRequestDTO.js';
 import { CountriesService } from './countries.services.js';
+import { AuthorUpdateDTO } from '../dto/AuthorUpdateDTO.js';
 
 export class AuthorsService {
    static async getAllAuthors(): Promise<Author[]> {
@@ -51,5 +52,10 @@ export class AuthorsService {
       newAuthor.country = country;
       const createdAuthor = await AppDataSource.getRepository(Author).save(newAuthor);
       return plainToInstance(Author, createdAuthor);
+   }
+
+   static async updateAuthor(author: Author, updatedFields: AuthorUpdateDTO) {
+      Object.assign(author, updatedFields);
+      await AppDataSource.getRepository(Author).save(author);
    }
 }
