@@ -11,8 +11,8 @@ export class Language {
       name!: string;
 
    @OneToMany('Book', (book: Book) => book.language)
-      books!: InstanceType<ReturnType<typeof require>['Book']>[];
+      books!: Book[];
 
    @OneToMany('Book', (book: Book) => book.originalLanguage)
-      books2!: InstanceType<ReturnType<typeof require>['Book']>[];
+      books2!: Book[];
 }
