@@ -5,6 +5,7 @@ import { Author } from '../entities/Author.js';
 
 export class AuthorsController {
    static async getAuthors(req: Request, res: Response) {
+      // Kollar ifall query-parametrar finns, om inte ska alla författare returneras
       if (req.query === undefined || Object.keys(req.query).length === 0) {
          const allAuthors = await AuthorsService.getAllAuthors();
          res.json(plainToInstance(Author, allAuthors, {
@@ -13,8 +14,7 @@ export class AuthorsController {
          return;
       }
 
-      const { firstName, lastName } = req.query;
-      const authors = await AuthorsService.getAuthorsByQuery(firstName as string, lastName as string);
+      const authors = await AuthorsService.getAuthorsByQuery(req.query.firstName as string, req.query.lastName as string);
       if (authors.length === 0) {
          res.status(404).json({ error: 'Author not found' });
          return;
@@ -26,8 +26,7 @@ export class AuthorsController {
    }
 
    static async getAuthorById(req: Request, res: Response) {
-      const { id } = req.params;
-      const author = await AuthorsService.getAuthorById(Number(id));
+      const author = await AuthorsService.getAuthorById(Number(req.params.id));
       if (!author) {
          res.status(404).json({ error: 'Author not found' });
          return;
@@ -38,6 +37,7 @@ export class AuthorsController {
    }
 
    static async createAuthor(req: Request, res: Response) {
+      // Kollar att en författare med det för- och efternamnet inte redan finns
       if (await AuthorsService.getAuthorsByQuery(req.body.firstName, req.body.lastName).then(authors => authors.length > 0)) {
          res.status(409).json({ error: 'Author already exists' });
          return;
@@ -58,6 +58,7 @@ export class AuthorsController {
 
       await AuthorsService.updateAuthor(author, req.body);
 
+      // Hämtar den uppdaterade författaren eftersom en uppdatering inte returnerar det fullständiga objektet
       const updatedAuthor = await AuthorsService.getAuthorById(author.id);
       res.json(plainToInstance(Author, updatedAuthor, {
          excludeExtraneousValues: true,

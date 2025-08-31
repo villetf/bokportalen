@@ -9,6 +9,7 @@ export class BooksController {
       try {
          const books = await BooksService.getBooksByQuery(req);
 
+         // Mappar om egenskaperna på varje bok för att ändra ordning och välja vilka man vill visa
          res.json(books.map((book: Book) => ({
             id: book.id,
             title: book.title,
@@ -40,24 +41,26 @@ export class BooksController {
 
    static async getBookById(req: Request, res: Response) {
       const book = await BooksService.getBookById(Number.parseInt(req.params.id));
-      if (book) {
-         res.json({
-            id: book.id,
-            title: book.title,
-            author: book.authors,
-            yearWritten: book.yearWritten,
-            language: book.language,
-            originalLanguage: book.originalLanguage,
-            genre: book.genre,
-            format: book.format,
-            isbn: book.isbn,
-            status: book.status,
-            rating: book.rating,
-            isDeleted: book.isDeleted
-         });
-      } else {
+      if (!book) {
          res.status(404).json({ error: 'Book not found' });
+         return;
       }
+
+      // Returnerar objektet med skräddarsydda egenskaper
+      res.json({
+         id: book.id,
+         title: book.title,
+         author: book.authors,
+         yearWritten: book.yearWritten,
+         language: book.language,
+         originalLanguage: book.originalLanguage,
+         genre: book.genre,
+         format: book.format,
+         isbn: book.isbn,
+         status: book.status,
+         rating: book.rating,
+         isDeleted: book.isDeleted
+      });
    }
 
    static async createBook(req: Request, res: Response) {

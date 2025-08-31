@@ -2,6 +2,7 @@ import { ClassConstructor, plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 import { Request, Response, NextFunction } from 'express';
 
+// Valideringsfunktion för att validera att en input matchar en viss DTO
 export function validateDto<T extends object>(dtoClass: ClassConstructor<T>) {
    return async(req: Request, res: Response, next: NextFunction) => {
       const instance = plainToInstance(dtoClass, req.body, {

@@ -16,6 +16,7 @@ export class BooksService {
          .leftJoinAndSelect('book.originalLanguage', 'originalLanguage')
          .leftJoinAndSelect('book.genre', 'genre');
 
+      // Skapar en lista över giltiga filter
       const validFilters: Record<string, string> = {
          title: 'book.title',
          authorFirstName: 'author.firstName',
@@ -30,14 +31,17 @@ export class BooksService {
          rating: 'book.rating',
       };
 
+      // För varje inskickad filterparameter, kolla att den finns i listan över giltiga filter
       for (const key in req.query) {
          if (!validFilters[key]) {
+            // Specialhantering för includeDeleted, eftersom det inte är ett filter utan ett val
             if (key != 'includeDeleted') {
                throw new Error(`Invalid filter: ${key}`);
             }
          }
       }
 
+      // Gå igenom alla giltiga filter, om queryn innehåller filtret, lägg till det på queryn till databasen
       for (const [paramKey, dbField] of Object.entries(validFilters)) {
          const value = req.query[paramKey];
          if (value) {
@@ -47,12 +51,12 @@ export class BooksService {
          }
       }
 
+      // Om det inte specificerats, sätt att raderade böcker inte ska visas
       if (req.query.includeDeleted != 'true') {
          queryBuilder.andWhere('book.isDeleted = :isDeleted', { isDeleted: false });
       }
 
       const books = await queryBuilder.getMany();
-
 
       return books;
    }
@@ -65,10 +69,9 @@ export class BooksService {
    }
 
    static async createBook(inputBook: BookRequestDTO) {
-      console.log('Creating book with data:', inputBook);
-
       let language = null;
 
+      // Om språk anges, hämta eller skapa det
       if (inputBook.language) {
          language = await LanguagesService.getLanguageByName(inputBook.language);
          if (!language) {
@@ -114,8 +117,6 @@ export class BooksService {
       newBook.createdAt = new Date();
       newBook.copies = 1;
       newBook.addedWithScanner = inputBook.addedWithScanner ? inputBook.addedWithScanner : false;
-
-      console.log('New book to be saved:', newBook);
 
       return AppDataSource.getRepository(Book).save(newBook);
    }

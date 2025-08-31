@@ -8,8 +8,7 @@ export class LanguagesController {
    }
 
    static async getLanguageById(req: Request, res: Response) {
-      const { id } = req.params;
-      const language = await LanguagesService.getLanguageById(Number.parseInt(id));
+      const language = await LanguagesService.getLanguageById(Number.parseInt(req.params.id));
       if (language) {
          res.json(language);
       } else {
