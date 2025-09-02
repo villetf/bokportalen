@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 
 @Component({
   selector: 'app-all-books',
@@ -7,5 +7,11 @@ import { Component } from '@angular/core';
   styles: ``
 })
 export class AllBooks {
+   books = signal([{}]);
 
+   ngOnInit(): void {
+      fetch('http://localhost:3000/books')
+         .then(response => response.json())
+         .then(data => this.books.set(data));
+   }
 }
