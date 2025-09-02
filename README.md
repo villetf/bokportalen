@@ -23,6 +23,8 @@ T.ex.:
 
 Man kan även välja ifall man vill visa raderade böcker eller inte genom att använda includeDeleted med false eller true. Default är false, alltså att raderade böcker inte visas.
 
+ISBN kommer returneras som en sträng trots att det är ett tal på grund av att talens storlek kan vara för stort för att det ska kunna hanteras i ett number. Vill man hantera det som ett tal behöver man därför parsa det i frontend.
+
 ### GET /books/{id}
 
 Hämtar bok baserat på ID. Returnerar ett objekt.
