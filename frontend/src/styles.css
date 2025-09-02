@@ -4,13 +4,14 @@
 @theme {
    --color-bookolive: #778154;
    --color-backgroundbeige: #F5EFDB;
+   --color-headerbrown: #4A1810;
 }
 
-h1, h2, h3 {
+h1, h2, h3, div {
    font-family: 'Cabin', sans-serif;
 }
 
-h4, h5 {
+h4, h5, a {
    font-family: 'Alumni Sans', sans-serif;
 }
 
