@@ -1,6 +1,11 @@
 /* You can add global styles to this file, and also import other style files */
 @import "tailwindcss";
 
+@theme {
+   --color-bookolive: #778154;
+   --color-backgroundbeige: #F5EFDB;
+}
+
 h1, h2, h3 {
    font-family: 'Cabin', sans-serif;
 }
