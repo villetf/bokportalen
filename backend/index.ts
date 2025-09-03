@@ -5,9 +5,12 @@ import countryRoutes from './routes/countries.routes.js';
 import { AppDataSource } from './data-source.js';
 import languageRoutes from './routes/language.routes.js';
 import genreRoutes from './routes/genres.routes.js';
+import cors from 'cors';
 
 const app = express();
 app.use(express.json());
+
+app.use(cors());
 
 app.use('/books', bookRoutes);
 app.use('/authors', authorRoutes);
