@@ -22,7 +22,11 @@ export class BooksController {
             isbn: book.isbn,
             status: book.status,
             rating: book.rating,
-            isDeleted: book.isDeleted
+            createdAt: book.createdAt,
+            addedWithScanner: book.addedWithScanner,
+            copies: book.copies,
+            isDeleted: book.isDeleted,
+            coverLink: book.coverLink
          })));
       } catch (error) {
          if (error instanceof Error) {
@@ -59,7 +63,11 @@ export class BooksController {
          isbn: book.isbn,
          status: book.status,
          rating: book.rating,
-         isDeleted: book.isDeleted
+         createdAt: book.createdAt,
+         addedWithScanner: book.addedWithScanner,
+         copies: book.copies,
+         isDeleted: book.isDeleted,
+         coverLink: book.coverLink
       });
    }
 

@@ -60,6 +60,9 @@ export class Book {
    @Column('boolean', { name: 'added_with_scanner', nullable: true })
       addedWithScanner!: boolean | null;
 
+   @Column('varchar', { name: 'cover_link', nullable: true, length: 255 })
+      coverLink!: string | null;
+
    @ManyToMany(() => Author, (authors) => authors.books)
    @JoinTable({
       name: 'book_authors',
