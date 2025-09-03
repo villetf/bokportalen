@@ -45,4 +45,9 @@ export class BookRequestDTO {
    @IsOptional()
    @IsBoolean()
       addedWithScanner?: boolean;
+
+   @Expose()
+   @IsOptional()
+   @IsString()
+      coverLink?: string;
 }

@@ -62,4 +62,9 @@ export class BookUpdateDTO {
    @IsOptional()
    @IsInt()
       rating?: number;
+
+   @Expose()
+   @IsOptional()
+   @IsString()
+      coverLink?: string;
 }
