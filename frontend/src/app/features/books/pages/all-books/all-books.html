@@ -20,7 +20,7 @@
 
    <div class="flex flex-wrap">
       @for (book of books(); track book.id) {
-         
+         <app-book-card [book]="book"></app-book-card>
       }
    </div>
 </div>
