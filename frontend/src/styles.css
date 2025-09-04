@@ -18,3 +18,12 @@ h4, h5, a {
 h6 {
    font-family: 'Amiri', serif;
 }
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
+
+.amiri-font {
+   font-family: 'Amiri', serif;
+}
