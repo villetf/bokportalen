@@ -14,7 +14,12 @@ export class AllBooks {
    ngOnInit(): void {
       fetch('http://localhost:3000/books')
          .then(response => response.json())
-         .then(data => console.log('böcker hämtade'))
-         // .then(data => this.books.set(data));
+         .then (data => data.map((book: Book) => {
+            if (!book.coverLink) {
+               book.coverLink = 'book-cover-placeholder.png';
+            }
+            return book;
+         }))
+         .then(data => this.books.set(data));
    }
 }

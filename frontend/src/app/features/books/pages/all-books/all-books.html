@@ -1,6 +1,6 @@
-<div class="flex-1 mx-30 mt-25">
+<div class="flex flex-col flex-1 ml-25 mr-15 pt-17 h-full">
    <h1 class="text-5xl font-bold text-bookolive">BOKSAMLING</h1>
-   <div class="flex justify-between mt-10">
+   <div class="flex justify-between mt-5">
       <div class="flex">
          <div class="flex items-center justify-center">
             <h5 class="text-3xl mr-5 text-headerbrown font-medium">sortering</h5>
@@ -18,7 +18,7 @@
       </div>
    </div>
 
-   <div class="flex flex-wrap">
+   <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mt-5 overflow-scroll h-full">
       @for (book of books(); track book.id) {
          <app-book-card [book]="book"></app-book-card>
       }

@@ -1,3 +1,21 @@
-<div>
-   {{ book.title }}
+<div class="flex items-start">
+   <!-- <a routerLink="/books/{{ book.id }}" class="cursor-pointer block w-45/100 aspect-[2/3]"> -->
+      <img src="{{ book.coverLink }}" alt="Omslagsbild för {{ book.title }}" class="cursor-pointer w-40/100 aspect-[2/3] mb-10" [routerLink]="'/books/' + book.id">
+   <!-- </a> -->
+   <div class="ml-2">
+      <a routerLink="/books/{{ book.id }}" class="cursor-pointer hover:underline">
+         <p class="font-bold amiri-font">{{ book.title }}</p>
+      </a>
+      <p>
+         @for (author of book.author; track $index) {
+            <a routerLink="/authors/{{ author.id }}" class="hover:underline cursor-pointer">
+               <span class="amiri-font">{{ author.firstName }} {{ author.lastName }}</span>
+               @if (!$last) {
+                  <span class="amiri-font">, </span>
+               }
+            </a>
+         }
+      </p>
+      <p class="amiri-font">{{ book.yearWritten }}</p>
+   </div>
 </div>

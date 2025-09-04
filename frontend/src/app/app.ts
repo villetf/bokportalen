@@ -6,7 +6,7 @@ import { MainContent } from "./shared/components/main-content/main-content";
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, HomePage, Header, MainContent],
+  imports: [Header, MainContent],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
