@@ -1,4 +1,4 @@
-import { BehaviorSubject, Observable, of } from "rxjs";
+import { BehaviorSubject, filter, map, Observable, of, tap } from "rxjs";
 import { Book } from "../types/Book.model";
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
@@ -11,9 +11,14 @@ export class BooksService {
 
    getBooks() {
       if (!this.books$.value) {
-         this.http.get<Book[]>('http://localhost:3000/books').subscribe(b => this.books$.next(b));
+         return this.http.get<Book[]>('http://localhost:3000/books').pipe(
+            tap(books => this.books$.next(books))
+         );
+      } else {
+         return this.books$.asObservable().pipe(
+            filter((books): books is Book[] => books != null)
+         )
       }
-      return this.books$.asObservable() as Observable<Book[]>;
    }
 
    getBook(id: number) {
@@ -23,5 +28,12 @@ export class BooksService {
       }
 
       return this.http.get<Book>(`http://localhost:3000/books/${id}`);
+   }
+
+   getBooksByAuthor(authorId: number) {
+      return this.getBooks().pipe(
+         tap(() => console.log('Fetching books by author:', authorId)),
+         map(books => books.filter(b => b.author.some(a => a.id === authorId)))
+      )
    }
 }
