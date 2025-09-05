@@ -3,6 +3,7 @@
 
 @theme {
    --color-bookolive: #778154;
+   --color-bookolive-dark: #5a6140;
    --color-backgroundbeige: #F5EFDB;
    --color-headerbrown: #4A1810;
 }
@@ -24,6 +25,18 @@ html, body {
   overflow: hidden;
 }
 
+.cabin-font {
+   font-family: 'Cabin', sans-serif;
+}
+
+.alumni-font {
+   font-family: 'Alumni Sans', sans-serif;
+}
+
 .amiri-font {
    font-family: 'Amiri', serif;
+}
+
+.book-properties {
+   @apply text-headerbrown text-2xl font-semibold;
 }
