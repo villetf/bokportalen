@@ -1,16 +1,16 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { combineLatest, forkJoin, map, Observable, of, switchMap } from 'rxjs';
+import { Observable, switchMap } from 'rxjs';
 import { BooksService } from '../../../../services/booksService';
 import { Book } from '../../../../types/Book.model';
-import { AsyncPipe } from '@angular/common';
+import { AsyncPipe, NgClass } from '@angular/common';
 import { Button } from "../../../../shared/components/button/button";
 import { BookCard } from "../../components/book-card/book-card";
 
 @Component({
   selector: 'app-book-page',
   standalone: true,  
-  imports: [AsyncPipe, RouterLink, Button, BookCard],
+  imports: [AsyncPipe, RouterLink, Button, BookCard, NgClass],
   templateUrl: './book-page.html'
 })
 export class BookPage implements OnInit {
@@ -22,6 +22,14 @@ export class BookPage implements OnInit {
       private route: ActivatedRoute,
       private booksService: BooksService
    ) {}
+
+   getTitleClass(title: string) {
+      if (title.length > 25) {
+         return 'text-4xl';
+      }
+
+      return 'text-6xl';
+   }
 
    ngOnInit(): void {
       this.book$ = this.route.params.pipe(
