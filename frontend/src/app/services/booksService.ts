@@ -32,7 +32,6 @@ export class BooksService {
 
    getBooksByAuthor(authorId: number) {
       return this.getBooks().pipe(
-         tap(() => console.log('Fetching books by author:', authorId)),
          map(books => books.filter(b => b.author.some(a => a.id === authorId)))
       )
    }
