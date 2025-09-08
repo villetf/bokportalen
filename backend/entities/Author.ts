@@ -43,6 +43,10 @@ export class Author {
       @Exclude({ toPlainOnly: true })
       countryId!: number | null;
 
+   @Column('varchar', { name: 'image_link', nullable: true, length: 255 })
+   @Expose()
+      imageLink!: string | null;
+
    @ManyToMany(() => Book, (books) => books.authors)
       books!: Book[];
 
