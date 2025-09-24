@@ -1,42 +1,48 @@
 @if (book$ | async; as book) {
    <div class="flex w-full h-full items-center">
-      <div class="h-full w-full place-items-center grid grid-rows-2 grid-cols-[33%_1fr_20%]">
-         <img [src]="book.coverLink ? book.coverLink : 'book-cover-placeholder.png'" alt="Omslagsbild för {{ book.title }}" class="aspect-[2/3] row-span-2 justify-self-end h-120">
-         <div class="ml-10 row-span-2 justify-self-start">
-            <h1 [ngClass]="getTitleClass(book.title)" class="font-bold text-bookolive">{{ book.title }}</h1>
-            <h3 class="text-2xl mt-1">
-               @for (author of book.author; track $index) {
-                  <a routerLink="/authors/{{ author.id }}" class="cursor-pointer hover:underline cabin-font">{{ author.firstName }} {{ author.lastName }}</a>
-                  @if (!$last) {
-                     <span>, </span>
+      <div class="h-full w-full place-items-center grid grid-cols-[33%_1fr_20%]">
+         <img [src]="book.coverLink ? book.coverLink : 'book-cover-placeholder.png'" alt="Omslagsbild för {{ book.title }}" class="aspect-[2/3] justify-self-end h-120">
+         <div class="justify-self-start flex justify-between w-full items-start">
+            <div class="ml-10">
+               <h1 [ngClass]="getTitleClass(book.title)" class="font-bold text-bookolive">{{ book.title }}</h1>
+               <h3 class="text-2xl mt-1">
+                  @for (author of book.author; track $index) {
+                     <a routerLink="/authors/{{ author.id }}" class="cursor-pointer hover:underline cabin-font">{{ author.firstName }} {{ author.lastName }}</a>
+                     @if (!$last) {
+                        <span>, </span>
+                     }
                   }
-               }
-            </h3>
-            <div class="mt-5">
-               <p><span class="book-properties alumni-font">GENRE:</span><span class="amiri-font text-2xl"> {{ book.genre ? book.genre.name : 'Ej angivet' }}</span></p>
-               <p><span class="book-properties alumni-font">UTGIVNINGSÅR:</span><span class="amiri-font text-2xl"> {{ book.yearWritten ? book.yearWritten : 'Ej angivet' }}</span></p>
-               <p><span class="book-properties alumni-font">SPRÅK:</span><span class="amiri-font text-2xl"> {{ book.language ? book.language.name : 'Ej angivet' }}</span></p>
-               <p><span class="book-properties alumni-font">ORIGINALSPRÅK:</span><span class="amiri-font text-2xl"> {{ book.originalLanguage ? book.originalLanguage.name : 'Ej angivet' }}</span></p>
-               <p><span class="book-properties alumni-font">FORMAT:</span><span class="amiri-font text-2xl"> {{ book.format ? book.format : 'Ej angivet' }}</span></p>
-               <p><span class="book-properties alumni-font">TILLAGD:</span><span class="amiri-font text-2xl"> {{ book.createdAt ? book.createdAt : 'Ej angivet' }}</span></p>
-               <p><span class="book-properties alumni-font">ISBN:</span><span class="amiri-font text-2xl"> {{ book.isbn ? book.isbn : 'Ej angivet' }}</span></p>
-               <p><span class="book-properties alumni-font">STATUS:</span><span class="amiri-font text-2xl"> {{ book.status ? book.status : 'Ej angivet' }}</span></p>
-               <p><span class="book-properties alumni-font">ANTAL exemplar:</span><span class="amiri-font text-2xl"> {{ book.copies ? book.copies : 'Ej angivet' }}</span></p>
-               <p><span class="book-properties alumni-font">BETYG:</span><span class="amiri-font text-2xl"> {{ book.rating ? book.rating : 'Inget betyg satt' }}</span></p>
+               </h3>
+               <div class="mt-5">
+                  <p><span class="book-properties alumni-font">GENRE:</span><span class="amiri-font text-2xl"> {{ book.genre ? book.genre.name : 'Ej angivet' }}</span></p>
+                  <p><span class="book-properties alumni-font">UTGIVNINGSÅR:</span><span class="amiri-font text-2xl"> {{ book.yearWritten ? book.yearWritten : 'Ej angivet' }}</span></p>
+                  <p><span class="book-properties alumni-font">SPRÅK:</span><span class="amiri-font text-2xl"> {{ book.language ? book.language.name : 'Ej angivet' }}</span></p>
+                  <p><span class="book-properties alumni-font">ORIGINALSPRÅK:</span><span class="amiri-font text-2xl"> {{ book.originalLanguage ? book.originalLanguage.name : 'Ej angivet' }}</span></p>
+                  <p><span class="book-properties alumni-font">FORMAT:</span><span class="amiri-font text-2xl"> {{ book.format ? book.format : 'Ej angivet' }}</span></p>
+                  <p><span class="book-properties alumni-font">TILLAGD:</span><span class="amiri-font text-2xl"> {{ book.createdAt ? book.createdAt : 'Ej angivet' }}</span></p>
+                  <p><span class="book-properties alumni-font">ISBN:</span><span class="amiri-font text-2xl"> {{ book.isbn ? book.isbn : 'Ej angivet' }}</span></p>
+                  <p><span class="book-properties alumni-font">STATUS:</span><span class="amiri-font text-2xl"> {{ book.status ? book.status : 'Ej angivet' }}</span></p>
+                  <p><span class="book-properties alumni-font">ANTAL EXEMPLAR:</span><span class="amiri-font text-2xl"> {{ book.copies ? book.copies : 'Ej angivet' }}</span></p>
+                  <p><span class="book-properties alumni-font">BETYG:</span><span class="amiri-font text-2xl"> {{ book.rating ? book.rating : 'Inget betyg satt' }}</span></p>
+               </div>
             </div>
-         </div>
 
-         <div>
-            <app-button class="mb-auto min-h-0">Redigera</app-button>
+            <app-button (click)="openEditView()" class="min-h-0">Redigera</app-button>
+            <div class="max-w-40 h-full"></div>
          </div>
       
          <div class="h-full overflow-hidden">
             
             @if (booksByAuthor()) {
                @if (booksByAuthor().length > book.author.length) {
-                  <div class="flex flex-col h-full w-full overflow-auto ml-auto min-h-0">
-                     <h5 class="text-2xl mb-5">Mer av denna författare:</h5>
-                  
+                  <div class="flex flex-col h-full w-full overflow-auto min-h-0 mt-45">
+                     <h5 class="text-2xl mb-5">
+                     @if (book.author.length == 1) {
+                        Mer av {{ book.author[0].firstName}} {{ book.author[0].lastName }}:
+                     } @else {
+                        Mer av dessa författare:
+                     }
+                     </h5>
                   @for (bookInList of booksByAuthor(); track $index) {
                      @if (bookInList.title != book.title) {
                         <app-book-card [book]="bookInList" class=""></app-book-card>
@@ -48,4 +54,39 @@
          </div>
       </div>
    </div>
+   
+   @if (editViewIsOpen()) {
+      <app-edit-panel [closePanel]="closeEditView">
+         <!-- <form action="">
+            @for (item of book | keyvalue; track $index) {
+               <label [htmlFor]="item.key">{{ item.key }}</label>
+               <input type="text" [name]="item.key" [defaultValue]="item.value">
+            }
+         </form> -->
+         <form action="" class="grid grid-cols-2 m-20">
+            <label for="bookTitle">Titel:</label>
+            <input type="text" name="bookTitle" [defaultValue]="book.title">
+            
+            <label for="bookAuthors">Författare:</label>
+            <app-array-input [items]="book.author" [displayFn]="displayAuthor" [selectableItems]="allAuthors"></app-array-input>
+
+            <label for="format">Format:</label>
+            <select name="format">
+               <option value="Inbunden">Inbunden</option>
+               <option value="Pocket">Pocket</option>
+               <option value="Danskt band">Danskt band</option>
+               <option value="Häftad">Häftad</option>
+            </select>
+
+            <label for="isbn">ISBN:</label>
+            <input name="isbn" [defaultValue]="book.isbn">
+
+            <label for="yearWritten">Utgivningsår:</label>
+            <input type="number" name="yearWritten" [defaultValue]="book.yearWritten">
+
+            <label for="numberOfCopies">Antal exemplar:</label>
+            <input type="number" name="numberOfCopies" [defaultValue]="book.copies" min="1">
+         </form>
+      </app-edit-panel>
+   }
 }

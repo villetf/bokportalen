@@ -7,5 +7,4 @@ import { Component, Input } from '@angular/core';
   styles: ``
 })
 export class Button {
-   @Input() clickFunction: Function = () => {};
 }
