@@ -10,11 +10,12 @@ import { EditPanel } from "../../../../shared/components/edit-panel/edit-panel";
 import { ArrayInput } from "../../../../shared/components/array-input/array-input";
 import { Author } from '../../../../types/Author.model';
 import { AuthorsService } from '../../../../services/authorsService';
+import { EditBookForm } from "../../components/edit-book-form/edit-book-form";
 
 @Component({
   selector: 'app-book-page',
   standalone: true,  
-  imports: [AsyncPipe, RouterLink, Button, BookCard, NgClass, EditPanel, KeyValuePipe, ArrayInput],
+  imports: [AsyncPipe, RouterLink, Button, BookCard, NgClass, EditPanel, EditBookForm],
   templateUrl: './book-page.html'
 })
 export class BookPage implements OnInit {
@@ -22,7 +23,7 @@ export class BookPage implements OnInit {
    booksByAuthor = signal<Book[]>([]);
    currentBook!: Book;
    editViewIsOpen = signal<boolean>(false);
-   allAuthors: Author[] = [];
+   
 
    constructor(
       private route: ActivatedRoute,
@@ -40,16 +41,14 @@ export class BookPage implements OnInit {
    }
 
    openEditView = () => {
-      console.log('open edit view', this);
       this.editViewIsOpen.set(true);
    }
 
    closeEditView = () => {
-      console.log('stänger vyn');
       this.editViewIsOpen.set(false);
    }
 
-   displayAuthor = (author: Author) => `${author.firstName} ${author.lastName}`;
+
 
    ngOnInit(): void {
       this.book$ = this.route.params.pipe(
@@ -69,9 +68,5 @@ export class BookPage implements OnInit {
             })
          })
       })
-
-      this.authorsService.getAllAuthors().then(authors => {
-         this.allAuthors = authors;
-      });
    }
 }

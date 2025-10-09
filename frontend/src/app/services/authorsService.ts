@@ -17,6 +17,8 @@ export class AuthorsService {
       if (!response.ok) {
          return [];
       }
-      return response.json();
+
+      const data: Author[] = await response.json();
+      return data.sort((a, b) => a.firstName.localeCompare(b.firstName));
    }
 }

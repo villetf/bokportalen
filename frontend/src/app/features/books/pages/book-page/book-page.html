@@ -57,36 +57,7 @@
    
    @if (editViewIsOpen()) {
       <app-edit-panel [closePanel]="closeEditView">
-         <!-- <form action="">
-            @for (item of book | keyvalue; track $index) {
-               <label [htmlFor]="item.key">{{ item.key }}</label>
-               <input type="text" [name]="item.key" [defaultValue]="item.value">
-            }
-         </form> -->
-         <form action="" class="grid grid-cols-2 m-20">
-            <label for="bookTitle">Titel:</label>
-            <input type="text" name="bookTitle" [defaultValue]="book.title">
-            
-            <label for="bookAuthors">Författare:</label>
-            <app-array-input [items]="book.author" [displayFn]="displayAuthor" [selectableItems]="allAuthors"></app-array-input>
-
-            <label for="format">Format:</label>
-            <select name="format">
-               <option value="Inbunden">Inbunden</option>
-               <option value="Pocket">Pocket</option>
-               <option value="Danskt band">Danskt band</option>
-               <option value="Häftad">Häftad</option>
-            </select>
-
-            <label for="isbn">ISBN:</label>
-            <input name="isbn" [defaultValue]="book.isbn">
-
-            <label for="yearWritten">Utgivningsår:</label>
-            <input type="number" name="yearWritten" [defaultValue]="book.yearWritten">
-
-            <label for="numberOfCopies">Antal exemplar:</label>
-            <input type="number" name="numberOfCopies" [defaultValue]="book.copies" min="1">
-         </form>
+         <app-edit-book-form [book]="book"></app-edit-book-form>
       </app-edit-panel>
    }
 }
