@@ -1,5 +1,5 @@
-import { Injectable } from "@angular/core";
-import { Language } from "../types/Language.model";
+import { Injectable } from '@angular/core';
+import { Language } from '../types/Language.model';
 
 
 @Injectable({ providedIn: 'root' })

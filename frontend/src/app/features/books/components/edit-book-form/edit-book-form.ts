@@ -1,5 +1,5 @@
-import { Component, EventEmitter, Input, OnInit, Output, Signal, signal } from '@angular/core';
-import { ArrayInput } from "../../../../shared/components/array-input/array-input";
+import { Component, EventEmitter, Input, OnInit, Output, signal } from '@angular/core';
+import { ArrayInput } from '../../../../shared/components/array-input/array-input';
 import { Book } from '../../../../types/Book.model';
 import { Author } from '../../../../types/Author.model';
 import { AuthorsService } from '../../../../services/authorsService';
@@ -8,14 +8,14 @@ import { GenresService } from '../../../../services/genresService';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Language } from '../../../../types/Language.model';
 import { LanguagesService } from '../../../../services/languagesService';
-import { Button } from "../../../../shared/components/button/button";
+import { Button } from '../../../../shared/components/button/button';
 import { BooksService } from '../../../../services/booksService';
 
 @Component({
-  selector: 'app-edit-book-form',
-  imports: [ReactiveFormsModule, ArrayInput, Button],
-  templateUrl: './edit-book-form.html',
-  styles: ``
+   selector: 'app-edit-book-form',
+   imports: [ReactiveFormsModule, ArrayInput, Button],
+   templateUrl: './edit-book-form.html',
+   styles: ''
 })
 export class EditBookForm implements OnInit {
    @Input() book!: Book;
@@ -26,13 +26,13 @@ export class EditBookForm implements OnInit {
    allGenres = signal<Genre[]>([]);
    allLanguages = signal<Language[]>([]);
    form!: FormGroup;
-   
+
 
    displayAuthor = (author: Author) => `${author.firstName} ${author.lastName}`;
 
    constructor(
-      private fb: FormBuilder, 
-      private authorsService: AuthorsService, 
+      private fb: FormBuilder,
+      private authorsService: AuthorsService,
       private genresService: GenresService,
       private languagesService: LanguagesService,
       private booksService: BooksService
@@ -58,21 +58,21 @@ export class EditBookForm implements OnInit {
          copies: [this.book.copies, [Validators.required, Validators.min(1)]],
          rating: [this.book.rating],
          coverLink: [this.book.coverLink]
-      })
+      });
    }
 
    save() {
       if (this.form.valid) {
          const updatedBook: Book = this.form.value;
          if (updatedBook.isbn) {
-            updatedBook.isbn = Number(updatedBook.isbn)
+            updatedBook.isbn = Number(updatedBook.isbn);
          }
 
          this.booksService.editBook(updatedBook)
-            .subscribe((res: any) => {
+            .subscribe((res: unknown) => {
                this.bookChange.emit(res as Book);
                this.closeEditView();
-            })
+            });
 
       }
    }

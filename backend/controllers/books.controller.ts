@@ -5,8 +5,6 @@ import { BookRequestDTO } from '../dto/BookRequestDTO.js';
 import { BookUpdateDTO } from '../dto/BookUpdateDTO.js';
 import { LanguagesService } from '../services/languages.services.js';
 import { GenresService } from '../services/genres.services.js';
-import { AuthorsService } from '../services/authors.services.js';
-import { Author } from '../entities/Author.js';
 
 export class BooksController {
    static async getAllBooks(req: Request, res: Response) {
