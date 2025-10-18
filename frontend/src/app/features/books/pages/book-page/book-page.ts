@@ -1,28 +1,37 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, Signal, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { Observable, switchMap } from 'rxjs';
+import { BehaviorSubject, Observable, switchMap } from 'rxjs';
 import { BooksService } from '../../../../services/booksService';
 import { Book } from '../../../../types/Book.model';
-import { AsyncPipe, NgClass } from '@angular/common';
+import { AsyncPipe, KeyValuePipe, NgClass } from '@angular/common';
 import { Button } from "../../../../shared/components/button/button";
 import { BookCard } from "../../components/book-card/book-card";
+import { EditPanel } from "../../../../shared/components/edit-panel/edit-panel";
+import { ArrayInput } from "../../../../shared/components/array-input/array-input";
+import { Author } from '../../../../types/Author.model';
+import { AuthorsService } from '../../../../services/authorsService';
+import { EditBookForm } from "../../components/edit-book-form/edit-book-form";
 
 @Component({
   selector: 'app-book-page',
   standalone: true,  
-  imports: [AsyncPipe, RouterLink, Button, BookCard, NgClass],
+  imports: [AsyncPipe, RouterLink, Button, BookCard, NgClass, EditPanel, EditBookForm],
   templateUrl: './book-page.html'
 })
 export class BookPage implements OnInit {
-   book$!: Observable<Book>;
+   book$ = new BehaviorSubject<Book | null>(null);
    booksByAuthor = signal<Book[]>([]);
    currentBook!: Book;
+   editViewIsOpen = signal<boolean>(false);
+   
 
    constructor(
       private route: ActivatedRoute,
-      private booksService: BooksService
+      private booksService: BooksService,
+      private authorsService: AuthorsService
    ) {}
 
+   
    getTitleClass(title: string) {
       if (title.length > 25) {
          return 'text-4xl';
@@ -31,19 +40,32 @@ export class BookPage implements OnInit {
       return 'text-6xl';
    }
 
+   openEditView = () => {
+      this.editViewIsOpen.set(true);
+   }
+
+   closeEditView = () => {
+      this.editViewIsOpen.set(false);
+   }
+
+   updateBook = (updatedBook: Book) => {
+      this.book$.next(updatedBook);
+      this.booksService.setBook(updatedBook);
+   }
+
+
+
    ngOnInit(): void {
-      this.book$ = this.route.params.pipe(
+      this.route.params.pipe(
          switchMap(params => this.booksService.getBook(+params['id']))
-      );
-
-      this.book$.subscribe(value => {
+      ).subscribe(book => {
+         this.book$.next(book);
          this.booksByAuthor.set([]);
-         this.currentBook = value
-         this.currentBook.author.forEach(author => {
-            const books = this.booksService.getBooksByAuthor(author.id);
+         this.currentBook = book;
 
-            books.subscribe(value => {
-               value.forEach(book => {
+         this.currentBook.authors.forEach(author => {
+            this.booksService.getBooksByAuthor(author.id).subscribe(books => {
+               books.forEach(book => {
                   this.booksByAuthor.set([...this.booksByAuthor(), book])
                });
             })

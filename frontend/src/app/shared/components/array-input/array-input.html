@@ -1,0 +1,24 @@
+<div class="bg-white rounded border border-gray-400">
+   <div cdkDropList (cdkDropListDropped)="drop($event)">
+      @for (item of items; track $index) {
+         <div cdkDrag cdkDragLockAxis="y" class="m-1" (click)="setSelectedItem(item)" [class.selectedItem]="item === selectedItem()">
+            <span class="cursor-move mr-1" cdkDragHandle>☰</span>
+            <select name="" id="selectAuthorList" (change)="addItemToList($event, item)">
+               <option [value]="" disabled [selected]="item.id == null">Välj författare...</option>
+               @for (selectableItem of selectableItems; track $index) {
+                  <option 
+                     [value]="selectableItem.id"
+                     [selected]="displayFn(selectableItem) == displayFn(item)"
+                     [disabled]="displayFn(selectableItem) != displayFn(item) && itemOccursInList(selectableItem)">
+                        {{ displayFn(selectableItem) }}
+                  </option>
+               }
+            </select>
+         </div>
+      }
+   </div>
+   <div class="bg-gray-200">
+      <button type="button" (click)="addItem()" class="px-1 text-2xl -my-3 cursor-pointer">+</button>
+      <button type="button" (click)="removeItem(selectedItem()!)" class="px-1 text-2xl -my-3 cursor-pointer" [disabled]="selectedItem() === null">-</button>
+   </div>
+</div>

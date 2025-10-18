@@ -30,9 +30,22 @@ export class BooksService {
       return this.http.get<Book>(`http://localhost:3000/books/${id}`);
    }
 
+   setBook(updatedBook: Book) {
+      const currentBooks = this.books$.value!;
+      const updatedBooks = currentBooks.map(book =>
+         book.id === updatedBook.id ? updatedBook : book
+      );
+
+      this.books$.next(updatedBooks)
+   }
+
    getBooksByAuthor(authorId: number) {
       return this.getBooks().pipe(
-         map(books => books.filter(b => b.author.some(a => a.id === authorId)))
+         map(books => books.filter(b => b.authors.some(a => a.id === authorId)))
       )
+   }
+
+   editBook(book: Book) {
+      return this.http.patch(`http://localhost:3000/books/${book.id}`, book);
    }
 }

@@ -11,4 +11,14 @@ export class AuthorsService {
       }
       return response.json()
    }
+
+   async getAllAuthors(): Promise<Author[]> {
+      const response = await fetch('http://localhost:3000/authors');
+      if (!response.ok) {
+         return [];
+      }
+
+      const data: Author[] = await response.json();
+      return data.sort((a, b) => a.firstName.localeCompare(b.firstName));
+   }
 }

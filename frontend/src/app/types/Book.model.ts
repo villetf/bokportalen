@@ -5,7 +5,7 @@ import { Language } from "./Language.model";
 export interface Book {
    id: number;
    title: string;
-   author: Author[];
+   authors: Author[];
    yearWritten: number;
    language: Language;
    originalLanguage: Language;
