@@ -1,0 +1,34 @@
+<div class="flex items-center h-full">
+   <div class="flex flex-col gap-10 w-50 bg-[#fefcf5] h-full justify-center">
+      <div (click)="selectedView.set('book')" class="p-5 hover:bg-backgroundbeige cursor-pointer">
+         <p>Bok</p>
+      </div>
+      <div (click)="selectedView.set('author')" class="p-5 hover:bg-backgroundbeige cursor-pointer">
+         <p>Författare</p>
+      </div>
+      <div (click)="selectedView.set('genre')" class="p-5 hover:bg-backgroundbeige cursor-pointer">
+         <p>Genre</p>
+      </div>
+      <div (click)="selectedView.set('language')" class="p-5 hover:bg-backgroundbeige cursor-pointer">
+         <p>Språk</p>
+      </div>
+   </div>
+   
+   @switch (selectedView()) {
+      @case ('book') {
+         <app-add-book />
+      }
+   
+      @case ('author') {
+         <app-add-author />
+      }
+   
+      @case ('genre') {
+         <app-add-genre />
+      }
+   
+      @case ('language') {
+         <app-add-language />
+      }
+   }
+</div>
