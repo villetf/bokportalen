@@ -123,7 +123,7 @@ export class BooksService {
 
    static async updateBook(book: Book, updateData: Partial<BookUpdateDTO>) {
       Object.assign(book, updateData);
-      AppDataSource.getRepository(Book).save(book);
+      await AppDataSource.getRepository(Book).save(book);
    }
 
    static async markBookAsDeleted(book: Book) {

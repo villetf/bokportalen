@@ -4,6 +4,7 @@
          <div cdkDrag cdkDragLockAxis="y" class="m-1" (click)="setSelectedItem(item)" [class.selectedItem]="item === selectedItem()">
             <span class="cursor-move mr-1" cdkDragHandle>☰</span>
             <select name="" id="selectAuthorList" (change)="addItemToList($event, item)">
+               <option [value]="" disabled [selected]="item.id == null">Välj författare...</option>
                @for (selectableItem of selectableItems; track $index) {
                   <option 
                      [value]="selectableItem.id"

@@ -5,7 +5,7 @@
          <p class="font-bold amiri-font">{{ book.title }}</p>
       </a>
       <p>
-         @for (author of book.author; track $index) {
+         @for (author of book.authors; track $index) {
             <a routerLink="/authors/{{ author.id }}" class="hover:underline cursor-pointer">
                <span class="amiri-font">{{ author.firstName }} {{ author.lastName }}</span>
                @if (!$last) {

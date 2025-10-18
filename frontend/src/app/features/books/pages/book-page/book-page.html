@@ -6,7 +6,7 @@
             <div class="ml-10">
                <h1 [ngClass]="getTitleClass(book.title)" class="font-bold text-bookolive">{{ book.title }}</h1>
                <h3 class="text-2xl mt-1">
-                  @for (author of book.author; track $index) {
+                  @for (author of book.authors; track $index) {
                      <a routerLink="/authors/{{ author.id }}" class="cursor-pointer hover:underline cabin-font">{{ author.firstName }} {{ author.lastName }}</a>
                      @if (!$last) {
                         <span>, </span>
@@ -34,11 +34,11 @@
          <div class="h-full overflow-hidden">
             
             @if (booksByAuthor()) {
-               @if (booksByAuthor().length > book.author.length) {
+               @if (booksByAuthor().length > book.authors.length) {
                   <div class="flex flex-col h-full w-full overflow-auto min-h-0 mt-45">
                      <h5 class="text-2xl mb-5">
-                     @if (book.author.length == 1) {
-                        Mer av {{ book.author[0].firstName}} {{ book.author[0].lastName }}:
+                     @if (book.authors.length == 1) {
+                        Mer av {{ book.authors[0].firstName}} {{ book.authors[0].lastName }}:
                      } @else {
                         Mer av dessa författare:
                      }
@@ -57,7 +57,7 @@
    
    @if (editViewIsOpen()) {
       <app-edit-panel [closePanel]="closeEditView">
-         <app-edit-book-form [book]="book"></app-edit-book-form>
+         <app-edit-book-form [book]="book" (editViewIsOpen)="editViewIsOpen.set($event)" (bookChange)="updateBook($event)"></app-edit-book-form>
       </app-edit-panel>
    }
 }

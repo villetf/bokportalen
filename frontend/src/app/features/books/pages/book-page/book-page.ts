@@ -1,6 +1,6 @@
 import { Component, OnInit, Signal, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { Observable, switchMap } from 'rxjs';
+import { BehaviorSubject, Observable, switchMap } from 'rxjs';
 import { BooksService } from '../../../../services/booksService';
 import { Book } from '../../../../types/Book.model';
 import { AsyncPipe, KeyValuePipe, NgClass } from '@angular/common';
@@ -19,7 +19,7 @@ import { EditBookForm } from "../../components/edit-book-form/edit-book-form";
   templateUrl: './book-page.html'
 })
 export class BookPage implements OnInit {
-   book$!: Observable<Book>;
+   book$ = new BehaviorSubject<Book | null>(null);
    booksByAuthor = signal<Book[]>([]);
    currentBook!: Book;
    editViewIsOpen = signal<boolean>(false);
@@ -48,21 +48,24 @@ export class BookPage implements OnInit {
       this.editViewIsOpen.set(false);
    }
 
+   updateBook = (updatedBook: Book) => {
+      this.book$.next(updatedBook);
+      this.booksService.setBook(updatedBook);
+   }
+
 
 
    ngOnInit(): void {
-      this.book$ = this.route.params.pipe(
+      this.route.params.pipe(
          switchMap(params => this.booksService.getBook(+params['id']))
-      );
-
-      this.book$.subscribe(value => {
+      ).subscribe(book => {
+         this.book$.next(book);
          this.booksByAuthor.set([]);
-         this.currentBook = value
-         this.currentBook.author.forEach(author => {
-            const books = this.booksService.getBooksByAuthor(author.id);
+         this.currentBook = book;
 
-            books.subscribe(value => {
-               value.forEach(book => {
+         this.currentBook.authors.forEach(author => {
+            this.booksService.getBooksByAuthor(author.id).subscribe(books => {
+               books.forEach(book => {
                   this.booksByAuthor.set([...this.booksByAuthor(), book])
                });
             })

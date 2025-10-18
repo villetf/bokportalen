@@ -3,6 +3,10 @@ import { BooksService } from '../services/books.services.js';
 import { Book } from '../entities/Book.js';
 import { BookRequestDTO } from '../dto/BookRequestDTO.js';
 import { BookUpdateDTO } from '../dto/BookUpdateDTO.js';
+import { LanguagesService } from '../services/languages.services.js';
+import { GenresService } from '../services/genres.services.js';
+import { AuthorsService } from '../services/authors.services.js';
+import { Author } from '../entities/Author.js';
 
 export class BooksController {
    static async getAllBooks(req: Request, res: Response) {
@@ -13,7 +17,7 @@ export class BooksController {
          res.json(books.map((book: Book) => ({
             id: book.id,
             title: book.title,
-            author: book.authors,
+            authors: book.authors,
             yearWritten: book.yearWritten,
             language: book.language,
             originalLanguage: book.originalLanguage,
@@ -54,7 +58,7 @@ export class BooksController {
       res.json({
          id: book.id,
          title: book.title,
-         author: book.authors,
+         authors: book.authors,
          yearWritten: book.yearWritten,
          language: book.language,
          originalLanguage: book.originalLanguage,
@@ -82,11 +86,44 @@ export class BooksController {
          res.status(404).json({ error: 'Book not found' });
          return;
       }
+
+      if (req.body.language) {
+         const language = await LanguagesService.getLanguageById(req.body.language);
+         req.body.language = language;
+      }
+
+      if (req.body.originalLanguage) {
+         const originalLanguage = await LanguagesService.getLanguageById(req.body.originalLanguage);
+         req.body.originalLanguage = originalLanguage;
+      }
+
+      if (req.body.genre) {
+         const genre = await GenresService.getGenreById(req.body.genre);
+         req.body.genre = genre;
+      }
+
       await BooksService.updateBook(bookToUpdate, req.body as BookUpdateDTO);
 
       const updatedBook = await BooksService.getBookById(Number.parseInt(req.params.id));
 
-      res.json(updatedBook);
+      res.json({
+         id: updatedBook!.id,
+         title: updatedBook!.title,
+         authors: updatedBook!.authors,
+         yearWritten: updatedBook!.yearWritten,
+         language: updatedBook!.language,
+         originalLanguage: updatedBook!.originalLanguage,
+         genre: updatedBook!.genre,
+         format: updatedBook!.format,
+         isbn: updatedBook!.isbn,
+         status: updatedBook!.status,
+         rating: updatedBook!.rating,
+         createdAt: updatedBook!.createdAt,
+         addedWithScanner: updatedBook!.addedWithScanner,
+         copies: updatedBook!.copies,
+         isDeleted: updatedBook!.isDeleted,
+         coverLink: updatedBook!.coverLink
+      });
    }
 
    static async markBookAsDeleted(req: Request, res: Response) {

@@ -17,6 +17,10 @@ export class GenresService {
       return genre;
    }
 
+   static async getGenreById(id: number): Promise<Genre | null> {
+      return await AppDataSource.getRepository(Genre).findOneBy({ id });
+   }
+
    static async addGenre(genreName: string): Promise<Genre> {
       const newGenre = new Genre();
       genreName = capitalizeWord(genreName);
