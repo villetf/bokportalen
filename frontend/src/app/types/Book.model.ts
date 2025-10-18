@@ -1,6 +1,6 @@
-import { Author } from "./Author.model";
-import { Genre } from "./Genre.model";
-import { Language } from "./Language.model";
+import { Author } from './Author.model';
+import { Genre } from './Genre.model';
+import { Language } from './Language.model';
 
 export interface Book {
    id: number;

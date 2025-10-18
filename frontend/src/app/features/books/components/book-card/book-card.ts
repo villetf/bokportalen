@@ -4,12 +4,12 @@ import { RouterLink } from '@angular/router';
 
 
 @Component({
-  selector: 'app-book-card',
-  imports: [RouterLink],
-  templateUrl: './book-card.html',
-  styles: ``
+   selector: 'app-book-card',
+   imports: [RouterLink],
+   templateUrl: './book-card.html',
+   styles: ''
 })
 export class BookCard {
    @Input()
-   book!: Book;
+      book!: Book;
 }

@@ -1,10 +1,10 @@
 import { Component, Input } from '@angular/core';
 
 @Component({
-  selector: 'app-burger-menu',
-  imports: [],
-  templateUrl: './burger-menu.html',
-  standalone: true
+   selector: 'app-burger-menu',
+   imports: [],
+   templateUrl: './burger-menu.html',
+   standalone: true
 })
 
 export class BurgerMenu {
@@ -23,7 +23,7 @@ export class BurgerMenu {
    closeMenuOnLinkClick(event: Event) {
       const target = event.target as HTMLElement;
       if (target.closest('a')) {
-      this.closeMenu();
+         this.closeMenu();
       }
    }
 

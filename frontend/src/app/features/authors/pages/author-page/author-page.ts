@@ -4,21 +4,21 @@ import { ActivatedRoute } from '@angular/router';
 import { AuthorsService } from '../../../../services/authorsService';
 import { Book } from '../../../../types/Book.model';
 import { BooksService } from '../../../../services/booksService';
-import { BookCard } from "../../../books/components/book-card/book-card";
+import { BookCard } from '../../../books/components/book-card/book-card';
 
 @Component({
-  selector: 'app-author-page',
-  imports: [BookCard],
-  templateUrl: './author-page.html',
-  styles: ``
+   selector: 'app-author-page',
+   imports: [BookCard],
+   templateUrl: './author-page.html',
+   styles: ''
 })
 export class AuthorPage {
    author = signal<Author | null>(null);
    booksByAuthor = signal<Book[]>([]);
 
    constructor(
-      private route: ActivatedRoute, 
-      private authorService: AuthorsService, 
+      private route: ActivatedRoute,
+      private authorService: AuthorsService,
       private booksService: BooksService
    ) {}
 
@@ -32,7 +32,7 @@ export class AuthorPage {
 
       books.subscribe(value => {
          value.forEach(book => {
-            this.booksByAuthor.set([...this.booksByAuthor(), book])
+            this.booksByAuthor.set([...this.booksByAuthor(), book]);
          });
       });
    }
