@@ -1,4 +1,87 @@
-<div class="w-full h-3/4 pl-40">
-   <h1 class="text-5xl font-bold text-bookolive">LÄGG TILL BOK</h1>
+<div class="w-1/2 h-3/4 mr-30">
+   <form [formGroup]="form">
+      <div class="grid grid-cols-[auto_75%] gap-y-2 gap-x-5 [&>label]:justify-self-end">
+         <div></div>
+         <h1 class="text-5xl font-bold text-bookolive mb-5">LÄGG TILL BOK</h1>
 
+         <label for="bookTitle" class="self-center">Titel:</label>
+         <input type="text" name="bookTitle" formControlName="title" class="form-text-input">
+
+         @if (form.get('title')?.invalid && form.get('title')?.touched) {
+            @if (form.get('title')?.errors?.['required']) {
+               <div></div>
+               <span class="text-red-500">Titel är obligatorisk.</span>
+            }
+         }
+         
+         <label for="bookAuthors">Författare:</label>
+         <app-array-input formControlName="authors" [displayFn]="displayAuthor" [selectableItems]="allAuthors()"></app-array-input>
+      
+         @if (form.get('author')?.invalid && form.get('author')?.touched) {
+            @if (form.get('author')?.errors?.['required'] || form.get('author')?.errors?.['minLength']) {
+               <div></div>
+               <span class="text-red-500">Du måste välja minst en författare.</span>
+            }
+         }
+
+         <label for="genre">Genre:</label>
+         <select formControlName="genre" id="genre">
+            @for (genre of allGenres(); track $index) {
+               <option [ngValue]="genre.id">{{ genre.name }}</option>
+            }
+         </select>
+         
+         <label for="yearWritten" class="self-center">Utgivningsår:</label>
+         <input type="number" formControlName="yearWritten" [max]="this.getCurrentYear()" class="form-text-input">
+
+         @if (form.get('yearWritten')?.invalid) {
+            @if (form.get('yearWritten')?.errors?.['max']) {
+               <div></div>
+               <span class="text-red-500">Året kan inte vara i framtiden.</span>
+            }
+         }
+      
+         <label for="language">Språk:</label>
+         <select formControlName="language">
+            @for (language of allLanguages(); track $index) {
+               <option [ngValue]="language.id">{{ language.name }}</option>
+            }
+         </select>
+      
+         <label for="language">Originalspråk:</label>
+         <select formControlName="originalLanguage">
+            @for (language of allLanguages(); track $index) {
+               <option [ngValue]="language.id">{{ language.name }}</option>
+            }
+         </select>
+         
+         <label for="format">Format:</label>
+         <select formControlName="format">
+            <option value="Inbunden">Inbunden</option>
+            <option value="Pocket">Pocket</option>
+            <option value="Danskt band">Danskt band</option>
+            <option value="Häftad">Häftad</option>
+         </select>
+      
+         <label for="isbn" class="self-center">ISBN:</label>
+         <input formControlName="isbn" class="form-text-input" >
+
+         @if (form.get('isbn')?.invalid && form.get('isbn')?.touched) {
+            @if (form.get('isbn')?.errors?.['pattern']) {
+               <div></div>
+               <span class="text-red-500">ISBN får inte innehålla bokstäver.</span>
+            }
+         }
+      
+         <label for="coverLink" class="self-center">Länk till omslag:</label>
+         <input type="text" formControlName="coverLink" class="form-text-input">
+
+         <div></div>
+         <div class="flex justify-start gap-10 mt-5">
+            <app-button (click)="resetForm()">Återställ</app-button>
+            <app-button (click)="save()">Spara</app-button>
+         </div>
+      </div>
+
+   </form>
 </div>

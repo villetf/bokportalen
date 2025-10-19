@@ -1,7 +1,8 @@
-import { BehaviorSubject, filter, map, of, tap } from 'rxjs';
+import { BehaviorSubject, catchError, filter, map, of, tap, throwError } from 'rxjs';
 import { Book } from '../types/Book.model';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { AddBookDTO } from '../dtos/AddBookDTO';
 
 @Injectable({ providedIn: 'root' })
 export class BooksService {
@@ -31,9 +32,12 @@ export class BooksService {
    }
 
    setBook(updatedBook: Book) {
+      if (!this.books$.value) {
+         return;
+      }
+
       const currentBooks = this.books$.value!;
-      const updatedBooks = currentBooks.map(book => book.id === updatedBook.id ? updatedBook : book
-      );
+      const updatedBooks = [ ...currentBooks, updatedBook ];
 
       this.books$.next(updatedBooks);
    }
@@ -46,5 +50,14 @@ export class BooksService {
 
    editBook(book: Book) {
       return this.http.patch(`http://localhost:3000/books/${book.id}`, book);
+   }
+
+   addBook(book: AddBookDTO) {
+      return this.http.post('http://localhost:3000/books/', book).pipe(
+         catchError(err => {
+            console.error('Error when posting book:', err);
+            return throwError(() => new Error('Boken kunde inte skapas.'));
+         })
+      );
    }
 }

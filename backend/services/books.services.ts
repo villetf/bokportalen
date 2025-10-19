@@ -73,25 +73,25 @@ export class BooksService {
 
       // Om språk anges, hämta eller skapa det
       if (inputBook.language) {
-         language = await LanguagesService.getLanguageByName(inputBook.language);
+         language = await LanguagesService.getLanguageById(inputBook.language);
          if (!language) {
-            language = await LanguagesService.addLanguage(inputBook.language);
+            throw new Error('Language not found');
          }
       }
 
       let originalLanguage = null;
       if (inputBook.originalLanguage) {
-         originalLanguage = await LanguagesService.getLanguageByName(inputBook.originalLanguage);
+         originalLanguage = await LanguagesService.getLanguageById(inputBook.originalLanguage);
          if (!originalLanguage) {
-            originalLanguage = await LanguagesService.addLanguage(inputBook.originalLanguage);
+            throw new Error('Original language not found');
          }
       }
 
       let genre = null;
       if (inputBook.genre) {
-         genre = await GenresService.getGenreByName(inputBook.genre);
+         genre = await GenresService.getGenreById(inputBook.genre);
          if (!genre) {
-            genre = await GenresService.addGenre(inputBook.genre);
+            throw new Error('Genre not found');
          }
       }
 
@@ -117,6 +117,7 @@ export class BooksService {
       newBook.createdAt = new Date();
       newBook.copies = 1;
       newBook.addedWithScanner = inputBook.addedWithScanner ? inputBook.addedWithScanner : false;
+      newBook.coverLink = inputBook.coverLink ? inputBook.coverLink : null;
 
       return AppDataSource.getRepository(Book).save(newBook);
    }
