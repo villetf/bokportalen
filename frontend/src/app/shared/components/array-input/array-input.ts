@@ -17,7 +17,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 })
 export class ArrayInput<T extends { id: number | string }> implements ControlValueAccessor {
    @Input() items: T[] = [];
-   @Input() displayFn: (item: T) => string = (i: any) => String(i);
+   @Input() displayFn: (item: T) => string = (i: unknown) => String(i);
    @Input() selectableItems: T[] = [];
    selectedItem = signal<T | null>(null);
 

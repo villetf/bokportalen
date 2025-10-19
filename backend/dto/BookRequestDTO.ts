@@ -23,18 +23,18 @@ export class BookRequestDTO {
 
    @Expose()
    @IsOptional()
-   @IsString()
-      language?: string;
+   @IsInt()
+      language?: number;
 
    @Expose()
    @IsOptional()
-   @IsString()
-      originalLanguage?: string;
+   @IsInt()
+      originalLanguage?: number;
 
    @Expose()
    @IsOptional()
-   @IsString()
-      genre?: string;
+   @IsInt()
+      genre?: number;
 
    @Expose()
    @IsOptional()
