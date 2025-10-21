@@ -48,7 +48,7 @@
             }
          </select>
       
-         <label for="language">Originalspråk:</label>
+         <label for="originalLanguage">Originalspråk:</label>
          <select formControlName="originalLanguage">
             @for (language of allLanguages(); track $index) {
                <option [ngValue]="language.id">{{ language.name }}</option>

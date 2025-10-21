@@ -25,7 +25,7 @@ export class AddBook {
    allGenres = signal<Genre[]>([]);
    allLanguages = signal<Language[]>([]);
 
-   displayAuthor = (author: Author) => `${author.firstName} ${author.lastName}`;
+   displayAuthor = (author: Author) => `${author.firstName}${author.lastName ? ' ' + author.lastName : '' }`;
 
    constructor(
       private fb: FormBuilder,

@@ -50,6 +50,7 @@ export class AuthorsService {
       newAuthor.birthYear = author.birthYear;
       const country = await CountriesService.getCountryById(author.country!);
       newAuthor.country = country;
+      newAuthor.imageLink = author.imageLink;
       const createdAuthor = await AppDataSource.getRepository(Author).save(newAuthor);
       return plainToInstance(Author, createdAuthor);
    }
