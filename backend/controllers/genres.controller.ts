@@ -8,7 +8,7 @@ export class GenresController {
    }
 
    static async addGenre(req: Request, res: Response) {
-      if (await GenresService.getGenreByName(req.body.name)) {
+      if (await GenresService.getGenreByName(req.body.name.trim())) {
          res.status(409).json({ message: 'Genre already exists' });
          return;
       }

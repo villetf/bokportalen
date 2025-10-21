@@ -32,7 +32,7 @@ export class AddAuthor {
          lastName: [],
          gender: [],
          birthYear: [[], [Validators.max(this.getCurrentYear())]],
-         country: [],
+         country: [[167]],
          imageLink: []
       });
    }
