@@ -31,7 +31,7 @@ export class AuthorsService {
       return this.http.post('http://localhost:3000/authors', author).pipe(
          catchError(err => {
             console.error('Error when posting author:', err);
-            return throwError(() => new Error('Författaren kunde inte skapas.'));
+            return throwError(() => err);
          })
       );
    }

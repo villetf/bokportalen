@@ -6,6 +6,8 @@ import { HotToastService } from '@ngxpert/hot-toast';
 import { Country } from '../../../../types/Country.model';
 import { CountriesService } from '../../../../services/countriesService';
 import { AddAuthorDTO } from '../../../../dtos/AddAuthorDTO';
+import { Author } from '../../../../types/Author.model';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
    selector: 'app-add-author',
@@ -61,13 +63,22 @@ export class AddAuthor {
             .pipe(
                this.toast.observe({
                   loading: 'Lägger till författare...',
-                  success: `Lade till ${newAuthor.firstName}${newAuthor.lastName ? ' ' + newAuthor.lastName : '' }!`,
-                  error: 'Något gick fel vid tilläggning.'
+                  success: (res) => {
+                     this.resetForm();
+                     return `Lade till ${(res as Author).firstName}${(res as Author).lastName ? ' ' + (res as Author).lastName : '' }!`;
+                  },
+                  error: (err) => {
+                     if ((err as HttpErrorResponse).status == 409) {
+                        return 'Denna författare finns redan.';
+                     }
+
+                     return `Något gick fel vid skapande av författare: ${(err as HttpErrorResponse).message}`;
+                  }
                })
             )
             .subscribe({});
       } else {
-         this.toast.error('Uppgifterna är inte giltiga.');
+         this.toast.error('Formuläret är inte giltigt. Kontrollera att allt är rätt och försök igen.');
       }
    }
 

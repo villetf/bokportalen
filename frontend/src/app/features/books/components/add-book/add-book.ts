@@ -12,6 +12,7 @@ import { Book } from '../../../../types/Book.model';
 import { BooksService } from '../../../../services/booksService';
 import { HotToastService } from '@ngxpert/hot-toast';
 import { AddBookDTO } from '../../../../dtos/AddBookDTO';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
    selector: 'app-add-book',
@@ -92,15 +93,24 @@ export class AddBook {
             .pipe(
                this.toast.observe({
                   loading: 'Lägger till bok...',
-                  success: `Lade till ${newBook.title}!`,
-                  error: 'Något gick fel vid tilläggning.'
+                  success: (res) => {
+                     this.resetForm();
+                     return `Lade till ${(res as Book).title}!`;
+                  },
+                  error: (err) => {
+                     if ((err as HttpErrorResponse).status == 409) {
+                        return 'Denna bok finns redan.';
+                     }
+
+                     return `Något gick fel vid skapande av bok: ${(err as HttpErrorResponse).message}`;
+                  }
                })
             )
             .subscribe({
                next: (res) => this.booksService.setBook(res as Book)
             });
       } else {
-         this.toast.error('Uppgifterna är inte giltiga.');
+         this.toast.error('Formuläret är inte giltigt. Kontrollera att allt är rätt och försök igen.');
       }
    }
 

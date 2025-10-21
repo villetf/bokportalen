@@ -5,11 +5,13 @@ import { BookRequestDTO } from '../dto/BookRequestDTO.js';
 import { BookUpdateDTO } from '../dto/BookUpdateDTO.js';
 import { LanguagesService } from '../services/languages.services.js';
 import { GenresService } from '../services/genres.services.js';
+import { request } from 'http';
+import { AuthorsService } from '../services/authors.services.js';
 
 export class BooksController {
    static async getAllBooks(req: Request, res: Response) {
       try {
-         const books = await BooksService.getBooksByQuery(req);
+         const books = await BooksService.getBooksByQuery(req.query);
 
          // Mappar om egenskaperna på varje bok för att ändra ordning och välja vilka man vill visa
          res.json(books.map((book: Book) => ({
@@ -74,6 +76,17 @@ export class BooksController {
    }
 
    static async createBook(req: Request, res: Response) {
+      const checkBookReq = {
+         title: (req.body as BookRequestDTO).title,
+         authorFirstName: (await AuthorsService.getAuthorById((req.body as BookRequestDTO).authors[0]))?.firstName,
+         authorLastName: (await AuthorsService.getAuthorById((req.body as BookRequestDTO).authors[0]))?.lastName
+      };
+
+      if ((await BooksService.getBooksByQuery(checkBookReq)).length > 0) {
+         res.status(409).json({ message: 'Book already exists' });
+         return;
+      }
+
       const newBook = await BooksService.createBook(req.body as BookRequestDTO);
       res.status(201).json(newBook);
    }

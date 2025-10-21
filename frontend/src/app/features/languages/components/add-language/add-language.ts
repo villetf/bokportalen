@@ -56,7 +56,7 @@ export class AddLanguage {
             )
             .subscribe();
       } else {
-         this.toast.error('Uppgifterna är inte giltiga.');
+         this.toast.error('Formuläret är inte giltigt. Kontrollera att allt är rätt och försök igen.');
       }
    }
 }
