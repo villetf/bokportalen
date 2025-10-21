@@ -17,7 +17,7 @@ export class LanguagesController {
    }
 
    static async addLanguage(req: Request, res: Response) {
-      if (await LanguagesService.getLanguageByName(req.body.name)) {
+      if (await LanguagesService.getLanguageByName(req.body.name.trim())) {
          res.status(409).json({ message: 'Language already exists' });
          return;
       }

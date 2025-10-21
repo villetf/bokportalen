@@ -40,7 +40,7 @@ export class AddGenre {
          this.genresService.addGenre(newGenre)
             .pipe(
                this.toast.observe({
-                  loading: 'Lägger till författare...',
+                  loading: 'Lägger till genre...',
                   success: (res) => {
                      this.resetForm();
                      return `Lade till genren ${(res as Genre).name}!`;
