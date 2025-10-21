@@ -65,8 +65,8 @@
 
       <div class="flex justify-around mt-10">
          <app-button (click)="closeEditView()">Avbryt</app-button>
-         <app-button (click)="resetForm()">Återställ</app-button>
-         <app-button (click)="save()">Spara</app-button>
+         <app-button type="reset" (click)="resetForm()">Återställ</app-button>
+         <app-button type="submit" (click)="save()">Spara</app-button>
       </div>
    </form>
 </div>
