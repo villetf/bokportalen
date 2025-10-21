@@ -23,6 +23,7 @@ export class GenresService {
 
    static async addGenre(genreName: string): Promise<Genre> {
       const newGenre = new Genre();
+      genreName = genreName.trim();
       genreName = capitalizeWord(genreName);
       newGenre.name = genreName;
 
