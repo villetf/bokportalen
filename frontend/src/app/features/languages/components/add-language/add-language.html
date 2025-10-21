@@ -1,11 +1,11 @@
 <div class="w-1/2 h-3/4 mr-30">
-   <form [formGroup]="form">
+   <form [formGroup]="form" (ngSubmit)="save()">
       <div class="grid grid-cols-[auto_75%] gap-y-2 gap-x-5 [&>label]:justify-self-end">
          <div></div>
          <h1 class="text-5xl font-bold text-bookolive mb-5">LÄGG TILL SPRÅK</h1>
 
          <label for="name" class="self-center">Namn på språk:</label>
-         <input type="text" formControlName="name" class="form-text-input">
+         <input type="text" formControlName="name" class="form-text-input" id="name">
 
          @if (form.get('name')?.invalid && form.get('name')?.touched) {
             @if (form.get('name')?.errors?.['required']) {
@@ -17,7 +17,7 @@
          <div></div>
          <div class="flex justify-start gap-10 mt-5">
             <app-button type="reset" (click)="resetForm()">Återställ</app-button>
-            <app-button type="submit" (click)="save()">Spara</app-button>
+            <app-button type="submit">Spara</app-button>
          </div>
       </div>
 
