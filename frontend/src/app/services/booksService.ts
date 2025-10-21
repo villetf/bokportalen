@@ -56,7 +56,7 @@ export class BooksService {
       return this.http.post('http://localhost:3000/books/', book).pipe(
          catchError(err => {
             console.error('Error when posting book:', err);
-            return throwError(() => new Error('Boken kunde inte skapas.'));
+            return throwError(() => err);
          })
       );
    }
