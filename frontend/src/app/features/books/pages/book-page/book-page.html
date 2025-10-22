@@ -6,7 +6,7 @@
             <div class="ml-10">
                <h1 [ngClass]="getTitleClass(book.title)" class="font-bold text-bookolive">{{ book.title }}</h1>
                <h3 class="text-2xl mt-1">
-                  @for (author of book.authors; track $index) {
+                  @for (author of book.authors; track author.id) {
                      <a routerLink="/authors/{{ author.id }}" class="cursor-pointer hover:underline cabin-font">{{ author.firstName }} {{ author.lastName }}</a>
                      @if (!$last) {
                         <span>, </span>

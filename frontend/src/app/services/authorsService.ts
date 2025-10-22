@@ -3,6 +3,7 @@ import { Author } from '../types/Author.model';
 import { AddAuthorDTO } from '../dtos/AddAuthorDTO';
 import { HttpClient } from '@angular/common/http';
 import { catchError, throwError } from 'rxjs';
+import { EditAuthorDTO } from '../dtos/EditAuthorDTO';
 
 
 @Injectable({ providedIn: 'root' })
@@ -31,6 +32,16 @@ export class AuthorsService {
       return this.http.post('http://localhost:3000/authors', author).pipe(
          catchError(err => {
             console.error('Error when posting author:', err);
+            return throwError(() => err);
+         })
+      );
+   }
+
+   editAuthor(author: EditAuthorDTO) {
+      console.log('författare som uppdateras', author);
+      return this.http.patch(`http://localhost:3000/authors/${author.id}`, author).pipe(
+         catchError(err => {
+            console.error('Error when editing author:', err);
             return throwError(() => err);
          })
       );

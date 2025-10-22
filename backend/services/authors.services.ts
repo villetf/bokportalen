@@ -58,6 +58,9 @@ export class AuthorsService {
    static async updateAuthor(author: Author, updatedFields: AuthorUpdateDTO) {
       // Tilldelar de nya fälten till författaren utan att påverka de övriga
       Object.assign(author, updatedFields);
+      if (updatedFields.countryId) {
+         author.country = await CountriesService.getCountryById(updatedFields.countryId);
+      }
       await AppDataSource.getRepository(Author).save(author);
    }
 }
