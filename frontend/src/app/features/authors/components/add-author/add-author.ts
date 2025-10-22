@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, ElementRef, signal, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthorsService } from '../../../../services/authorsService';
 import { Button } from '../../../../shared/components/button/button';
@@ -16,8 +16,10 @@ import { HttpErrorResponse } from '@angular/common/http';
    styles: ''
 })
 export class AddAuthor {
+   @ViewChild('nameInput') nameInput!: ElementRef<HTMLInputElement>;
    form!: FormGroup;
    allCountries = signal<Country[]>([]);
+   formIsSubmitted = false;
 
    constructor(
       private fb: FormBuilder,
@@ -34,9 +36,13 @@ export class AddAuthor {
          lastName: [],
          gender: [],
          birthYear: [[], [Validators.max(this.getCurrentYear())]],
-         country: [[167]],
+         country: [167],
          imageLink: []
       });
+   }
+
+   ngAfterViewInit() {
+      this.focusTitle();
    }
 
    resetForm() {
@@ -48,9 +54,11 @@ export class AddAuthor {
          country: [],
          imageLink: []
       });
+      setTimeout(() => this.focusTitle(), 0);
    }
 
    save() {
+      this.formIsSubmitted = true;
       if (this.form.valid) {
          const newAuthor: AddAuthorDTO = this.form.value;
          if (newAuthor.birthYear) {
@@ -84,5 +92,9 @@ export class AddAuthor {
 
    getCurrentYear() {
       return new Date().getFullYear();
+   }
+
+   private focusTitle() {
+      this.nameInput.nativeElement.focus();
    }
 }

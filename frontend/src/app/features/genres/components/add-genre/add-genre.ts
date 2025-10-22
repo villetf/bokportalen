@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Button } from '../../../../shared/components/button/button';
 import { HotToastService } from '@ngxpert/hot-toast';
@@ -13,7 +13,9 @@ import { HttpErrorResponse } from '@angular/common/http';
    styles: ''
 })
 export class AddGenre {
+   @ViewChild('genreInput') genreInput!: ElementRef<HTMLInputElement>;
    form!: FormGroup;
+   formIsSubmitted = false;
 
    constructor(
       private fb: FormBuilder,
@@ -27,13 +29,19 @@ export class AddGenre {
       });
    }
 
+   ngAfterViewInit() {
+      this.focusTitle();
+   }
+
    resetForm() {
       this.form.reset({
          name: []
       });
+      setTimeout(() => this.focusTitle(), 0);
    }
 
    save() {
+      this.formIsSubmitted = true;
       if (this.form.valid) {
          const newGenre: Genre = this.form.value;
 
@@ -58,5 +66,9 @@ export class AddGenre {
       } else {
          this.toast.error('Formuläret är inte giltigt. Kontrollera att allt är rätt och försök igen.');
       }
+   }
+
+   private focusTitle() {
+      this.genreInput.nativeElement.focus();
    }
 }
