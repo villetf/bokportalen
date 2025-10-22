@@ -5,9 +5,9 @@
          <h1 class="text-5xl font-bold text-bookolive mb-5">LÄGG TILL FÖRFATTARE</h1>
 
          <label for="firstName" class="self-center">Förnamn:</label>
-         <input type="text" formControlName="firstName" class="form-text-input" id="firstName">
+         <input type="text" formControlName="firstName" class="form-text-input" id="firstName" #nameInput>
 
-         @if (form.get('firstName')?.invalid && form.get('firstName')?.touched) {
+         @if (form.get('firstName')?.invalid && formIsSubmitted) {
             @if (form.get('firstName')?.errors?.['required']) {
                <div></div>
                <span class="text-red-500">Förnamn är obligatorisk. Om bara ett namn finns, sätt det som förnamn.</span>
@@ -46,7 +46,7 @@
 
          <div></div>
          <div class="flex justify-start gap-10 mt-5">
-            <app-button type="reset" (click)="resetForm()">Återställ</app-button>
+            <app-button (click)="resetForm()">Återställ</app-button>
             <app-button type="submit">Spara</app-button>
          </div>
       </div>

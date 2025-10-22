@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Button } from '../../../../shared/components/button/button';
 import { HotToastService } from '@ngxpert/hot-toast';
@@ -13,7 +13,9 @@ import { Language } from '../../../../types/Language.model';
    styles: ''
 })
 export class AddLanguage {
+   @ViewChild('languageInput') languageInput!: ElementRef<HTMLInputElement>;
    form!: FormGroup;
+   formIsSubmitted = false;
 
    constructor(
       private fb: FormBuilder,
@@ -27,13 +29,19 @@ export class AddLanguage {
       });
    }
 
+   ngAfterViewInit() {
+      this.focusTitle();
+   }
+
    resetForm() {
       this.form.reset({
          name: []
       });
+      setTimeout(() => this.focusTitle(), 0);
    }
 
    save() {
+      this.formIsSubmitted = true;
       if (this.form.valid) {
          const newLanguage: Language = this.form.value;
 
@@ -58,5 +66,9 @@ export class AddLanguage {
       } else {
          this.toast.error('Formuläret är inte giltigt. Kontrollera att allt är rätt och försök igen.');
       }
+   }
+
+   private focusTitle() {
+      this.languageInput.nativeElement.focus();
    }
 }

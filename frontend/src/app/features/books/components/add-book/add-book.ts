@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, ElementRef, signal, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthorsService } from '../../../../services/authorsService';
 import { GenresService } from '../../../../services/genresService';
@@ -21,10 +21,12 @@ import { HttpErrorResponse } from '@angular/common/http';
    styles: ''
 })
 export class AddBook {
+   @ViewChild('titleInput') titleInput!: ElementRef<HTMLInputElement>;
    form!: FormGroup;
    allAuthors = signal<Author[]>([]);
    allGenres = signal<Genre[]>([]);
    allLanguages = signal<Language[]>([]);
+   formIsSubmitted = false;
 
    displayAuthor = (author: Author) => `${author.firstName}${author.lastName ? ' ' + author.lastName : '' }`;
 
@@ -56,6 +58,10 @@ export class AddBook {
       });
    }
 
+   ngAfterViewInit() {
+      this.focusTitle();
+   }
+
    resetForm() {
       this.form.reset({
          title: [],
@@ -68,9 +74,11 @@ export class AddBook {
          isbn: [],
          coverLink: []
       });
+      setTimeout(() => this.focusTitle(), 0);
    }
 
    save() {
+      this.formIsSubmitted = true;
       if (this.form.valid && !JSON.stringify(this.form.value.authors).match('{}')) {
          const newBook: AddBookDTO = this.form.value;
          if (newBook.isbn) {
@@ -116,5 +124,9 @@ export class AddBook {
 
    getCurrentYear() {
       return new Date().getFullYear();
+   }
+
+   private focusTitle() {
+      this.titleInput.nativeElement.focus();
    }
 }

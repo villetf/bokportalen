@@ -5,9 +5,9 @@
          <h1 class="text-5xl font-bold text-bookolive mb-5">LÄGG TILL BOK</h1>
 
          <label for="bookTitle" class="self-center">Titel:</label>
-         <input type="text" name="bookTitle" formControlName="title" class="form-text-input" id="bookTitle">
+         <input type="text" name="bookTitle" formControlName="title" class="form-text-input" id="bookTitle" #titleInput>
 
-         @if (form.get('title')?.invalid && form.get('title')?.touched) {
+         @if (form.get('title')?.invalid && formIsSubmitted) {
             @if (form.get('title')?.errors?.['required']) {
                <div></div>
                <span class="text-red-500">Titel är obligatorisk.</span>
@@ -17,7 +17,7 @@
          <label for="bookAuthors">Författare:</label>
          <app-array-input formControlName="authors" [displayFn]="displayAuthor" [selectableItems]="allAuthors()" id="bookAuthors"></app-array-input>
       
-         @if (form.get('authors')?.invalid && form.get('authors')?.touched) {
+         @if (form.get('authors')?.invalid && formIsSubmitted) {
             @if (form.get('authors')?.errors?.['required'] || form.get('authors')?.errors?.['minLength']) {
                <div></div>
                <span class="text-red-500">Du måste välja minst en författare.</span>
@@ -66,7 +66,7 @@
          <label for="isbn" class="self-center">ISBN:</label>
          <input formControlName="isbn" class="form-text-input" id="isbn">
 
-         @if (form.get('isbn')?.invalid && form.get('isbn')?.touched) {
+         @if (form.get('isbn')?.invalid && formIsSubmitted) {
             @if (form.get('isbn')?.errors?.['pattern']) {
                <div></div>
                <span class="text-red-500">ISBN får inte innehålla bokstäver.</span>
@@ -78,7 +78,7 @@
 
          <div></div>
          <div class="flex justify-start gap-10 mt-5">
-            <app-button type="reset" (click)="resetForm()">Återställ</app-button>
+            <app-button (click)="resetForm()">Återställ</app-button>
             <app-button type="submit">Spara</app-button>
          </div>
       </div>
