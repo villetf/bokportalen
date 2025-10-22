@@ -3,6 +3,7 @@ import { Book } from '../types/Book.model';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { AddBookDTO } from '../dtos/AddBookDTO';
+import { Author } from '../types/Author.model';
 
 @Injectable({ providedIn: 'root' })
 export class BooksService {
@@ -59,5 +60,19 @@ export class BooksService {
             return throwError(() => err);
          })
       );
+   }
+
+   updateAuthorInBooks(updatedAuthor: Author) {
+      const currentBooks = this.books$.value;
+      if (!currentBooks) {
+         return;
+      }
+
+      const updatedBooks = currentBooks.map(book => ({
+         ...book,
+         authors: book.authors.map(author => author.id === updatedAuthor.id ? updatedAuthor : author)
+      }));
+
+      this.books$.next(updatedBooks);
    }
 }

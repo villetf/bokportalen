@@ -26,7 +26,7 @@
 
          <label for="genre">Genre:</label>
          <select formControlName="genre" id="genre">
-            @for (genre of allGenres(); track $index) {
+            @for (genre of allGenres(); track genre.id) {
                <option [ngValue]="genre.id">{{ genre.name }}</option>
             }
          </select>
@@ -43,14 +43,14 @@
       
          <label for="language">Språk:</label>
          <select formControlName="language" id="language">
-            @for (language of allLanguages(); track $index) {
+            @for (language of allLanguages(); track language.id) {
                <option [ngValue]="language.id">{{ language.name }}</option>
             }
          </select>
       
          <label for="originalLanguage">Originalspråk:</label>
          <select formControlName="originalLanguage" id="originalLanguage">
-            @for (language of allLanguages(); track $index) {
+            @for (language of allLanguages(); track language.id) {
                <option [ngValue]="language.id">{{ language.name }}</option>
             }
          </select>

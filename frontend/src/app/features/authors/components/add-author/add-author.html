@@ -36,7 +36,7 @@
       
          <label for="country">Land:</label>
          <select formControlName="country" id="country">
-            @for (country of allCountries(); track $index) {
+            @for (country of allCountries(); track country.id) {
                <option [ngValue]="country.id">{{ country.name }}</option>
             }
          </select>
