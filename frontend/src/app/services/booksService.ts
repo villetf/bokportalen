@@ -37,8 +37,13 @@ export class BooksService {
          return;
       }
 
+      let updatedBooks;
       const currentBooks = this.books$.value!;
-      const updatedBooks = currentBooks.map(book => book.id == updatedBook.id ? updatedBook : book);
+      if (currentBooks.some(b => b.id == updatedBook.id)) {
+         updatedBooks = currentBooks.map(book => book.id == updatedBook.id ? updatedBook : book);
+      } else {
+         updatedBooks = [ ...currentBooks, updatedBook ];
+      }
 
       this.books$.next(updatedBooks);
    }
@@ -78,5 +83,15 @@ export class BooksService {
 
    deleteBook(book: Book) {
       return this.http.delete(`http://localhost:3000/books/${book.id}`);
+   }
+
+   getDeletedBooks() {
+      return this.http.get<Book[]>('http://localhost:3000/books/deleted');
+   }
+
+   resetDeletedBook(book: Book) {
+      return this.http.patch<Book>(`http://localhost:3000/books/${book.id}`, {
+         isDeleted: false
+      });
    }
 }

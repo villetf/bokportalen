@@ -38,7 +38,6 @@ export class AuthorsService {
    }
 
    editAuthor(author: EditAuthorDTO) {
-      console.log('författare som uppdateras', author);
       return this.http.patch(`http://localhost:3000/authors/${author.id}`, author).pipe(
          catchError(err => {
             console.error('Error when editing author:', err);

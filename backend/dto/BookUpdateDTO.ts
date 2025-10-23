@@ -5,6 +5,7 @@ import { Author } from '../entities/Author.js';
 @Exclude()
 export class BookUpdateDTO {
    @Expose()
+   @IsOptional()
    @IsNumber()
       id!: number;
 
@@ -72,4 +73,9 @@ export class BookUpdateDTO {
    @IsOptional()
    @IsString()
       coverLink?: string;
+
+   @Expose()
+   @IsOptional()
+   @IsBoolean()
+      isDeleted?: boolean;
 }

@@ -8,6 +8,8 @@ import { Button } from '../../../../shared/components/button/button';
 import { BookCard } from '../../components/book-card/book-card';
 import { EditPanel } from '../../../../shared/components/edit-panel/edit-panel';
 import { EditBookForm } from '../../components/edit-book-form/edit-book-form';
+import { HotToastService } from '@ngxpert/hot-toast';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
    selector: 'app-book-page',
@@ -23,7 +25,8 @@ export class BookPage implements OnInit {
 
    constructor(
       private route: ActivatedRoute,
-      private booksService: BooksService
+      private booksService: BooksService,
+      private toast: HotToastService
    ) {}
 
 
@@ -60,6 +63,23 @@ export class BookPage implements OnInit {
          });
       });
    };
+
+   resetDeletedBook() {
+      this.booksService.resetDeletedBook(this.currentBook)
+         .pipe(
+            this.toast.observe({
+               loading: 'Återställer bok...',
+               success: (res) => {
+                  this.updateBook(res as Book);
+                  return `Återställde ${(res as Book).title}!`;
+               },
+               error: (err) => {
+                  return `Något gick fel vid återställning: ${(err as HttpErrorResponse).message}`;
+               }
+            })
+         )
+         .subscribe();
+   }
 
 
    ngOnInit(): void {

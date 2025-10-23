@@ -35,6 +35,12 @@ export function validateDto<T extends object>(dtoClass: ClassConstructor<T>) {
          return;
       }
 
+      for (const key in instance) {
+         if ((instance)[key] === undefined) {
+            delete (instance)[key];
+         }
+      }
+
       req.body = instance;
 
       next();
