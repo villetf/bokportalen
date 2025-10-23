@@ -45,7 +45,6 @@ export default tseslint.config(
          'comma-spacing': 'error',
          'comma-style': 'error',
          'func-call-spacing': 'error',
-         'function-call-argument-newline': ['error', 'never'],
          'implicit-arrow-linebreak': 'error',
          'key-spacing': 'error',
          'keyword-spacing': 'error',
