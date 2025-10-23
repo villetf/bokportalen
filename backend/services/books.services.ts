@@ -1,7 +1,6 @@
 import { AppDataSource } from '../data-source.js';
 import { BookRequestDTO } from '../dto/BookRequestDTO.js';
 import { Book } from '../entities/Book.js';
-import type { Request } from 'express';
 import { AuthorsService } from './authors.services.js';
 import { GenresService } from './genres.services.js';
 import { LanguagesService } from './languages.services.js';
@@ -64,6 +63,13 @@ export class BooksService {
    static async getBookById(id: number) {
       return AppDataSource.getRepository(Book).findOne({
          where: { id },
+         relations: ['authors', 'language', 'originalLanguage', 'genre']
+      });
+   }
+
+   static async getDeletedBooks() {
+      return AppDataSource.getRepository(Book).find({
+         where: { isDeleted: true },
          relations: ['authors', 'language', 'originalLanguage', 'genre']
       });
    }

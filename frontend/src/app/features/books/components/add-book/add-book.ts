@@ -95,8 +95,6 @@ export class AddBook {
 
          newBook.addedWithScanner = false;
 
-         console.log('bok', newBook);
-
          this.booksService.addBook(newBook)
             .pipe(
                this.toast.observe({

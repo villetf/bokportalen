@@ -74,6 +74,28 @@ export class BooksController {
       });
    }
 
+   static async getDeletedBooks(req: Request, res: Response) {
+      const deletedBooks = await BooksService.getDeletedBooks();
+      res.json(deletedBooks.map((book: Book) => ({
+         id: book.id,
+         title: book.title,
+         authors: book.authors,
+         yearWritten: book.yearWritten,
+         language: book.language,
+         originalLanguage: book.originalLanguage,
+         genre: book.genre,
+         format: book.format,
+         isbn: book.isbn,
+         status: book.status,
+         rating: book.rating,
+         createdAt: book.createdAt,
+         addedWithScanner: book.addedWithScanner,
+         copies: book.copies,
+         isDeleted: book.isDeleted,
+         coverLink: book.coverLink
+      })));
+   }
+
    static async createBook(req: Request, res: Response) {
       const checkBookReq = {
          title: (req.body as BookRequestDTO).title,
@@ -96,6 +118,7 @@ export class BooksController {
          res.status(404).json({ error: 'Book not found' });
          return;
       }
+
 
       if (req.body.language) {
          const language = await LanguagesService.getLanguageById(req.body.language);
