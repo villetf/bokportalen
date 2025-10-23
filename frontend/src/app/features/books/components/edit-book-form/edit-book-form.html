@@ -64,9 +64,15 @@
       </div>
 
       <div class="flex justify-around mt-10">
+         <app-button color="bg-red-700" hoverColor="hover:bg-red-900" (click)="openDeleteConfirmation()">Radera</app-button>
          <app-button (click)="closeEditView()">Avbryt</app-button>
          <app-button type="reset" (click)="resetForm()">Återställ</app-button>
          <app-button type="submit" (click)="save()">Spara</app-button>
       </div>
    </form>
+
+   @if (deleteConfirmationIsOpen()) {
+      <app-delete-confirmation [closePanel]="closeDeleteConfirmation" [currentBook]="book"></app-delete-confirmation>
+   }
+
 </div>

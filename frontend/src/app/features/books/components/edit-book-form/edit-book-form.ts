@@ -10,10 +10,11 @@ import { Language } from '../../../../types/Language.model';
 import { LanguagesService } from '../../../../services/languagesService';
 import { Button } from '../../../../shared/components/button/button';
 import { BooksService } from '../../../../services/booksService';
+import { DeleteConfirmation } from '../delete-confirmation/delete-confirmation';
 
 @Component({
    selector: 'app-edit-book-form',
-   imports: [ReactiveFormsModule, ArrayInput, Button],
+   imports: [ReactiveFormsModule, ArrayInput, Button, DeleteConfirmation],
    templateUrl: './edit-book-form.html',
    styles: ''
 })
@@ -25,6 +26,7 @@ export class EditBookForm implements OnInit {
    allAuthors = signal<Author[]>([]);
    allGenres = signal<Genre[]>([]);
    allLanguages = signal<Language[]>([]);
+   deleteConfirmationIsOpen = signal<boolean>(false);
    form!: FormGroup;
 
 
@@ -102,4 +104,12 @@ export class EditBookForm implements OnInit {
    getCurrentYear() {
       return new Date().getFullYear();
    }
+
+   openDeleteConfirmation() {
+      this.deleteConfirmationIsOpen.set(true);
+   }
+
+   closeDeleteConfirmation = () => {
+      this.deleteConfirmationIsOpen.set(false);
+   };
 }

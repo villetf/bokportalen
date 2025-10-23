@@ -18,9 +18,9 @@ export class BooksService {
          );
       }
       return this.books$.asObservable().pipe(
-         filter((books): books is Book[] => books != null)
+         filter((books): books is Book[] => books != null),
+         map((books) => books.filter(book => !book.isDeleted))
       );
-
    }
 
    getBook(id: number) {
@@ -38,7 +38,7 @@ export class BooksService {
       }
 
       const currentBooks = this.books$.value!;
-      const updatedBooks = [ ...currentBooks, updatedBook ];
+      const updatedBooks = currentBooks.map(book => book.id == updatedBook.id ? updatedBook : book);
 
       this.books$.next(updatedBooks);
    }
@@ -74,5 +74,9 @@ export class BooksService {
       }));
 
       this.books$.next(updatedBooks);
+   }
+
+   deleteBook(book: Book) {
+      return this.http.delete(`http://localhost:3000/books/${book.id}`);
    }
 }
