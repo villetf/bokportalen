@@ -1,21 +1,4 @@
 
-// Include theming for Angular Material with `mat.theme()`.
-// This Sass mixin will define CSS variables that are used for styling Angular Material
-// components according to the Material 3 design spec.
-// Learn more about theming and how to use it for your application's
-// custom components at https://material.angular.dev/guide/theming
-@use '@angular/material' as mat;
-
-html {
-  @include mat.theme((
-    color: (
-      primary: mat.$azure-palette,
-      tertiary: mat.$blue-palette,
-    ),
-    typography: Roboto,
-    density: 0,
-  ));
-}
 
 body {
   // Default the application to a light color theme. This can be changed to
@@ -33,3 +16,26 @@ body {
   // Reset the user agent margin.
   margin: 0;
 }
+
+
+
+.example-menu-item {
+  cursor: pointer;
+  user-select: none;
+  min-width: 64px;
+  line-height: 36px;
+  padding: 0 16px;
+
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  flex: 1;
+}
+.example-menu-item:hover {
+  background-color: rgb(208, 208, 208);
+}
+
+.example-menu-item:active {
+  background-color: rgb(170, 170, 170);
+}
+
