@@ -1,0 +1,42 @@
+<h5
+   [cdkMenuTriggerFor]="filterMenu"
+   cdkMenuItem
+   class="text-3xl mr-5 text-headerbrown font-medium cursor-pointer"
+>
+   
+   @if (filterBy().length > 0) {
+      filtrering | 
+      @for (filter of filterBy(); track $index) {
+         {{ filter.displayString }}: {{ filter.filterString ?? '(Ej angivet)' }}@if ($index != filterBy().length -1) {,}
+      }
+   } @else {
+      filtrering
+   }
+</h5>
+
+<ng-template #filterMenu>
+   <div class="inline-flex gap-1 flex-col min-w-[180px] max-w-[280px] bg-white" cdkMenu>
+      @if (filterAlts() != '') {
+         <i class="fa-solid fa-arrow-left example-menu-item" (click)="filterAlts.set('')"></i>
+      }
+
+   @switch (filterAlts()) {
+      @case ('') {
+         <button class="example-menu-item" (click)="filterAlts.set('format')">Format</button>
+      }
+      
+      @case ('format') {
+         @for (format of getChoosableFilterOptions('format'); track $index) {
+            <button class="example-menu-item" cdkMenuItem (click)="setFilter('format', format, 'format')">
+               @if (filterIsApplied(constructFilterObject('format', format, 'format'))) {
+                  <i class="fa-solid fa-check mr-1"></i>
+               }
+               {{ format }}
+            </button>
+         }
+      }
+   }
+
+   </div>
+
+</ng-template>

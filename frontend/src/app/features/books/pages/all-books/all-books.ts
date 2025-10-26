@@ -3,21 +3,22 @@ import { Book } from '../../../../types/Book.model';
 import { BookCard } from '../../components/book-card/book-card';
 import { BooksService } from '../../../../services/booksService';
 import { BehaviorSubject } from 'rxjs';
-import { AsyncPipe } from '@angular/common';
 import { CdkMenuModule } from '@angular/cdk/menu';
+import { FilterList } from '../../components/filter-list/filter-list';
 
 @Component({
    selector: 'app-all-books',
    standalone: true,
-   imports: [BookCard, AsyncPipe, CdkMenuModule],
+   imports: [BookCard, CdkMenuModule, FilterList],
    templateUrl: './all-books.html',
    styles: ''
 })
 export class AllBooks {
    booksOriginal$ = new BehaviorSubject<Book[]>([]);
-   booksFiltered$ = new BehaviorSubject<Book[]>([]);
+   booksFiltered = signal<Book[]>([]);
    sortBy = signal<{ clearText: string, bookProperty: string }>({ clearText: 'Titel', bookProperty: 'title' });
    sortAscending = signal<boolean>(true);
+
 
    constructor(private booksService: BooksService) {
       effect(() => {
@@ -28,7 +29,6 @@ export class AllBooks {
    ngOnInit(): void {
       this.booksService.getBooks().subscribe(books => {
          this.booksOriginal$.next(books);
-         this.booksFiltered$.next(books);
          this.sortBooks(this.sortBy().bookProperty);
       });
    }
@@ -64,8 +64,10 @@ export class AllBooks {
          sorted.reverse();
       }
 
-      this.booksFiltered$.next(sorted);
+      this.booksOriginal$.next(sorted);
    }
+
+
 
    setSortOrder(property: string, label: string) {
       this.sortBy.set({

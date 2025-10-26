@@ -28,7 +28,7 @@ export default tseslint.config(
          'capitalized-comments': ['error', 'always', {'ignorePattern': '.*.js$', 'ignoreConsecutiveComments': true}],
          curly: ['error', 'all'],
          'dot-notation': 'warn',
-         'id-length': ['warn', {'min': 2, 'max': 25, 'exceptions': ['a', 'b', 'i']}],
+         'id-length': ['warn', {'min': 1, 'max': 25, 'exceptions': ['a', 'b', 'i']}],
          'max-depth': ['warn', {'max': 4}],
          'multiline-comment-style': ['error', 'separate-lines'],
          'no-else-return': 'error',

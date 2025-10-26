@@ -5,9 +5,9 @@
          <div class="flex items-center justify-center">
             <div class="flex mr-5">
                <h5 
-                  [cdkMenuTriggerFor]="menu"
+                  [cdkMenuTriggerFor]="sortMenu"
                   cdkMenuItem 
-                  class="example-standalone-trigger text-3xl text-headerbrown font-medium cursor-pointer"
+                  class="text-3xl text-headerbrown font-medium cursor-pointer"
                >
                   sortering: {{ sortBy().clearText }}
                </h5>
@@ -18,7 +18,7 @@
                }
             </div>
             
-            <ng-template #menu>               
+            <ng-template #sortMenu>
                <div class="inline-flex gap-1 flex-col min-w-[180px] max-w-[280px] bg-white" cdkMenu>
                   <button class="example-menu-item" cdkMenuItem (click)="setSortOrder('title', 'Titel')">Titel</button>
                   <button class="example-menu-item" cdkMenuItem (click)="setSortOrder('authors.0.lastName', 'Författare, efternamn')">Författare, efternamn</button>
@@ -30,10 +30,10 @@
                   <button class="example-menu-item" cdkMenuItem (click)="setSortOrder('rating', 'Betyg')">Betyg</button>
                </div>
             </ng-template>
-
          </div>
+   
          <div class="flex items-center justify-center">
-            <h5 class="text-3xl mr-5 text-headerbrown font-medium">filtrering</h5>
+            <app-filter-list [booksOriginal$]="booksOriginal$" [booksFiltered]="booksFiltered"></app-filter-list>
          </div>
       </div>
       <div class="rounded-full bg-[#EEE7D3] text-headerbrown p-3 w-100">
@@ -43,10 +43,8 @@
    </div>
 
    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mt-5 overflow-scroll h-full">
-      @if (booksFiltered$ | async; as books ) {
-         @for (book of books; track book.id) {
-            <app-book-card [book]="book"></app-book-card>
-         }
+      @for (book of booksFiltered(); track book.id) {
+         <app-book-card [book]="book"></app-book-card>
       }
    </div>
 </div>
