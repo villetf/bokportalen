@@ -18,11 +18,12 @@ export class AllBooks {
    booksFiltered = signal<Book[]>([]);
    sortBy = signal<{ clearText: string, bookProperty: string }>({ clearText: 'Titel', bookProperty: 'title' });
    sortAscending = signal<boolean>(true);
-
+   numberOfBooks = signal<number>(0);
 
    constructor(private booksService: BooksService) {
       effect(() => {
          this.sortBooks(this.sortBy().bookProperty);
+         this.numberOfBooks.set(this.countBooks());
       });
    }
 
@@ -67,12 +68,22 @@ export class AllBooks {
       this.booksOriginal$.next(sorted);
    }
 
-
-
    setSortOrder(property: string, label: string) {
       this.sortBy.set({
          clearText: label,
          bookProperty: property
       });
+   }
+
+   countBooks() {
+      const currentBooks = this.booksFiltered();
+      let numberOfBooks = 0;
+      currentBooks.forEach(book => {
+         if (book.copies) {
+            numberOfBooks += book.copies;
+         }
+      });
+
+      return numberOfBooks;
    }
 }
