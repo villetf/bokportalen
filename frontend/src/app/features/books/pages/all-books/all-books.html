@@ -42,7 +42,7 @@
       </div>
    </div>
 
-   <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mt-5 overflow-scroll h-full">
+   <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mt-5 overflow-scroll max-h-full">
       @for (book of booksFiltered(); track book.id) {
          <app-book-card [book]="book"></app-book-card>
       }

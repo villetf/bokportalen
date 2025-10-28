@@ -11,6 +11,7 @@ export class BooksService {
       const queryBuilder = AppDataSource.getRepository(Book)
          .createQueryBuilder('book')
          .leftJoinAndSelect('book.authors', 'author')
+         .leftJoinAndSelect('author.country', 'country')
          .leftJoinAndSelect('book.language', 'language')
          .leftJoinAndSelect('book.originalLanguage', 'originalLanguage')
          .leftJoinAndSelect('book.genre', 'genre');
