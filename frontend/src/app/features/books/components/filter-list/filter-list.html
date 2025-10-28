@@ -1,0 +1,56 @@
+<h5
+   [cdkMenuTriggerFor]="filterMenu"
+   cdkMenuItem
+   class="text-3xl mr-5 text-headerbrown font-medium cursor-pointer"
+>
+   
+   @if (filterBy().length > 0) {
+      filtrering | 
+      @let groups = groupFilters(filterBy()) | keyvalue;
+      @for (group of groups; track $index) {
+         {{ convertKeyToLabel(group.key) }}:
+         @for (value of group.value; track $index) {
+            {{ value ?? '(Ej angivet)' }}@if ($index != group.value.length -1) {,}
+         }
+         @if ($index != groups.length - 1) { |}
+      }
+      <span class="underline text-lg ml-3" (click)="filterBy.set([])">Rensa filter</span>
+   } @else {
+      filtrering
+   }
+</h5>
+
+<ng-template #filterMenu>
+   <div class="inline-flex gap-1 flex-col min-w-[180px] max-w-[280px] bg-white overflow-y-scroll" cdkMenu>
+      @if (filterAlts().key != '') {
+         <i class="fa-solid fa-arrow-left example-menu-item" (click)="filterAlts.set({key: '', label: ''})"></i>
+      }
+
+   @switch (filterAlts().key) {
+      @case ('') {
+         @for (option of filterOptions; track $index) {
+            <button class="example-menu-item" (click)="filterAlts.set({key: option.key, label: option.label})">{{ option.label }}</button>
+         }
+      }
+
+      @case ('authors') {
+         <button class="example-menu-item" (click)="filterAlts.set({key: 'authorName', label: 'Författarnamn'})">Namn</button>
+         <button class="example-menu-item" (click)="filterAlts.set({key: 'authorGender', label: 'Författarkön'})">Kön</button>
+         <button class="example-menu-item" (click)="filterAlts.set({key: 'authorCountry', label: 'Författarland'})">Land</button>
+      }
+
+      @default {
+         @for (filter of getChoosableFilterOptions(stringToKeyof(filterAlts().key)); track $index) {
+            <button class="example-menu-item" (click)="setFilter(stringToKeyof(filterAlts().key), filter, stringToKeyof(filterAlts().label))">
+               @if (filterIsApplied(constructFilterObject(stringToKeyof(filterAlts().key), filter, filterAlts().label))) {
+                  <i class="fa-solid fa-check mr-1"></i>
+               }
+               {{ filter }}
+            </button>
+         }
+      }
+   }
+
+   </div>
+
+</ng-template>
