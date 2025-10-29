@@ -1,24 +1,26 @@
-<h5
-   [cdkMenuTriggerFor]="filterMenu"
-   cdkMenuItem
-   class="text-3xl mr-5 text-headerbrown font-medium cursor-pointer"
->
-   
-   @if (filterBy().length > 0) {
-      filtrering | 
-      @let groups = groupFilters(filterBy()) | keyvalue;
-      @for (group of groups; track $index) {
-         {{ convertKeyToLabel(group.key) }}:
-         @for (value of group.value; track $index) {
-            {{ value ?? '(Ej angivet)' }}@if ($index != group.value.length -1) {,}
+<div class="flex">
+   <h5
+      [cdkMenuTriggerFor]="filterMenu"
+      cdkMenuItem
+      class="text-3xl mr-5 text-headerbrown font-medium cursor-pointer"
+   >
+      
+      @if (filterBy().length > 0) {
+         filtrering | 
+         @let groups = groupFilters(filterBy()) | keyvalue;
+         @for (group of groups; track $index) {
+            {{ convertKeyToLabel(group.key) }}:
+            @for (value of group.value; track $index) {
+               {{ value ?? '(Ej angivet)' }}@if ($index != group.value.length -1) {,}
+            }
+            @if ($index != groups.length - 1) { |}
          }
-         @if ($index != groups.length - 1) { |}
+      } @else {
+         filtrering
       }
-      <span class="underline text-lg ml-3" (click)="filterBy.set([])">Rensa filter</span>
-   } @else {
-      filtrering
-   }
-</h5>
+   </h5>
+   <span class="underline text-lg ml-3" (click)="filterBy.set([])">Rensa filter</span>
+</div>
 
 <ng-template #filterMenu>
    <div class="inline-flex gap-1 flex-col min-w-[180px] max-w-[280px] bg-white overflow-y-scroll" cdkMenu>

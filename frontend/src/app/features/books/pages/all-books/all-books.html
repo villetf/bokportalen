@@ -3,33 +3,7 @@
    <div class="flex justify-between mt-5">
       <div class="flex">
          <div class="flex items-center justify-center">
-            <div class="flex mr-5">
-               <h5 
-                  [cdkMenuTriggerFor]="sortMenu"
-                  cdkMenuItem 
-                  class="text-3xl text-headerbrown font-medium cursor-pointer"
-               >
-                  sortering: {{ sortBy().clearText }}
-               </h5>
-               @if (sortAscending()) {
-                  <i class="fa-solid fa-arrow-down text-headerbrown text-xl ml-2 mt-2 cursor-pointer" (click)="sortAscending.set(false)"></i>
-               } @else {
-                  <i class="fa-solid fa-arrow-up text-headerbrown text-xl ml-2 mt-2 cursor-pointer" (click)="sortAscending.set(true)"></i>
-               }
-            </div>
-            
-            <ng-template #sortMenu>
-               <div class="inline-flex gap-1 flex-col min-w-[180px] max-w-[280px] bg-white" cdkMenu>
-                  <button class="example-menu-item" cdkMenuItem (click)="setSortOrder('title', 'Titel')">Titel</button>
-                  <button class="example-menu-item" cdkMenuItem (click)="setSortOrder('authors.0.lastName', 'Författare, efternamn')">Författare, efternamn</button>
-                  <button class="example-menu-item" cdkMenuItem (click)="setSortOrder('authors.0.firstName', 'Författare, förnamn')">Författare, förnamn</button>
-                  <button class="example-menu-item" cdkMenuItem (click)="setSortOrder('yearWritten', 'Utgivningsår')">Utgivningsår</button>
-                  <button class="example-menu-item" cdkMenuItem (click)="setSortOrder('createdAt', 'Tillagd')">Tillagd</button>
-                  <button class="example-menu-item" cdkMenuItem (click)="setSortOrder('isbn', 'ISBN')">ISBN</button>
-                  <button class="example-menu-item" cdkMenuItem (click)="setSortOrder('numberOfCopies', 'Antal')">Antal exemplar</button>
-                  <button class="example-menu-item" cdkMenuItem (click)="setSortOrder('rating', 'Betyg')">Betyg</button>
-               </div>
-            </ng-template>
+            <app-sort-list [booksOriginal$]="booksOriginal$" />
          </div>
    
          <div class="flex items-center justify-center">
