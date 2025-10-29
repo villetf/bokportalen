@@ -5,17 +5,20 @@ import { BooksService } from '../../../../services/booksService';
 import { BehaviorSubject } from 'rxjs';
 import { CdkMenuModule } from '@angular/cdk/menu';
 import { FilterList } from '../../components/filter-list/filter-list';
+import { SearchBar } from '../../components/search-bar/search-bar';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
    selector: 'app-all-books',
    standalone: true,
-   imports: [BookCard, CdkMenuModule, FilterList],
+   imports: [BookCard, CdkMenuModule, FilterList, SearchBar, AsyncPipe],
    templateUrl: './all-books.html',
    styles: ''
 })
 export class AllBooks {
    booksOriginal$ = new BehaviorSubject<Book[]>([]);
-   booksFiltered = signal<Book[]>([]);
+   booksFiltered$ = new BehaviorSubject<Book[]>([]);
+   booksSearched$ = new BehaviorSubject<Book[]>([]);
    sortBy = signal<{ clearText: string, bookProperty: string }>({ clearText: 'Titel', bookProperty: 'title' });
    sortAscending = signal<boolean>(true);
    numberOfBooks = signal<number>(0);
@@ -23,6 +26,9 @@ export class AllBooks {
    constructor(private booksService: BooksService) {
       effect(() => {
          this.sortBooks(this.sortBy().bookProperty);
+      });
+
+      this.booksSearched$.subscribe(() => {
          this.numberOfBooks.set(this.countBooks());
       });
    }
@@ -76,7 +82,7 @@ export class AllBooks {
    }
 
    countBooks() {
-      const currentBooks = this.booksFiltered();
+      const currentBooks = this.booksSearched$.value;
       let numberOfBooks = 0;
       currentBooks.forEach(book => {
          if (book.copies) {

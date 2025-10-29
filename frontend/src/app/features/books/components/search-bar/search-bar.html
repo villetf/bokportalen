@@ -1,0 +1,7 @@
+<div class="rounded-full bg-[#EEE7D3] text-headerbrown p-3 w-100 -mt-10">
+   <i class="fa-solid fa-magnifying-glass ml-2"></i>
+   <input type="text" placeholder="SÖK BOK ELLER FÖRFATTARE" class="bg-transparent border-none outline-none w-8/10 ml-3" [value]="searchString()" (input)="searchString.set($any($event.target).value)" />
+   @if (searchString() != '') {
+      <i class="fa-regular fa-circle-xmark cursor-pointer text-lg ml-3 -mb-2" (click)="searchString.set('')"></i>
+   }
+</div>

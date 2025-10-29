@@ -1,4 +1,4 @@
-import { Component, effect, Input, signal, WritableSignal } from '@angular/core';
+import { Component, effect, Input, signal } from '@angular/core';
 import { CdkMenuModule } from '@angular/cdk/menu';
 import { Book } from '../../../../types/Book.model';
 import { Genre } from '../../../../types/Genre.model';
@@ -18,7 +18,7 @@ import { KeyValuePipe } from '@angular/common';
 
 export class FilterList {
    @Input() booksOriginal$!: BehaviorSubject<Book[]>;
-   @Input() booksFiltered!: WritableSignal<Book[]>;
+   @Input() booksFiltered$!: BehaviorSubject<Book[]>;
 
    // Den lista av filter som ska appliceras på böckerna
    filterBy = signal<Filter[]>([]);
@@ -57,7 +57,7 @@ export class FilterList {
       const filters = this.filterBy();
 
       if (!filters.length) {
-         this.booksFiltered.set(originalBooks);
+         this.booksFiltered$.next(originalBooks);
          return;
       }
 
@@ -102,7 +102,7 @@ export class FilterList {
       }
       );
 
-      this.booksFiltered.set(filteredBooks);
+      this.booksFiltered$.next(filteredBooks);
    }
 
    // Sätter valt filter till filterBy
