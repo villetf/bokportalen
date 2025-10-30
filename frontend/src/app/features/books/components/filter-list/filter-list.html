@@ -1,8 +1,8 @@
-<div class="flex">
+<div class="flex items-end">
    <h5
       [cdkMenuTriggerFor]="filterMenu"
       cdkMenuItem
-      class="text-3xl mr-5 text-headerbrown font-medium cursor-pointer"
+      class="text-3xl mr-3 text-headerbrown font-medium cursor-pointer"
    >
       
       @if (filterBy().length > 0) {
@@ -19,7 +19,9 @@
          filtrering
       }
    </h5>
-   <span class="underline text-lg ml-3" (click)="filterBy.set([])">Rensa filter</span>
+   @if (filterBy().length > 0) {
+      <span class="underline cursor-pointer mb-0.5" (click)="filterBy.set([])">Rensa filter</span>
+   }
 </div>
 
 <ng-template #filterMenu>
