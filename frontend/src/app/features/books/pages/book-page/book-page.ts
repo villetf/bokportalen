@@ -84,7 +84,6 @@ export class BookPage implements OnInit {
 
    ngOnInit(): void {
       this.route.params.pipe(
-         // eslint-disable-next-line dot-notation
          switchMap(params => this.booksService.getBook(+params['id']))
       ).subscribe(book => {
          this.book$.next(book);
