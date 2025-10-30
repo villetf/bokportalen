@@ -41,9 +41,9 @@ export class EditBookForm implements OnInit {
    ) {}
 
    ngOnInit(): void {
-      this.authorsService.getAllAuthors().then(authors => this.allAuthors.set(authors));
-      this.genresService.getAllGenres().then(genres => this.allGenres.set(genres));
-      this.languagesService.getAllLanguages().then(languages => this.allLanguages.set(languages));
+      this.updateAuthorsList();
+      this.updateGenresList();
+      this.updateLanguagesList();
 
 
       this.form = this.fb.group({
@@ -112,4 +112,16 @@ export class EditBookForm implements OnInit {
    closeDeleteConfirmation = () => {
       this.deleteConfirmationIsOpen.set(false);
    };
+
+   updateAuthorsList() {
+      this.authorsService.getAllAuthors().then(authors => this.allAuthors.set(authors));
+   }
+
+   updateGenresList() {
+      this.genresService.getAllGenres().then(genres => this.allGenres.set(genres));
+   }
+
+   updateLanguagesList() {
+      this.languagesService.getAllLanguages().then(languages => this.allLanguages.set(languages));
+   }
 }
