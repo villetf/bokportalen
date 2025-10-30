@@ -11,7 +11,10 @@
          </div>
       </div>
       <div>
-         <app-search-bar [booksFiltered$]="booksFiltered$" [booksSearched$]="booksSearched$" />
+         <div class="flex">
+            <app-search-bar [booksFiltered$]="booksFiltered$" [booksSearched$]="booksSearched$" />
+            <i class="fa-solid fa-dice text-5xl -mt-10 ml-5 cursor-pointer text-bookolive" (click)="getRandomBook()"></i>
+         </div>
          <div class="w-full mt-5 text-right text-xl">
             <p class="text-headerbrown">Antal böcker: {{ numberOfBooks() }}</p>
          </div>
