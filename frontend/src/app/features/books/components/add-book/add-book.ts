@@ -74,6 +74,7 @@ export class AddBook {
          coverLink: []
       });
       setTimeout(() => this.focusTitle(), 0);
+      this.formIsSubmitted = false;
    }
 
    save() {
