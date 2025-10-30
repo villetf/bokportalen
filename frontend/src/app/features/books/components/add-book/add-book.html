@@ -15,21 +15,29 @@
          }
          
          <label for="bookAuthors">Författare:</label>
-         <app-array-input formControlName="authors" [displayFn]="displayAuthor" [selectableItems]="allAuthors()" id="bookAuthors"></app-array-input>
-      
-         @if (form.get('authors')?.invalid && formIsSubmitted) {
-            @if (form.get('authors')?.errors?.['required'] || form.get('authors')?.errors?.['minLength']) {
-               <div></div>
-               <span class="text-red-500">Du måste välja minst en författare.</span>
-            }
-         }
+         <div class="flex items-center">
+            <div class="w-full">
+               <app-array-input formControlName="authors" [displayFn]="displayAuthor" [selectableItems]="allAuthors()" id="bookAuthors"></app-array-input>
+            
+               @if (form.get('authors')?.invalid && formIsSubmitted) {
+                  @if (form.get('authors')?.errors?.['required'] || form.get('authors')?.errors?.['minLength']) {
+                     <div></div>
+                     <span class="text-red-500">Du måste välja minst en författare.</span>
+                  }
+               }
+            </div>
+            <i class="fa-solid fa-rotate ml-2 cursor-pointer active:rotate-180 active:transition-all" (click)="updateAuthorsList()"></i>
+         </div>
 
          <label for="genre">Genre:</label>
-         <select formControlName="genre" id="genre">
-            @for (genre of allGenres(); track genre.id) {
-               <option [ngValue]="genre.id">{{ genre.name }}</option>
-            }
-         </select>
+         <div class="flex items-center">
+            <select formControlName="genre" id="genre" class="w-full">
+               @for (genre of allGenres(); track genre.id) {
+                  <option [ngValue]="genre.id">{{ genre.name }}</option>
+               }
+            </select>
+            <i class="fa-solid fa-rotate ml-2 cursor-pointer active:rotate-180 active:transition-all" (click)="updateGenresList()"></i>
+         </div>
          
          <label for="yearWritten" class="self-center">Utgivningsår:</label>
          <input type="number" formControlName="yearWritten" [max]="this.getCurrentYear()" class="form-text-input" id="yearWritten">
@@ -42,18 +50,24 @@
          }
       
          <label for="language">Språk:</label>
-         <select formControlName="language" id="language">
-            @for (language of allLanguages(); track language.id) {
-               <option [ngValue]="language.id">{{ language.name }}</option>
-            }
-         </select>
-      
+         <div class="flex items-center">
+            <select formControlName="language" id="language" class="w-full">
+               @for (language of allLanguages(); track language.id) {
+                  <option [ngValue]="language.id">{{ language.name }}</option>
+               }
+            </select>
+            <i class="fa-solid fa-rotate ml-2 cursor-pointer active:rotate-180 active:transition-all" (click)="updateLanguagesList()"></i>
+         </div>
+
          <label for="originalLanguage">Originalspråk:</label>
-         <select formControlName="originalLanguage" id="originalLanguage">
-            @for (language of allLanguages(); track language.id) {
-               <option [ngValue]="language.id">{{ language.name }}</option>
-            }
-         </select>
+         <div class="flex items-center">
+            <select formControlName="originalLanguage" id="originalLanguage" class="w-full">
+               @for (language of allLanguages(); track language.id) {
+                  <option [ngValue]="language.id">{{ language.name }}</option>
+               }
+            </select>
+            <i class="fa-solid fa-rotate ml-2 cursor-pointer active:rotate-180 active:transition-all" (click)="updateLanguagesList()"></i>
+         </div>
          
          <label for="format">Format:</label>
          <select formControlName="format" id="format">
