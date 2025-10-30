@@ -55,6 +55,7 @@ export class AddAuthor {
          imageLink: []
       });
       setTimeout(() => this.focusTitle(), 0);
+      this.formIsSubmitted = false;
    }
 
    save() {

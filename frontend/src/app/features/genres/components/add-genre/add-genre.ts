@@ -38,6 +38,7 @@ export class AddGenre {
          name: []
       });
       setTimeout(() => this.focusTitle(), 0);
+      this.formIsSubmitted = false;
    }
 
    save() {

@@ -38,6 +38,7 @@ export class AddLanguage {
          name: []
       });
       setTimeout(() => this.focusTitle(), 0);
+      this.formIsSubmitted = false;
    }
 
    save() {
