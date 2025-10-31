@@ -4,7 +4,7 @@
       cdkMenuItem 
       class="text-3xl text-headerbrown font-medium cursor-pointer"
    >
-      sortering: {{ sortBy().clearText }}
+      sortering: {{ sortBy().clearText.toLocaleLowerCase() }}
    </h5>
    @if (sortAscending()) {
       <i class="fa-solid fa-arrow-down text-headerbrown text-xl ml-2 mt-2 cursor-pointer" (click)="sortAscending.set(false)"></i>
