@@ -19,7 +19,7 @@
                   <p><span class="book-properties alumni-font">SPRÅK:</span><span class="amiri-font text-2xl"> {{ book.language ? book.language.name : 'Ej angivet' }}</span></p>
                   <p><span class="book-properties alumni-font">ORIGINALSPRÅK:</span><span class="amiri-font text-2xl"> {{ book.originalLanguage ? book.originalLanguage.name : 'Ej angivet' }}</span></p>
                   <p><span class="book-properties alumni-font">FORMAT:</span><span class="amiri-font text-2xl"> {{ book.format ? book.format : 'Ej angivet' }}</span></p>
-                  <p><span class="book-properties alumni-font">TILLAGD:</span><span class="amiri-font text-2xl"> {{ book.createdAt ? book.createdAt : 'Ej angivet' }}</span></p>
+                  <p><span class="book-properties alumni-font">TILLAGD:</span><span class="amiri-font text-2xl"> {{ book.createdAt ? (book.createdAt | date: 'yyyy-MM-dd HH:mm' ) : 'Ej angivet' }}</span></p>
                   <p><span class="book-properties alumni-font">ISBN:</span><span class="amiri-font text-2xl"> {{ book.isbn ? book.isbn : 'Ej angivet' }}</span></p>
                   <p><span class="book-properties alumni-font">STATUS:</span><span class="amiri-font text-2xl"> {{ book.status ? book.status : 'Ej angivet' }}</span></p>
                   <p><span class="book-properties alumni-font">ANTAL EXEMPLAR:</span><span class="amiri-font text-2xl"> {{ book.copies ? book.copies : 'Ej angivet' }}</span></p>
