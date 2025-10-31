@@ -2,7 +2,9 @@
 @import "tailwindcss";
 
 @theme {
-   --color-bookolive: #778154;
+   /* --color-bookolive: #778154; */
+   /* --color-bookolive: #656e46; */
+   --color-bookolive: #3f452c;
    --color-bookolive-dark: #5a6140;
    --color-backgroundbeige: #F5EFDB;
    --color-headerbrown: #4A1810;
