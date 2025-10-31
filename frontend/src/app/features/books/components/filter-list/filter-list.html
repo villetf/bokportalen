@@ -9,9 +9,9 @@
          filtrering | 
          @let groups = groupFilters(filterBy()) | keyvalue;
          @for (group of groups; track $index) {
-            {{ convertKeyToLabel(group.key) }}:
+            {{ convertKeyToLabel(group.key)?.toLocaleLowerCase() }}:
             @for (value of group.value; track $index) {
-               {{ value ?? '(Ej angivet)' }}@if ($index != group.value.length -1) {,}
+               {{ value?.toLocaleLowerCase() ?? '(ej angivet)' }}@if ($index != group.value.length -1) {,}
             }
             @if ($index != groups.length - 1) { |}
          }
@@ -20,7 +20,7 @@
       }
    </h5>
    @if (filterBy().length > 0) {
-      <span class="underline cursor-pointer mb-0.5" (click)="filterBy.set([])">Rensa filter</span>
+      <span class="underline cursor-pointer mb-0.5" (click)="filterBy.set([])">rensa filter</span>
    }
 </div>
 
