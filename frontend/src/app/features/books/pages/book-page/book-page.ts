@@ -3,7 +3,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { BehaviorSubject, switchMap } from 'rxjs';
 import { BooksService } from '../../../../services/booksService';
 import { Book } from '../../../../types/Book.model';
-import { AsyncPipe, NgClass } from '@angular/common';
+import { AsyncPipe, DatePipe, NgClass } from '@angular/common';
 import { Button } from '../../../../shared/components/button/button';
 import { BookCard } from '../../components/book-card/book-card';
 import { EditPanel } from '../../../../shared/components/edit-panel/edit-panel';
@@ -14,7 +14,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 @Component({
    selector: 'app-book-page',
    standalone: true,
-   imports: [AsyncPipe, RouterLink, Button, BookCard, NgClass, EditPanel, EditBookForm],
+   imports: [AsyncPipe, RouterLink, Button, BookCard, NgClass, EditPanel, EditBookForm, DatePipe],
    templateUrl: './book-page.html'
 })
 export class BookPage implements OnInit {
