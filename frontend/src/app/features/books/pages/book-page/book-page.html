@@ -41,7 +41,7 @@
             @if (booksByAuthor()) {
                @if (booksByAuthor().length > book.authors.length) {
                   <div class="flex flex-col h-full w-full overflow-auto min-h-0 mt-45">
-                     <h5 class="text-2xl mb-5">
+                     <h5 class="text-2xl mb-5 uppercase">
                      @if (book.authors.length == 1) {
                         Mer av {{ book.authors[0].firstName}} {{ book.authors[0].lastName }}:
                      } @else {
