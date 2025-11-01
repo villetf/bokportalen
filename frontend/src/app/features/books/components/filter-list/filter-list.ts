@@ -1,4 +1,4 @@
-import { Component, effect, Input, signal } from '@angular/core';
+import { Component, DestroyRef, effect, inject, Input, signal } from '@angular/core';
 import { CdkMenuModule } from '@angular/cdk/menu';
 import { Book } from '../../../../types/Book.model';
 import { Genre } from '../../../../types/Genre.model';
@@ -7,6 +7,7 @@ import { Filter } from '../../../../types/Filter.model';
 import { Language } from '../../../../types/Language.model';
 import { KeyValuePipe } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 
 @Component({
@@ -39,29 +40,32 @@ export class FilterList {
    ];
 
    private suppressEffect = false;
+   private destroyRef = inject(DestroyRef);
 
    constructor(private route: ActivatedRoute, private router: Router) {
-      this.route.queryParams.subscribe(params => {
-         const filterPropKey = params['filterPropKey'] ?? '';
-         const filterPropLabel = params['filterPropLabel'] ?? '';
-         let filterBy: Filter[] = [];
-         try {
-            filterBy = JSON.parse(params['filterBy'] || '[]');
-         } catch (error) {
-            console.warn('Invalid JSON in query param', error);
-            filterBy = [];
-         }
+      this.route.queryParams
+         .pipe(takeUntilDestroyed(this.destroyRef))
+         .subscribe(params => {
+            const filterPropKey = params['filterPropKey'] ?? '';
+            const filterPropLabel = params['filterPropLabel'] ?? '';
+            let filterBy: Filter[] = [];
+            try {
+               filterBy = JSON.parse(params['filterBy'] || '[]');
+            } catch (error) {
+               console.warn('Invalid JSON in query param', error);
+               filterBy = [];
+            }
 
-         const currentProp = this.filterAlts();
-         const currentFilterBy = this.filterBy();
+            const currentProp = this.filterAlts();
+            const currentFilterBy = this.filterBy();
 
-         if (currentProp.key !== filterPropKey || currentProp.label !== filterPropLabel || JSON.stringify(currentFilterBy) !== JSON.stringify(filterBy)) {
-            this.suppressEffect = true;
-            this.filterAlts.set({key: filterPropKey, label: filterPropLabel});
-            this.filterBy.set(filterBy);
-            queueMicrotask(() => this.suppressEffect = false);
-         }
-      });
+            if (currentProp.key !== filterPropKey || currentProp.label !== filterPropLabel || JSON.stringify(currentFilterBy) !== JSON.stringify(filterBy)) {
+               this.suppressEffect = true;
+               this.filterAlts.set({key: filterPropKey, label: filterPropLabel});
+               this.filterBy.set(filterBy);
+               queueMicrotask(() => this.suppressEffect = false);
+            }
+         });
 
       effect(() => {
          if (this.suppressEffect) {
@@ -107,6 +111,7 @@ export class FilterList {
 
    ngOnInit() {
       this.booksOriginal$
+         .pipe(takeUntilDestroyed(this.destroyRef))
          .subscribe(() => {
             this.filterBooks();
          });

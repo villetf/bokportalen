@@ -1,9 +1,10 @@
 import { CdkMenuModule } from '@angular/cdk/menu';
-import { Component, effect, Input, signal } from '@angular/core';
+import { Component, DestroyRef, effect, inject, Input, signal } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { Book } from '../../../../types/Book.model';
 import { BooksService } from '../../../../services/booksService';
 import { ActivatedRoute, Router } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
    selector: 'app-sort-list',
@@ -17,30 +18,33 @@ export class SortList {
    sortAscending = signal<boolean>(true);
 
    private suppressEffect = false;
+   private destroyRef = inject(DestroyRef);
 
    constructor(private booksService: BooksService, private route: ActivatedRoute, private router: Router) {
-      this.route.queryParams.subscribe(params => {
-         const clearText = params['sortByClear'];
-         const bookProperty = params['sortByProp'];
-         if (clearText && bookProperty) {
-            const current = this.sortBy();
-            if (current.clearText !== clearText || current.bookProperty !== bookProperty) {
-               this.suppressEffect = true;
-               this.sortBy.set({ clearText, bookProperty });
-               queueMicrotask(() => this.suppressEffect = false);
+      this.route.queryParams
+         .pipe(takeUntilDestroyed(this.destroyRef))
+         .subscribe(params => {
+            const clearText = params['sortByClear'];
+            const bookProperty = params['sortByProp'];
+            if (clearText && bookProperty) {
+               const current = this.sortBy();
+               if (current.clearText !== clearText || current.bookProperty !== bookProperty) {
+                  this.suppressEffect = true;
+                  this.sortBy.set({ clearText, bookProperty });
+                  queueMicrotask(() => this.suppressEffect = false);
+               }
             }
-         }
 
-         if (params['sortAsc'] !== undefined) {
-            const sortAscProperty = this.stringToBoolean(params['sortAsc']);
-            const current = this.sortAscending();
-            if (current != sortAscProperty) {
-               this.suppressEffect = true;
-               this.sortAscending.set(sortAscProperty);
-               queueMicrotask(() => this.suppressEffect = false);
+            if (params['sortAsc'] !== undefined) {
+               const sortAscProperty = this.stringToBoolean(params['sortAsc']);
+               const current = this.sortAscending();
+               if (current != sortAscProperty) {
+                  this.suppressEffect = true;
+                  this.sortAscending.set(sortAscProperty);
+                  queueMicrotask(() => this.suppressEffect = false);
+               }
             }
-         }
-      });
+         });
 
       effect(() => {
          if (this.suppressEffect) {
