@@ -3,6 +3,7 @@ import { Component, effect, Input, signal } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { Book } from '../../../../types/Book.model';
 import { BooksService } from '../../../../services/booksService';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
    selector: 'app-sort-list',
@@ -15,9 +16,69 @@ export class SortList {
    sortBy = signal<{ clearText: string, bookProperty: string }>({ clearText: 'Titel', bookProperty: 'title' });
    sortAscending = signal<boolean>(true);
 
-   constructor(private booksService: BooksService) {
+   private suppressEffect = false;
+
+   constructor(private booksService: BooksService, private route: ActivatedRoute, private router: Router) {
+      this.route.queryParams.subscribe(params => {
+         const clearText = params['sortByClear'];
+         const bookProperty = params['sortByProp'];
+         if (clearText && bookProperty) {
+            const current = this.sortBy();
+            if (current.clearText !== clearText || current.bookProperty !== bookProperty) {
+               this.suppressEffect = true;
+               this.sortBy.set({ clearText, bookProperty });
+               queueMicrotask(() => this.suppressEffect = false);
+            }
+         }
+
+         if (params['sortAsc'] !== undefined) {
+            const sortAscProperty = this.stringToBoolean(params['sortAsc']);
+            const current = this.sortAscending();
+            if (current != sortAscProperty) {
+               this.suppressEffect = true;
+               this.sortAscending.set(sortAscProperty);
+               queueMicrotask(() => this.suppressEffect = false);
+            }
+         }
+      });
+
       effect(() => {
+         if (this.suppressEffect) {
+            return;
+         }
          this.sortBooks(this.sortBy().bookProperty);
+
+         const { clearText, bookProperty } = this.sortBy();
+
+         const queryParams = this.route.snapshot.queryParams;
+         const sortByClear = queryParams['sortByClear'] ?? '';
+         const sortByProp = queryParams['sortByProp'] ?? '';
+         if (sortByClear !== clearText || sortByProp !== bookProperty) {
+            this.router.navigate([], {
+               relativeTo: this.route,
+               queryParams: {
+                  ...queryParams,
+                  sortByClear: clearText,
+                  sortByProp: bookProperty
+               },
+               queryParamsHandling: 'merge',
+               replaceUrl: true
+            });
+         };
+
+         const sortAsc = this.sortAscending();
+
+         if (queryParams['sortAsc'] === undefined || this.stringToBoolean(queryParams['sortAsc']) !== sortAsc) {
+            this.router.navigate([], {
+               relativeTo: this.route,
+               queryParams: {
+                  ...this.route.snapshot.queryParams,
+                  sortAsc: sortAsc
+               },
+               queryParamsHandling: 'merge',
+               replaceUrl: true
+            });
+         }
       });
    }
 
@@ -69,4 +130,7 @@ export class SortList {
       });
    }
 
+   stringToBoolean(value: string): boolean {
+      return value === 'true';
+   }
 }

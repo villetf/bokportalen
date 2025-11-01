@@ -1,7 +1,8 @@
-import { Component, Input, signal } from '@angular/core';
+import { Component, effect, Input, signal } from '@angular/core';
 import { Book } from '../../../../types/Book.model';
 import { FormsModule } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
    selector: 'app-search-bar',
@@ -14,6 +15,43 @@ export class SearchBar {
    @Input() booksFiltered$!: BehaviorSubject<Book[]>;
 
    searchString = signal<string>('');
+   private suppressEffect = false;
+
+   constructor(private route: ActivatedRoute, private router: Router) {
+      this.route.queryParams.subscribe(params => {
+         const searchStringParam = params['searchString'];
+         if (searchStringParam) {
+            const currentSearch = this.searchString();
+
+            if (currentSearch !== searchStringParam) {
+               this.suppressEffect = true;
+               this.searchString.set(searchStringParam);
+               queueMicrotask(() => this.suppressEffect = false);
+            }
+         }
+      });
+
+      effect(() => {
+         if (this.suppressEffect) {
+            return;
+         }
+         const searchString = this.searchString();
+
+         const queryParams = this.route.snapshot.queryParams;
+         if (queryParams['searchString'] !== searchString) {
+            this.router.navigate([], {
+               relativeTo: this.route,
+               queryParams: {
+                  ...queryParams,
+                  searchString: searchString || null
+               },
+               queryParamsHandling: 'merge',
+               replaceUrl: true
+            });
+         };
+      });
+
+   }
 
    ngOnInit() {
       this.booksFiltered$.subscribe(() => {
