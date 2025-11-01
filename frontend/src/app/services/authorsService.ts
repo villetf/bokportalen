@@ -4,14 +4,17 @@ import { AddAuthorDTO } from '../dtos/AddAuthorDTO';
 import { HttpClient } from '@angular/common/http';
 import { catchError, throwError } from 'rxjs';
 import { EditAuthorDTO } from '../dtos/EditAuthorDTO';
+import { environment } from '../../environments/environment';
+
 
 
 @Injectable({ providedIn: 'root' })
 export class AuthorsService {
+   private apiUrl = environment.apiUrl;
    constructor(private http: HttpClient) {}
 
    async getAuthorById(id: number): Promise<Author | null> {
-      const response = await fetch(`http://localhost:3000/authors/${id}`);
+      const response = await fetch(`${this.apiUrl}/authors/${id}`);
       if (!response.ok) {
          return null;
       }
@@ -19,7 +22,7 @@ export class AuthorsService {
    }
 
    async getAllAuthors(): Promise<Author[]> {
-      const response = await fetch('http://localhost:3000/authors');
+      const response = await fetch(`${this.apiUrl}/authors`);
       if (!response.ok) {
          return [];
       }
@@ -29,7 +32,7 @@ export class AuthorsService {
    }
 
    addAuthor(author: AddAuthorDTO) {
-      return this.http.post('http://localhost:3000/authors', author).pipe(
+      return this.http.post(`${this.apiUrl}/authors`, author).pipe(
          catchError(err => {
             console.error('Error when posting author:', err);
             return throwError(() => err);
@@ -38,7 +41,7 @@ export class AuthorsService {
    }
 
    editAuthor(author: EditAuthorDTO) {
-      return this.http.patch(`http://localhost:3000/authors/${author.id}`, author).pipe(
+      return this.http.patch(`${this.apiUrl}/authors/${author.id}`, author).pipe(
          catchError(err => {
             console.error('Error when editing author:', err);
             return throwError(() => err);
