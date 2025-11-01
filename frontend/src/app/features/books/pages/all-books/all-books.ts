@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { Book } from '../../../../types/Book.model';
 import { BookCard } from '../../components/book-card/book-card';
 import { BooksService } from '../../../../services/booksService';
@@ -10,6 +10,7 @@ import { AsyncPipe } from '@angular/common';
 import { SortList } from '../../components/sort-list/sort-list';
 import { Router } from '@angular/router';
 import { HotToastService } from '@ngxpert/hot-toast';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
    selector: 'app-all-books',
@@ -24,10 +25,14 @@ export class AllBooks {
    booksSearched$ = new BehaviorSubject<Book[]>([]);
    numberOfBooks = signal<number>(0);
 
+   private destroyRef = inject(DestroyRef);
+
    constructor(private booksService: BooksService, private router: Router, private toast: HotToastService) {
-      this.booksSearched$.subscribe(() => {
-         this.numberOfBooks.set(this.countBooks());
-      });
+      this.booksSearched$
+         .pipe(takeUntilDestroyed(this.destroyRef))
+         .subscribe(() => {
+            this.numberOfBooks.set(this.countBooks());
+         });
    }
 
    countBooks() {

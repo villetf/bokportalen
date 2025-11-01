@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { BehaviorSubject, switchMap } from 'rxjs';
 import { BooksService } from '../../../../services/booksService';
@@ -10,6 +10,7 @@ import { EditPanel } from '../../../../shared/components/edit-panel/edit-panel';
 import { EditBookForm } from '../../components/edit-book-form/edit-book-form';
 import { HotToastService } from '@ngxpert/hot-toast';
 import { HttpErrorResponse } from '@angular/common/http';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
    selector: 'app-book-page',
@@ -22,6 +23,8 @@ export class BookPage implements OnInit {
    booksByAuthor = signal<Book[]>([]);
    currentBook!: Book;
    editViewIsOpen = signal<boolean>(false);
+
+   private destroyRef = inject(DestroyRef);
 
    constructor(
       private route: ActivatedRoute,
@@ -83,12 +86,15 @@ export class BookPage implements OnInit {
 
 
    ngOnInit(): void {
-      this.route.params.pipe(
-         switchMap(params => this.booksService.getBook(+params['id']))
-      ).subscribe(book => {
-         this.book$.next(book);
-         this.currentBook = book;
-         this.updateBooksByAuthor();
-      });
+      this.route.params
+         .pipe(takeUntilDestroyed(this.destroyRef))
+         .pipe(
+            switchMap(params => this.booksService.getBook(+params['id']))
+         )
+         .subscribe(book => {
+            this.book$.next(book);
+            this.currentBook = book;
+            this.updateBooksByAuthor();
+         });
    }
 }

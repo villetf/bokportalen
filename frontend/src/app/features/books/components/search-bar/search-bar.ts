@@ -1,8 +1,9 @@
-import { Component, effect, Input, signal } from '@angular/core';
+import { Component, DestroyRef, effect, inject, Input, signal } from '@angular/core';
 import { Book } from '../../../../types/Book.model';
 import { FormsModule } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
    selector: 'app-search-bar',
@@ -16,20 +17,23 @@ export class SearchBar {
 
    searchString = signal<string>('');
    private suppressEffect = false;
+   private destroyRef = inject(DestroyRef);
 
    constructor(private route: ActivatedRoute, private router: Router) {
-      this.route.queryParams.subscribe(params => {
-         const searchStringParam = params['searchString'];
-         if (searchStringParam) {
-            const currentSearch = this.searchString();
+      this.route.queryParams
+         .pipe(takeUntilDestroyed(this.destroyRef))
+         .subscribe(params => {
+            const searchStringParam = params['searchString'];
+            if (searchStringParam) {
+               const currentSearch = this.searchString();
 
-            if (currentSearch !== searchStringParam) {
-               this.suppressEffect = true;
-               this.searchString.set(searchStringParam);
-               queueMicrotask(() => this.suppressEffect = false);
+               if (currentSearch !== searchStringParam) {
+                  this.suppressEffect = true;
+                  this.searchString.set(searchStringParam);
+                  queueMicrotask(() => this.suppressEffect = false);
+               }
             }
-         }
-      });
+         });
 
       effect(() => {
          if (this.suppressEffect) {
@@ -54,9 +58,11 @@ export class SearchBar {
    }
 
    ngOnInit() {
-      this.booksFiltered$.subscribe(() => {
-         this.makeSearch(this.searchString());
-      });
+      this.booksFiltered$
+         .pipe(takeUntilDestroyed(this.destroyRef))
+         .subscribe(() => {
+            this.makeSearch(this.searchString());
+         });
    }
 
    makeSearch(searchString: string) {
