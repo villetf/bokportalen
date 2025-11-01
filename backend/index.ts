@@ -12,11 +12,11 @@ app.use(express.json());
 
 app.use(cors());
 
-app.use('/books', bookRoutes);
-app.use('/authors', authorRoutes);
-app.use('/countries', countryRoutes);
-app.use('/languages', languageRoutes);
-app.use('/genres', genreRoutes);
+app.use('/api/v1/books', bookRoutes);
+app.use('/api/v1/authors', authorRoutes);
+app.use('/api/v1/countries', countryRoutes);
+app.use('/api/v1/languages', languageRoutes);
+app.use('/api/v1/genres', genreRoutes);
 
 AppDataSource.initialize()
    .then(() => {

@@ -4,16 +4,18 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { AddBookDTO } from '../dtos/AddBookDTO';
 import { Author } from '../types/Author.model';
+import { environment } from '../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class BooksService {
    private books$ = new BehaviorSubject<Book[] | null>(null);
+   private apiUrl = environment.apiUrl;
 
    constructor(private http: HttpClient) {}
 
    getBooks() {
       if (!this.books$.value) {
-         return this.http.get<Book[]>('http://localhost:3000/books').pipe(
+         return this.http.get<Book[]>(`${this.apiUrl}/books`).pipe(
             tap(books => this.books$.next(books))
          );
       }
@@ -29,7 +31,7 @@ export class BooksService {
          return of(existing);
       }
 
-      return this.http.get<Book>(`http://localhost:3000/books/${id}`);
+      return this.http.get<Book>(`${this.apiUrl}/books/${id}`);
    }
 
    setBook(updatedBook: Book) {
@@ -55,11 +57,11 @@ export class BooksService {
    }
 
    editBook(book: Book) {
-      return this.http.patch(`http://localhost:3000/books/${book.id}`, book);
+      return this.http.patch(`${this.apiUrl}/books/${book.id}`, book);
    }
 
    addBook(book: AddBookDTO) {
-      return this.http.post('http://localhost:3000/books/', book).pipe(
+      return this.http.post(`${this.apiUrl}/books/`, book).pipe(
          catchError(err => {
             console.error('Error when posting book:', err);
             return throwError(() => err);
@@ -82,15 +84,15 @@ export class BooksService {
    }
 
    deleteBook(book: Book) {
-      return this.http.delete(`http://localhost:3000/books/${book.id}`);
+      return this.http.delete(`${this.apiUrl}/books/${book.id}`);
    }
 
    getDeletedBooks() {
-      return this.http.get<Book[]>('http://localhost:3000/books/deleted');
+      return this.http.get<Book[]>(`${this.apiUrl}/books/deleted`);
    }
 
    resetDeletedBook(book: Book) {
-      return this.http.patch<Book>(`http://localhost:3000/books/${book.id}`, {
+      return this.http.patch<Book>(`${this.apiUrl}/books/${book.id}`, {
          isDeleted: false
       });
    }
