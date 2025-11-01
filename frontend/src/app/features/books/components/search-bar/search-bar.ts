@@ -15,6 +15,7 @@ export class SearchBar {
    @Input() booksFiltered$!: BehaviorSubject<Book[]>;
 
    searchString = signal<string>('');
+   private suppressEffect = false;
 
    constructor(private route: ActivatedRoute, private router: Router) {
       this.route.queryParams.subscribe(params => {
@@ -23,12 +24,17 @@ export class SearchBar {
             const currentSearch = this.searchString();
 
             if (currentSearch !== searchStringParam) {
+               this.suppressEffect = true;
                this.searchString.set(searchStringParam);
+               queueMicrotask(() => this.suppressEffect = false);
             }
          }
       });
 
       effect(() => {
+         if (this.suppressEffect) {
+            return;
+         }
          const searchString = this.searchString();
 
          const queryParams = this.route.snapshot.queryParams;

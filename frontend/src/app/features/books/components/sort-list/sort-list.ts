@@ -16,6 +16,8 @@ export class SortList {
    sortBy = signal<{ clearText: string, bookProperty: string }>({ clearText: 'Titel', bookProperty: 'title' });
    sortAscending = signal<boolean>(true);
 
+   private suppressEffect = false;
+
    constructor(private booksService: BooksService, private route: ActivatedRoute, private router: Router) {
       this.route.queryParams.subscribe(params => {
          const clearText = params['sortByClear'];
@@ -23,20 +25,27 @@ export class SortList {
          if (clearText && bookProperty) {
             const current = this.sortBy();
             if (current.clearText !== clearText || current.bookProperty !== bookProperty) {
+               this.suppressEffect = true;
                this.sortBy.set({ clearText, bookProperty });
+               queueMicrotask(() => this.suppressEffect = false);
             }
          }
 
-         if (params['sortAsc'] != undefined) {
+         if (params['sortAsc'] !== undefined) {
             const sortAscProperty = this.stringToBoolean(params['sortAsc']);
             const current = this.sortAscending();
             if (current != sortAscProperty) {
+               this.suppressEffect = true;
                this.sortAscending.set(sortAscProperty);
+               queueMicrotask(() => this.suppressEffect = false);
             }
          }
       });
 
       effect(() => {
+         if (this.suppressEffect) {
+            return;
+         }
          this.sortBooks(this.sortBy().bookProperty);
 
          const { clearText, bookProperty } = this.sortBy();
@@ -59,7 +68,7 @@ export class SortList {
 
          const sortAsc = this.sortAscending();
 
-         if (queryParams['sortAsc'] == undefined || this.stringToBoolean(queryParams['sortAsc']) != sortAsc) {
+         if (queryParams['sortAsc'] === undefined || this.stringToBoolean(queryParams['sortAsc']) !== sortAsc) {
             this.router.navigate([], {
                relativeTo: this.route,
                queryParams: {
