@@ -2,10 +2,11 @@ import { Component, effect, Input, signal } from '@angular/core';
 import { CdkMenuModule } from '@angular/cdk/menu';
 import { Book } from '../../../../types/Book.model';
 import { Genre } from '../../../../types/Genre.model';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, filter } from 'rxjs';
 import { Filter } from '../../../../types/Filter.model';
 import { Language } from '../../../../types/Language.model';
 import { KeyValuePipe } from '@angular/common';
+import { ActivatedRoute, Router } from '@angular/router';
 
 
 @Component({
@@ -37,12 +38,59 @@ export class FilterList {
       { key: 'authors' as keyof Book, label: 'Författare' },
    ];
 
-   constructor() {
-      // Gör en ny filtrering då filterBy har ändrats
-      effect(() => {
-         this.filterBooks();
+   constructor(private route: ActivatedRoute, private router: Router) {
+      this.route.queryParams.subscribe(params => {
+         const filterPropKey = params['filterPropKey'] ?? '';
+         const filterPropLabel = params['filterPropLabel'] ?? '';
+         const filterBy = JSON.parse(params['filterBy'] || '[]');
+
+         const currentProp = this.filterAlts();
+         const currentFilterBy = this.filterBy();
+
+         if (currentProp.key !== filterPropKey || currentProp.label !== filterPropLabel || JSON.stringify(currentFilterBy) !== JSON.stringify(filterBy)) {
+            this.filterAlts.set({key: filterPropKey, label: filterPropLabel});
+            this.filterBy.set(filterBy);
+         }
       });
+
+      effect(() => {
+         // Gör en ny filtrering då filterBy har ändrats
+         this.filterBooks();
+
+         const { key, label } = this.filterAlts();
+         const filterBy = this.filterBy();
+
+         const queryParams = this.route.snapshot.queryParams;
+         if (filterBy.length > 0) {
+            this.router.navigate([], {
+               relativeTo: this.route,
+               queryParams: {
+                  ...queryParams,
+                  ...(key && { filterPropKey: key }),
+                  ...(label && { filterPropLabel: label }),
+                  filterBy: JSON.stringify(filterBy)
+               },
+               queryParamsHandling: 'merge',
+               replaceUrl: true
+            });
+         } else if (queryParams['filterPropKey'] || queryParams['filterPropLabel'] || queryParams['filterBy']) {
+            this.router.navigate([], {
+               relativeTo: this.route,
+               queryParams: {
+                  ...queryParams,
+                  filterPropKey: null,
+                  filterPropLabel: null,
+                  filterBy: null
+               },
+               queryParamsHandling: 'merge',
+               replaceUrl: true
+            });
+         }
+      });
+
    }
+
+
 
    ngOnInit() {
       this.booksOriginal$
