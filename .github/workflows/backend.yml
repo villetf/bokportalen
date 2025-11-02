@@ -25,7 +25,7 @@ jobs:
 
       - name: Move project to target directory
         run: |
-         TARGET_DIR="/var/www/bokportalen_backend/"
+         TARGET_DIR="/var/www/bokportalen_backend"
          rm -rf ${TARGET_DIR:?}/*
          cp -r ./backend/dist/* "$TARGET_DIR"
       
