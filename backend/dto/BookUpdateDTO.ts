@@ -66,7 +66,7 @@ export class BookUpdateDTO {
 
    @Expose()
    @IsOptional()
-   @IsNumber({ maxDecimalPlaces: 1})
+   @IsNumber({ maxDecimalPlaces: 1 })
       rating?: number;
 
    @Expose()

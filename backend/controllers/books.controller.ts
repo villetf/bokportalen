@@ -122,16 +122,28 @@ export class BooksController {
 
       if (req.body.language) {
          const language = await LanguagesService.getLanguageById(req.body.language);
+         if (!language) {
+            res.status(500).json({ error: 'Given language does not exist' });
+            return;
+         }
          req.body.language = language;
       }
 
       if (req.body.originalLanguage) {
          const originalLanguage = await LanguagesService.getLanguageById(req.body.originalLanguage);
+         if (!originalLanguage) {
+            res.status(500).json({ error: 'Given original language does not exist' });
+            return;
+         }
          req.body.originalLanguage = originalLanguage;
       }
 
       if (req.body.genre) {
          const genre = await GenresService.getGenreById(req.body.genre);
+         if (!genre) {
+            res.status(500).json({ error: 'Given genre does not exist' });
+            return;
+         }
          req.body.genre = genre;
       }
 

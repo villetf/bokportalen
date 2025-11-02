@@ -17,7 +17,7 @@
          <label for="bookAuthors">Författare:</label>
          <div class="flex items-center">
             <div class="w-full">
-               <app-array-input formControlName="authors" [displayFn]="displayAuthor" [selectableItems]="allAuthors()" id="bookAuthors"></app-array-input>
+               <app-array-input formControlName="authors" [displayFn]="displayAuthor" [selectableItems]="allAuthors()" defaultSelectText="Välj författare..." id="bookAuthors"></app-array-input>
             
                @if (form.get('authors')?.invalid && formIsSubmitted) {
                   @if (form.get('authors')?.errors?.['required'] || form.get('authors')?.errors?.['minLength']) {

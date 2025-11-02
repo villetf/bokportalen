@@ -6,7 +6,7 @@
          
          <label for="bookAuthors">Författare:</label>
          <div class="flex items-center">
-            <app-array-input formControlName="authors" [displayFn]="displayAuthor" [selectableItems]="allAuthors()" class="w-full"></app-array-input>
+            <app-array-input formControlName="authors" [displayFn]="displayAuthor" [selectableItems]="allAuthors()" class="w-full" defaultSelectText="Välj författare..."></app-array-input>
             <i class="fa-solid fa-rotate ml-2 cursor-pointer active:rotate-180 active:transition-all" (click)="updateAuthorsList()"></i>
          </div>
       
@@ -34,9 +34,9 @@
          </div>
       
       
-         <label for="language">Originalspråk:</label>
+         <label for="originalLanguage">Originalspråk:</label>
          <div class="flex items-center">
-            <select formControlName="language" id="language" class="w-full">
+            <select formControlName="originalLanguage" id="originalLanguage" class="w-full">
                @for (language of allLanguages(); track language.id) {
                   <option [ngValue]="language.id">{{ language.name }}</option>
                }

@@ -19,6 +19,7 @@ export class ArrayInput<T extends { id: number | string }> implements ControlVal
    @Input() items: T[] = [];
    @Input() displayFn: (item: T) => string = (i: unknown) => String(i);
    @Input() selectableItems: T[] = [];
+   @Input() defaultSelectText!: string;
    selectedItem = signal<T | null>(null);
 
    private onChange: (value: T[]) => void = () => {};
