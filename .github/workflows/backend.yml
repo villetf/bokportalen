@@ -30,7 +30,7 @@ jobs:
          cp -r ./backend/dist/* "$TARGET_DIR"
          cp ./backend/package.json "$TARGET_DIR"
          cd "$TARGET_DIR"
-         npm ci --production
+         npm install --production
 
       - name: Restart service
         run: |
