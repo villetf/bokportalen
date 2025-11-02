@@ -26,4 +26,9 @@ export class AuthorRequestDTO {
    @IsOptional()
    @IsInt()
       country!: number | null;
+
+   @Expose()
+   @IsOptional()
+   @IsString()
+      imageLink!: string | null;
 }

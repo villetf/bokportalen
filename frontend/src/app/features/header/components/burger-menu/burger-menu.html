@@ -1,0 +1,22 @@
+<div class="space-y-[5px] cursor-pointer p-2" (click)="toggleMenu()">
+  <div class="w-6 h-[3px] bg-backgroundbeige rounded-3xl"></div>
+  <div class="w-6 h-[3px] bg-backgroundbeige rounded-3xl"></div>
+  <div class="w-6 h-[3px] bg-backgroundbeige rounded-3xl"></div>
+</div>
+
+@if (isOpen) {
+   <div (click)="closeMenu()" class="fixed inset-0 bg-black opacity-50 z-40"></div>
+}
+
+<div
+   class="flex flex-col items-center fixed top-0 left-0 h-full w-[25rem] z-50 transition-transform duration-300 bg-{{ bgColor }}"
+   [class.translate-x-0]="isOpen"
+   [class.-translate-x-full]="!isOpen"
+>
+   <div class="flex w-full justify-end">
+      <div class="mt-5 mr-7 cursor-pointer" (click)="closeMenu()">X</div>
+   </div>
+   <div class="w-full flex flex-col items-center" (click)="closeMenuOnLinkClick($event)">
+      <ng-content></ng-content>
+   </div>
+</div>

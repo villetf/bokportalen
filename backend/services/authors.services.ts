@@ -50,6 +50,7 @@ export class AuthorsService {
       newAuthor.birthYear = author.birthYear;
       const country = await CountriesService.getCountryById(author.country!);
       newAuthor.country = country;
+      newAuthor.imageLink = author.imageLink;
       const createdAuthor = await AppDataSource.getRepository(Author).save(newAuthor);
       return plainToInstance(Author, createdAuthor);
    }
@@ -57,6 +58,9 @@ export class AuthorsService {
    static async updateAuthor(author: Author, updatedFields: AuthorUpdateDTO) {
       // Tilldelar de nya fälten till författaren utan att påverka de övriga
       Object.assign(author, updatedFields);
+      if (updatedFields.countryId) {
+         author.country = await CountriesService.getCountryById(updatedFields.countryId);
+      }
       await AppDataSource.getRepository(Author).save(author);
    }
 }

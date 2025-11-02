@@ -1,0 +1,28 @@
+<div class="grid grid-cols-2 mt-10 gap-10">
+   <img src="{{ author()?.imageLink ? author()?.imageLink : author()?.gender + '_placeholder.jpg' }}" alt="Bild på {{ author()?.firstName }} {{ author()?.lastName }}" class="h-90 justify-self-end">
+   <div class="flex flex-col">
+      <h1 class="text-6xl font-bold text-bookolive mb-5">{{ author()?.firstName }} {{ author()?.lastName }}</h1>
+      <p><span class="alumni-font uppercase book-properties">Född: </span> <span class="amiri-font text-2xl">{{ author()?.birthYear ?? 'Ej angivet' }}</span></p>
+      <p><span class="alumni-font uppercase book-properties">Kön: </span> <span class="amiri-font text-2xl">{{ author()?.gender ?? 'Ej angivet' }} </span></p>
+      <p><span class="alumni-font uppercase book-properties">Land: </span> <span class="amiri-font text-2xl">{{ author()?.country ? author()?.country?.name : 'Ej angivet' }}</span></p>
+      <div class="mt-auto">
+         <app-button (click)="openEditView()" class="min-h-0">Redigera</app-button>
+      </div>
+   </div>
+</div>
+<div class="flex flex-col items-center mt-10">
+   <h2 class="text-2xl text-bookolive mb-10">Böcker av {{ author()?.firstName }} {{ author()?.lastName }} ({{ booksByAuthor().length }} st)</h2>
+   <div class="grid grid-cols-4 mx-10 ml-40">
+      @for (book of booksByAuthor(); track book.id) {
+         <div class="w-100">
+            <app-book-card [book]="book"></app-book-card>
+         </div>
+      }
+   </div>
+</div>
+
+@if (editViewIsOpen()) {
+   <app-edit-panel [closePanel]="closeEditView">
+      <app-edit-author-form [author]="author()!" (editViewIsOpen)="editViewIsOpen.set($event)" (authorChange)="updateAuthor($event)" (updateBooks)="updateBooksByAuthor()" />
+   </app-edit-panel>
+}

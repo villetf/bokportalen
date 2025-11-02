@@ -3,6 +3,10 @@ import { IsIn, IsInt, IsOptional, IsString } from 'class-validator';
 
 export class AuthorUpdateDTO {
    @Expose()
+   @IsInt()
+      id!: number | null;
+
+   @Expose()
    @IsOptional()
    @IsString()
       firstName!: string;
@@ -26,5 +30,10 @@ export class AuthorUpdateDTO {
    @Expose()
    @IsOptional()
    @IsInt()
-      country!: number | null;
+      countryId!: number | null;
+
+   @Expose()
+   @IsOptional()
+   @IsString()
+      imageLink!: string | null;
 }

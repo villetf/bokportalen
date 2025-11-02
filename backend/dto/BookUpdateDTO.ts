@@ -1,8 +1,14 @@
 import { Exclude, Expose } from 'class-transformer';
-import { IsString, IsInt, IsOptional, IsArray, IsBoolean } from 'class-validator';
+import { IsString, IsInt, IsOptional, IsArray, IsBoolean, IsNumber } from 'class-validator';
+import { Author } from '../entities/Author.js';
 
 @Exclude()
 export class BookUpdateDTO {
+   @Expose()
+   @IsOptional()
+   @IsNumber()
+      id!: number;
+
    @Expose()
    @IsOptional()
    @IsString()
@@ -11,7 +17,7 @@ export class BookUpdateDTO {
    @Expose()
    @IsOptional()
    @IsArray()
-      authors!: number[];
+      authors!: Author[];
 
    @Expose()
    @IsOptional()
@@ -25,18 +31,18 @@ export class BookUpdateDTO {
 
    @Expose()
    @IsOptional()
-   @IsString()
-      language?: string;
+   @IsNumber()
+      language?: number;
 
    @Expose()
    @IsOptional()
-   @IsString()
-      originalLanguage?: string;
+   @IsNumber()
+      originalLanguage?: number;
 
    @Expose()
    @IsOptional()
-   @IsString()
-      genre?: string;
+   @IsNumber()
+      genre?: number;
 
    @Expose()
    @IsOptional()
@@ -60,6 +66,16 @@ export class BookUpdateDTO {
 
    @Expose()
    @IsOptional()
-   @IsInt()
+   @IsNumber({ maxDecimalPlaces: 1 })
       rating?: number;
+
+   @Expose()
+   @IsOptional()
+   @IsString()
+      coverLink?: string;
+
+   @Expose()
+   @IsOptional()
+   @IsBoolean()
+      isDeleted?: boolean;
 }

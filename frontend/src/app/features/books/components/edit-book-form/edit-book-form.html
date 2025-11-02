@@ -1,0 +1,94 @@
+<div class="flex justify-center">
+   <form [formGroup]="form" class="mx-20 my-10 w-1/2">
+      <div class="grid grid-cols-[auto_75%] gap-y-2 gap-x-5 [&>label]:justify-self-end">
+         <label for="bookTitle" class="self-center">Titel:</label>
+         <input type="text" name="bookTitle" formControlName="title" class="form-text-input">
+         
+         <label for="bookAuthors">Författare:</label>
+         <div class="flex items-center">
+            <app-array-input formControlName="authors" [displayFn]="displayAuthor" [selectableItems]="allAuthors()" class="w-full" defaultSelectText="Välj författare..."></app-array-input>
+            <i class="fa-solid fa-rotate ml-2 cursor-pointer active:rotate-180 active:transition-all" (click)="updateAuthorsList()"></i>
+         </div>
+      
+         <label for="genre">Genre:</label>
+         <div class="flex items-center">
+            <select formControlName="genre" id="genre" class="w-full">
+               @for (genre of allGenres(); track genre.id) {
+                  <option [ngValue]="genre.id">{{ genre.name }}</option>
+               }
+            </select>
+            <i class="fa-solid fa-rotate ml-2 cursor-pointer active:rotate-180 active:transition-all" (click)="updateGenresList()"></i>
+         </div>
+         
+         <label for="yearWritten" class="self-center">Utgivningsår:</label>
+         <input type="number" formControlName="yearWritten" [max]="this.getCurrentYear()" class="form-text-input">
+      
+         <label for="language">Språk:</label>
+         <div class="flex items-center">
+            <select formControlName="language" id="language" class="w-full">
+               @for (language of allLanguages(); track language.id) {
+                  <option [ngValue]="language.id">{{ language.name }}</option>
+               }
+            </select>
+            <i class="fa-solid fa-rotate ml-2 cursor-pointer active:rotate-180 active:transition-all" (click)="updateLanguagesList()"></i>
+         </div>
+      
+      
+         <label for="originalLanguage">Originalspråk:</label>
+         <div class="flex items-center">
+            <select formControlName="originalLanguage" id="originalLanguage" class="w-full">
+               @for (language of allLanguages(); track language.id) {
+                  <option [ngValue]="language.id">{{ language.name }}</option>
+               }
+            </select>
+            <i class="fa-solid fa-rotate ml-2 cursor-pointer active:rotate-180 active:transition-all" (click)="updateLanguagesList()"></i>
+         </div>
+      
+         
+         <label for="format">Format:</label>
+         <select formControlName="format">
+            <option value="Danskt band">Danskt band</option>
+            <option value="Flexband">Flexband</option>
+            <option value="Häftad">Häftad</option>
+            <option value="Inbunden">Inbunden</option>
+            <option value="Pocket">Pocket</option>
+            <option value="Storpocket">Storpocket</option>
+         </select>
+      
+         <label for="isbn" class="self-center">ISBN:</label>
+         <input formControlName="isbn" class="form-text-input" >
+      
+         <label for="status">Status:</label>
+         <select formControlName="status">
+            <option [value]="null" disabled>Välj status...</option>
+            <option value="Läst">Läst</option>
+            <option value="Ej läst">Ej läst</option>
+            <option value="Utlånad">Utlånad</option>
+         </select>
+      
+         <label for="copies" class="self-center">Antal exemplar:</label>
+         <input type="number" formControlName="copies" min="1" class="form-text-input">
+      
+         <label for="coverLink" class="self-center">Länk till omslag:</label>
+         <input type="text" formControlName="coverLink" class="form-text-input">
+      
+         <label for="rating">Betyg:</label>
+         <div>
+            <input formControlName="rating" type="range" min="0" max="10" step="0.1">
+            <span>{{ form.get('rating')?.value ?? "Ej betygsatt" }}</span>
+         </div>
+      </div>
+
+      <div class="flex justify-around mt-10">
+         <app-button color="bg-red-700" hoverColor="hover:bg-red-900" (click)="openDeleteConfirmation()">Radera</app-button>
+         <app-button (click)="closeEditView()">Avbryt</app-button>
+         <app-button type="reset" (click)="resetForm()">Återställ</app-button>
+         <app-button type="submit" (click)="save()">Spara</app-button>
+      </div>
+   </form>
+
+   @if (deleteConfirmationIsOpen()) {
+      <app-delete-confirmation [closePanel]="closeDeleteConfirmation" [currentBook]="book"></app-delete-confirmation>
+   }
+
+</div>

@@ -3,17 +3,20 @@ import { BooksService } from '../services/books.services.js';
 import { Book } from '../entities/Book.js';
 import { BookRequestDTO } from '../dto/BookRequestDTO.js';
 import { BookUpdateDTO } from '../dto/BookUpdateDTO.js';
+import { LanguagesService } from '../services/languages.services.js';
+import { GenresService } from '../services/genres.services.js';
+import { AuthorsService } from '../services/authors.services.js';
 
 export class BooksController {
    static async getAllBooks(req: Request, res: Response) {
       try {
-         const books = await BooksService.getBooksByQuery(req);
+         const books = await BooksService.getBooksByQuery(req.query);
 
          // Mappar om egenskaperna på varje bok för att ändra ordning och välja vilka man vill visa
          res.json(books.map((book: Book) => ({
             id: book.id,
             title: book.title,
-            author: book.authors,
+            authors: book.authors,
             yearWritten: book.yearWritten,
             language: book.language,
             originalLanguage: book.originalLanguage,
@@ -22,7 +25,11 @@ export class BooksController {
             isbn: book.isbn,
             status: book.status,
             rating: book.rating,
-            isDeleted: book.isDeleted
+            createdAt: book.createdAt,
+            addedWithScanner: book.addedWithScanner,
+            copies: book.copies,
+            isDeleted: book.isDeleted,
+            coverLink: book.coverLink
          })));
       } catch (error) {
          if (error instanceof Error) {
@@ -50,7 +57,7 @@ export class BooksController {
       res.json({
          id: book.id,
          title: book.title,
-         author: book.authors,
+         authors: book.authors,
          yearWritten: book.yearWritten,
          language: book.language,
          originalLanguage: book.originalLanguage,
@@ -59,11 +66,48 @@ export class BooksController {
          isbn: book.isbn,
          status: book.status,
          rating: book.rating,
-         isDeleted: book.isDeleted
+         createdAt: book.createdAt,
+         addedWithScanner: book.addedWithScanner,
+         copies: book.copies,
+         isDeleted: book.isDeleted,
+         coverLink: book.coverLink
       });
    }
 
+   static async getDeletedBooks(req: Request, res: Response) {
+      const deletedBooks = await BooksService.getDeletedBooks();
+      res.json(deletedBooks.map((book: Book) => ({
+         id: book.id,
+         title: book.title,
+         authors: book.authors,
+         yearWritten: book.yearWritten,
+         language: book.language,
+         originalLanguage: book.originalLanguage,
+         genre: book.genre,
+         format: book.format,
+         isbn: book.isbn,
+         status: book.status,
+         rating: book.rating,
+         createdAt: book.createdAt,
+         addedWithScanner: book.addedWithScanner,
+         copies: book.copies,
+         isDeleted: book.isDeleted,
+         coverLink: book.coverLink
+      })));
+   }
+
    static async createBook(req: Request, res: Response) {
+      const checkBookReq = {
+         title: (req.body as BookRequestDTO).title,
+         authorFirstName: (await AuthorsService.getAuthorById((req.body as BookRequestDTO).authors[0]))?.firstName,
+         authorLastName: (await AuthorsService.getAuthorById((req.body as BookRequestDTO).authors[0]))?.lastName
+      };
+
+      if ((await BooksService.getBooksByQuery(checkBookReq)).length > 0) {
+         res.status(409).json({ message: 'Book already exists' });
+         return;
+      }
+
       const newBook = await BooksService.createBook(req.body as BookRequestDTO);
       res.status(201).json(newBook);
    }
@@ -74,11 +118,57 @@ export class BooksController {
          res.status(404).json({ error: 'Book not found' });
          return;
       }
+
+
+      if (req.body.language) {
+         const language = await LanguagesService.getLanguageById(req.body.language);
+         if (!language) {
+            res.status(500).json({ error: 'Given language does not exist' });
+            return;
+         }
+         req.body.language = language;
+      }
+
+      if (req.body.originalLanguage) {
+         const originalLanguage = await LanguagesService.getLanguageById(req.body.originalLanguage);
+         if (!originalLanguage) {
+            res.status(500).json({ error: 'Given original language does not exist' });
+            return;
+         }
+         req.body.originalLanguage = originalLanguage;
+      }
+
+      if (req.body.genre) {
+         const genre = await GenresService.getGenreById(req.body.genre);
+         if (!genre) {
+            res.status(500).json({ error: 'Given genre does not exist' });
+            return;
+         }
+         req.body.genre = genre;
+      }
+
       await BooksService.updateBook(bookToUpdate, req.body as BookUpdateDTO);
 
       const updatedBook = await BooksService.getBookById(Number.parseInt(req.params.id));
 
-      res.json(updatedBook);
+      res.json({
+         id: updatedBook!.id,
+         title: updatedBook!.title,
+         authors: updatedBook!.authors,
+         yearWritten: updatedBook!.yearWritten,
+         language: updatedBook!.language,
+         originalLanguage: updatedBook!.originalLanguage,
+         genre: updatedBook!.genre,
+         format: updatedBook!.format,
+         isbn: updatedBook!.isbn,
+         status: updatedBook!.status,
+         rating: updatedBook!.rating,
+         createdAt: updatedBook!.createdAt,
+         addedWithScanner: updatedBook!.addedWithScanner,
+         copies: updatedBook!.copies,
+         isDeleted: updatedBook!.isDeleted,
+         coverLink: updatedBook!.coverLink
+      });
    }
 
    static async markBookAsDeleted(req: Request, res: Response) {

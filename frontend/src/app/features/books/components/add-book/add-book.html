@@ -1,0 +1,103 @@
+<div class="w-1/2 h-3/4 mr-30">
+   <form [formGroup]="form" (ngSubmit)="save()">
+      <div class="grid grid-cols-[auto_75%] gap-y-2 gap-x-5 [&>label]:justify-self-end">
+         <div></div>
+         <h1 class="text-5xl font-bold text-bookolive mb-5">LÄGG TILL BOK</h1>
+
+         <label for="bookTitle" class="self-center">Titel:</label>
+         <input type="text" name="bookTitle" formControlName="title" class="form-text-input" id="bookTitle" #titleInput>
+
+         @if (form.get('title')?.invalid && formIsSubmitted) {
+            @if (form.get('title')?.errors?.['required']) {
+               <div></div>
+               <span class="text-red-500">Titel är obligatorisk.</span>
+            }
+         }
+         
+         <label for="bookAuthors">Författare:</label>
+         <div class="flex items-center">
+            <div class="w-full">
+               <app-array-input formControlName="authors" [displayFn]="displayAuthor" [selectableItems]="allAuthors()" defaultSelectText="Välj författare..." id="bookAuthors"></app-array-input>
+            
+               @if (form.get('authors')?.invalid && formIsSubmitted) {
+                  @if (form.get('authors')?.errors?.['required'] || form.get('authors')?.errors?.['minLength']) {
+                     <div></div>
+                     <span class="text-red-500">Du måste välja minst en författare.</span>
+                  }
+               }
+            </div>
+            <i class="fa-solid fa-rotate ml-2 cursor-pointer active:rotate-180 active:transition-all" (click)="updateAuthorsList()"></i>
+         </div>
+
+         <label for="genre">Genre:</label>
+         <div class="flex items-center">
+            <select formControlName="genre" id="genre" class="w-full">
+               @for (genre of allGenres(); track genre.id) {
+                  <option [ngValue]="genre.id">{{ genre.name }}</option>
+               }
+            </select>
+            <i class="fa-solid fa-rotate ml-2 cursor-pointer active:rotate-180 active:transition-all" (click)="updateGenresList()"></i>
+         </div>
+         
+         <label for="yearWritten" class="self-center">Utgivningsår:</label>
+         <input type="number" formControlName="yearWritten" [max]="this.getCurrentYear()" class="form-text-input" id="yearWritten">
+
+         @if (form.get('yearWritten')?.invalid) {
+            @if (form.get('yearWritten')?.errors?.['max']) {
+               <div></div>
+               <span class="text-red-500">Året kan inte vara i framtiden.</span>
+            }
+         }
+      
+         <label for="language">Språk:</label>
+         <div class="flex items-center">
+            <select formControlName="language" id="language" class="w-full">
+               @for (language of allLanguages(); track language.id) {
+                  <option [ngValue]="language.id">{{ language.name }}</option>
+               }
+            </select>
+            <i class="fa-solid fa-rotate ml-2 cursor-pointer active:rotate-180 active:transition-all" (click)="updateLanguagesList()"></i>
+         </div>
+
+         <label for="originalLanguage">Originalspråk:</label>
+         <div class="flex items-center">
+            <select formControlName="originalLanguage" id="originalLanguage" class="w-full">
+               @for (language of allLanguages(); track language.id) {
+                  <option [ngValue]="language.id">{{ language.name }}</option>
+               }
+            </select>
+            <i class="fa-solid fa-rotate ml-2 cursor-pointer active:rotate-180 active:transition-all" (click)="updateLanguagesList()"></i>
+         </div>
+         
+         <label for="format">Format:</label>
+         <select formControlName="format" id="format">
+            <option value="Danskt band">Danskt band</option>
+            <option value="Flexband">Flexband</option>
+            <option value="Häftad">Häftad</option>
+            <option value="Inbunden">Inbunden</option>
+            <option value="Pocket">Pocket</option>
+            <option value="Storpocket">Storpocket</option>
+         </select>
+      
+         <label for="isbn" class="self-center">ISBN:</label>
+         <input formControlName="isbn" class="form-text-input" id="isbn">
+
+         @if (form.get('isbn')?.invalid && formIsSubmitted) {
+            @if (form.get('isbn')?.errors?.['pattern']) {
+               <div></div>
+               <span class="text-red-500">ISBN får inte innehålla bokstäver.</span>
+            }
+         }
+      
+         <label for="coverLink" class="self-center">Länk till omslag:</label>
+         <input type="text" formControlName="coverLink" class="form-text-input" id="coverLink">
+
+         <div></div>
+         <div class="flex justify-start gap-10 mt-5">
+            <app-button (click)="resetForm()">Återställ</app-button>
+            <app-button type="submit">Spara</app-button>
+         </div>
+      </div>
+
+   </form>
+</div>

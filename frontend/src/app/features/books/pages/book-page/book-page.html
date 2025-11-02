@@ -1,0 +1,68 @@
+@if (book$ | async; as book) {
+   <div class="flex w-full h-full items-center">
+      <div class="h-full w-full place-items-center grid grid-cols-[33%_1fr_20%]">
+         <img [src]="book.coverLink ? book.coverLink : 'book-cover-placeholder.png'" alt="Omslagsbild för {{ book.title }}" class="aspect-[2/3] justify-self-end h-120">
+         <div class="justify-self-start flex justify-between w-full items-start">
+            <div class="ml-10">
+               <h1 [ngClass]="getTitleClass(book.title)" class="font-bold text-bookolive">{{ book.title }}</h1>
+               <h3 class="text-2xl mt-1">
+                  @for (author of book.authors; track author.id) {
+                     <a routerLink="/authors/{{ author.id }}" class="cursor-pointer hover:underline cabin-font">{{ author.firstName }} {{ author.lastName }}</a>
+                     @if (!$last) {
+                        <span>, </span>
+                     }
+                  }
+               </h3>
+               <div class="mt-5">
+                  <p><span class="book-properties alumni-font">GENRE:</span><span class="amiri-font text-2xl"> {{ book.genre ? book.genre.name : 'Ej angivet' }}</span></p>
+                  <p><span class="book-properties alumni-font">UTGIVNINGSÅR:</span><span class="amiri-font text-2xl"> {{ book.yearWritten ? book.yearWritten : 'Ej angivet' }}</span></p>
+                  <p><span class="book-properties alumni-font">SPRÅK:</span><span class="amiri-font text-2xl"> {{ book.language ? book.language.name : 'Ej angivet' }}</span></p>
+                  <p><span class="book-properties alumni-font">ORIGINALSPRÅK:</span><span class="amiri-font text-2xl"> {{ book.originalLanguage ? book.originalLanguage.name : 'Ej angivet' }}</span></p>
+                  <p><span class="book-properties alumni-font">FORMAT:</span><span class="amiri-font text-2xl"> {{ book.format ? book.format : 'Ej angivet' }}</span></p>
+                  <p><span class="book-properties alumni-font">TILLAGD:</span><span class="amiri-font text-2xl"> {{ book.createdAt ? (book.createdAt | date: 'yyyy-MM-dd HH:mm' ) : 'Ej angivet' }}</span></p>
+                  <p><span class="book-properties alumni-font">ISBN:</span><span class="amiri-font text-2xl"> {{ book.isbn ? book.isbn : 'Ej angivet' }}</span></p>
+                  <p><span class="book-properties alumni-font">STATUS:</span><span class="amiri-font text-2xl"> {{ book.status ? book.status : 'Ej angivet' }}</span></p>
+                  <p><span class="book-properties alumni-font">ANTAL EXEMPLAR:</span><span class="amiri-font text-2xl"> {{ book.copies ? book.copies : 'Ej angivet' }}</span></p>
+                  <p><span class="book-properties alumni-font">BETYG:</span><span class="amiri-font text-2xl"> {{ book.rating ? book.rating : 'Inget betyg satt' }}</span></p>
+               </div>
+            </div>
+
+            @if (currentBook.isDeleted) {
+               <h1 class="absolute z-40 bottom-100 left-1/10 text-red-500 text-[200px] rotate-[25deg]">RADERAD</h1>
+               <app-button (click)="resetDeletedBook()">Återställ</app-button>
+            } @else {
+               <app-button (click)="openEditView()" class="min-h-0">Redigera</app-button>
+               <div class="max-w-40 h-full"></div>
+            }
+         </div>
+      
+         <div class="h-full overflow-hidden">
+            
+            @if (booksByAuthor()) {
+               @if (booksByAuthor().length > book.authors.length) {
+                  <div class="flex flex-col h-full w-full overflow-auto min-h-0 mt-45">
+                     <h5 class="text-2xl mb-5 uppercase">
+                     @if (book.authors.length == 1) {
+                        Mer av {{ book.authors[0].firstName}} {{ book.authors[0].lastName }}:
+                     } @else {
+                        Mer av dessa författare:
+                     }
+                     </h5>
+                  @for (bookInList of booksByAuthor(); track $index) {
+                     @if (bookInList.title != book.title) {
+                        <app-book-card [book]="bookInList" class=""></app-book-card>
+                     }
+                  }
+                  </div>
+               }
+            }
+         </div>
+      </div>
+   </div>
+   
+   @if (editViewIsOpen()) {
+      <app-edit-panel [closePanel]="closeEditView">
+         <app-edit-book-form [book]="book" (editViewIsOpen)="editViewIsOpen.set($event)" (bookChange)="updateBook($event)"></app-edit-book-form>
+      </app-edit-panel>
+   }
+}

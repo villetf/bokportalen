@@ -1,0 +1,37 @@
+<div class="flex justify-center h-full items-center">
+   <form [formGroup]="form" class="mx-20 my-10 w-1/2">
+      <div class="grid grid-cols-[auto_75%] gap-y-2 gap-x-5 [&>label]:justify-self-end">
+         <label for="firstName" class="self-center">Förnamn:</label>
+         <input type="text" formControlName="firstName" class="form-text-input" id="firstName">
+         
+         <label for="lastName">Efternamn:</label>
+         <input type="text" formControlName="lastName" class="form-text-input" id="lastName">
+      
+         <label for="genre">Kön:</label>
+         <select formControlName="gender" id="gender">
+            <option value="Kvinna">Kvinna</option>
+            <option value="Man">Man</option>
+            <option value="Annat">Annat</option>
+         </select>
+         
+         <label for="birthYear" class="self-center">Födelseår:</label>
+         <input type="number" formControlName="birthYear" [max]="this.getCurrentYear()" class="form-text-input" id="birthYear">
+      
+         <label for="country">Land:</label>
+         <select formControlName="countryId" id="country">
+            @for (country of allCountries(); track country.id) {
+               <option [ngValue]="country.id">{{ country.name }}</option>
+            }
+         </select>
+      
+         <label for="imageLink" class="self-center">Bildlänk:</label>
+         <input formControlName="imageLink" class="form-text-input" id="imageLink">
+      </div>
+
+      <div class="flex justify-around mt-10">
+         <app-button (click)="closeEditView()">Avbryt</app-button>
+         <app-button (click)="resetForm()">Återställ</app-button>
+         <app-button type="submit" (click)="save()">Spara</app-button>
+      </div>
+   </form>
+</div>

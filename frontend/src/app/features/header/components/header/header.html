@@ -1,0 +1,18 @@
+<header class="w-full h-23 bg-headerbrown flex justify-between items-center">
+   <div class="ml-20 w-1/2 flex">
+      <app-burger-menu backgroundColor="backgroundbeige" class="mr-30">
+         <a routerLink="/" class="text-4xl hover:underline mb-5">Start</a>
+         <a routerLink="/books" class="text-3xl hover:underline">Alla böcker</a>
+         <a routerLink="/books/deleted" class="text-3xl hover:underline">Raderade böcker</a>
+         <a routerLink="/add" [queryParams]="{ resource: 'book' }" class="text-3xl mt-5">Lägg till...</a>
+         <a routerLink="/add" [queryParams]="{ resource: 'book' }" class="text-2xl hover:underline">Bok</a>
+         <a routerLink="/add" [queryParams]="{ resource: 'author' }" class="text-2xl hover:underline">Författare</a>
+         <a routerLink="/add" [queryParams]="{ resource: 'genre' }" class="text-2xl hover:underline">Genre</a>
+         <a routerLink="/add" [queryParams]="{ resource: 'language' }" class="text-2xl hover:underline">Språk</a>
+      </app-burger-menu>
+      <a routerLink="/books" class="text-3xl text-backgroundbeige mr-30">BOKHYLLA</a>
+      <a routerLink="/add" [queryParams]="{ resource: 'book' }" class="text-3xl text-backgroundbeige mr-30">LÄGG TILL</a>
+      <!-- <a routerLink="/scan" class="text-3xl text-backgroundbeige mr-30">SKANNA</a> -->
+      <!-- <a routerLink="/search" class="text-3xl text-backgroundbeige">SÖK</a> -->
+   </div>
+</header>

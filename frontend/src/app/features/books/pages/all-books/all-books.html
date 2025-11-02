@@ -1,0 +1,31 @@
+<div class="flex flex-col flex-1 ml-25 mr-15 pt-17 h-full">
+   <h1 class="text-5xl font-bold text-bookolive">BOKSAMLING</h1>
+   <div class="flex justify-between mt-5">
+      <div class="flex">
+         <div class="flex items-center justify-center">
+            <app-sort-list [booksOriginal$]="booksOriginal$" />
+         </div>
+   
+         <div class="flex items-center justify-center">
+            <app-filter-list [booksOriginal$]="booksOriginal$" [booksFiltered$]="booksFiltered$"></app-filter-list>
+         </div>
+      </div>
+      <div>
+         <div class="flex">
+            <app-search-bar [booksFiltered$]="booksFiltered$" [booksSearched$]="booksSearched$" />
+            <i class="fa-solid fa-dice text-5xl -mt-10 ml-5 cursor-pointer text-bookolive" (click)="getRandomBook()"></i>
+         </div>
+         <div class="w-full mt-5 text-right text-xl">
+            <p class="text-headerbrown">Antal böcker: {{ numberOfBooks() }}</p>
+         </div>
+      </div>
+   </div>
+
+   <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mt-8 overflow-scroll overflow-x-hidden max-h-full">
+      @if (booksSearched$ | async; as books ) {
+         @for (book of books; track book.id) {
+            <app-book-card [book]="book"></app-book-card>
+         }
+      }
+   </div>
+</div>

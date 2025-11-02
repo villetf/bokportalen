@@ -1,0 +1,9 @@
+<div class="flex flex-col flex-1 ml-25 mr-15 pt-17 h-full">
+   <h1 class="text-5xl font-bold text-bookolive mb-10">RADERADE BÖCKER</h1>
+
+   <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mt-5 overflow-scroll max-h-full">
+      @for (book of deletedBooks(); track book.id) {
+         <app-book-card [book]="book"></app-book-card>
+      }
+   </div>
+</div>

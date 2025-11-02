@@ -1,17 +1,17 @@
 import { AppDataSource } from '../data-source.js';
 import { BookRequestDTO } from '../dto/BookRequestDTO.js';
 import { Book } from '../entities/Book.js';
-import type { Request } from 'express';
 import { AuthorsService } from './authors.services.js';
 import { GenresService } from './genres.services.js';
 import { LanguagesService } from './languages.services.js';
 import { BookUpdateDTO } from '../dto/BookUpdateDTO.js';
 
 export class BooksService {
-   static async getBooksByQuery(req: Request) {
+   static async getBooksByQuery(queryParams: Record<string, unknown>) {
       const queryBuilder = AppDataSource.getRepository(Book)
          .createQueryBuilder('book')
          .leftJoinAndSelect('book.authors', 'author')
+         .leftJoinAndSelect('author.country', 'country')
          .leftJoinAndSelect('book.language', 'language')
          .leftJoinAndSelect('book.originalLanguage', 'originalLanguage')
          .leftJoinAndSelect('book.genre', 'genre');
@@ -32,7 +32,7 @@ export class BooksService {
       };
 
       // För varje inskickad filterparameter, kolla att den finns i listan över giltiga filter
-      for (const key in req.query) {
+      for (const key in queryParams) {
          if (!validFilters[key]) {
             // Specialhantering för includeDeleted, eftersom det inte är ett filter utan ett val
             if (key != 'includeDeleted') {
@@ -43,7 +43,7 @@ export class BooksService {
 
       // Gå igenom alla giltiga filter, om queryn innehåller filtret, lägg till det på queryn till databasen
       for (const [paramKey, dbField] of Object.entries(validFilters)) {
-         const value = req.query[paramKey];
+         const value = queryParams[paramKey];
          if (value) {
             queryBuilder.andWhere(`${dbField} = :${paramKey}`, {
                [paramKey]: value
@@ -52,7 +52,7 @@ export class BooksService {
       }
 
       // Om det inte specificerats, sätt att raderade böcker inte ska visas
-      if (req.query.includeDeleted != 'true') {
+      if (queryParams.includeDeleted != 'true') {
          queryBuilder.andWhere('book.isDeleted = :isDeleted', { isDeleted: false });
       }
 
@@ -68,30 +68,37 @@ export class BooksService {
       });
    }
 
+   static async getDeletedBooks() {
+      return AppDataSource.getRepository(Book).find({
+         where: { isDeleted: true },
+         relations: ['authors', 'language', 'originalLanguage', 'genre']
+      });
+   }
+
    static async createBook(inputBook: BookRequestDTO) {
       let language = null;
 
-      // Om språk anges, hämta eller skapa det
+      // Om språk, originalspråk och genre anges, hämta eller kasta fel
       if (inputBook.language) {
-         language = await LanguagesService.getLanguageByName(inputBook.language);
+         language = await LanguagesService.getLanguageById(inputBook.language);
          if (!language) {
-            language = await LanguagesService.addLanguage(inputBook.language);
+            throw new Error('Language not found');
          }
       }
 
       let originalLanguage = null;
       if (inputBook.originalLanguage) {
-         originalLanguage = await LanguagesService.getLanguageByName(inputBook.originalLanguage);
+         originalLanguage = await LanguagesService.getLanguageById(inputBook.originalLanguage);
          if (!originalLanguage) {
-            originalLanguage = await LanguagesService.addLanguage(inputBook.originalLanguage);
+            throw new Error('Original language not found');
          }
       }
 
       let genre = null;
       if (inputBook.genre) {
-         genre = await GenresService.getGenreByName(inputBook.genre);
+         genre = await GenresService.getGenreById(inputBook.genre);
          if (!genre) {
-            genre = await GenresService.addGenre(inputBook.genre);
+            throw new Error('Genre not found');
          }
       }
 
@@ -117,13 +124,14 @@ export class BooksService {
       newBook.createdAt = new Date();
       newBook.copies = 1;
       newBook.addedWithScanner = inputBook.addedWithScanner ? inputBook.addedWithScanner : false;
+      newBook.coverLink = inputBook.coverLink ? inputBook.coverLink : null;
 
       return AppDataSource.getRepository(Book).save(newBook);
    }
 
    static async updateBook(book: Book, updateData: Partial<BookUpdateDTO>) {
       Object.assign(book, updateData);
-      AppDataSource.getRepository(Book).save(book);
+      await AppDataSource.getRepository(Book).save(book);
    }
 
    static async markBookAsDeleted(book: Book) {

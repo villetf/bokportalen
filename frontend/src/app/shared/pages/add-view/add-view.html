@@ -1,0 +1,50 @@
+<div class="flex items-center h-full">
+   <div class="flex flex-col gap-10 w-50 bg-[#fefcf5] h-full justify-center">
+      <a 
+         [routerLink]="['/add']" 
+         [queryParams]="{ resource: 'book' }" 
+         class="p-5 hover:bg-backgroundbeige block cabin-font"
+      >
+         <p>Bok</p>
+      </a>
+      <a 
+         [routerLink]="['/add']" 
+         [queryParams]="{ resource: 'author' }" 
+         class="p-5 hover:bg-backgroundbeige block cabin-font"
+      >
+         <p>Författare</p>
+      </a>
+      <a 
+         [routerLink]="['/add']" 
+         [queryParams]="{ resource: 'genre' }" 
+         class="p-5 hover:bg-backgroundbeige block cabin-font"
+      >
+         <p>Genre</p>
+      </a>
+      <a 
+         [routerLink]="['/add']" 
+         [queryParams]="{ resource: 'language' }" 
+         class="p-5 hover:bg-backgroundbeige block cabin-font"
+      >
+         <p>Språk</p>
+      </a>
+   </div>
+   
+   @switch (selectedView()) {
+      @case ('book') {
+         <app-add-book class="w-8/10 flex justify-center" />
+      }
+   
+      @case ('author') {
+         <app-add-author class="w-8/10 flex justify-center" />
+      }
+   
+      @case ('genre') {
+         <app-add-genre class="w-8/10 flex justify-center" />
+      }
+   
+      @case ('language') {
+         <app-add-language class="w-8/10 flex justify-center" />
+      }
+   }
+</div>

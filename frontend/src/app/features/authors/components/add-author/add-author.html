@@ -1,0 +1,55 @@
+<div class="w-1/2 h-3/4 mr-30">
+   <form [formGroup]="form" (ngSubmit)="save()">
+      <div class="grid grid-cols-[auto_75%] gap-y-2 gap-x-5 [&>label]:justify-self-end">
+         <div></div>
+         <h1 class="text-5xl font-bold text-bookolive mb-5">LÄGG TILL FÖRFATTARE</h1>
+
+         <label for="firstName" class="self-center">Förnamn:</label>
+         <input type="text" formControlName="firstName" class="form-text-input" id="firstName" #nameInput>
+
+         @if (form.get('firstName')?.invalid && formIsSubmitted) {
+            @if (form.get('firstName')?.errors?.['required']) {
+               <div></div>
+               <span class="text-red-500">Förnamn är obligatorisk. Om bara ett namn finns, sätt det som förnamn.</span>
+            }
+         }
+         
+         <label for="lastName">Efternamn:</label>
+         <input type="text" formControlName="lastName" class="form-text-input" id="lastName">
+
+         <label for="gender">Kön:</label>
+         <select formControlName="gender" id="gender">
+            <option value="Kvinna">Kvinna</option>
+            <option value="Man">Man</option>
+            <option value="Annat">Annat</option>
+         </select>
+         
+         <label for="birthYear" class="self-center">Födelseår:</label>
+         <input type="number" formControlName="birthYear" [max]="this.getCurrentYear()" class="form-text-input" id="birthYear">
+
+         @if (form.get('birthYear')?.invalid) {
+            @if (form.get('birthYear')?.errors?.['max']) {
+               <div></div>
+               <span class="text-red-500">Året kan inte vara i framtiden.</span>
+            }
+         }
+      
+         <label for="country">Land:</label>
+         <select formControlName="country" id="country">
+            @for (country of allCountries(); track country.id) {
+               <option [ngValue]="country">{{ country.name }}</option>
+            }
+         </select>
+      
+         <label for="imageLink">Bildlänk:</label>
+         <input type="text" formControlName="imageLink" class="form-text-input" id="imageLink">
+
+         <div></div>
+         <div class="flex justify-start gap-10 mt-5">
+            <app-button (click)="resetForm()">Återställ</app-button>
+            <app-button type="submit">Spara</app-button>
+         </div>
+      </div>
+
+   </form>
+</div>

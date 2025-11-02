@@ -1,0 +1,11 @@
+<div (click)="closePanel()" class="fixed inset-0 bg-black opacity-50 z-40"></div>
+
+<div class="size-full fixed z-40 top-0 left-0 pointer-events-none flex justify-center items-center">
+   <div class="bg-backgroundbeige pointer-events-auto w-120 h-50 rounded-4xl flex flex-col justify-center items-center">
+      <p class="mx-18 text-base text-center mb-5">Är du säker på att du vill radera denna bok? Du kan alltid se och återställa raderade böcker senare.</p>
+      <div>
+         <app-button class="mr-5" (click)="closePanel()">Nej, avbryt</app-button>
+         <app-button color="bg-red-700" hoverColor="hover:bg-red-900" (click)="deleteBook()">Ja, radera</app-button>
+      </div>
+   </div>
+</div>

@@ -23,18 +23,18 @@ export class BookRequestDTO {
 
    @Expose()
    @IsOptional()
-   @IsString()
-      language?: string;
+   @IsInt()
+      language?: number;
 
    @Expose()
    @IsOptional()
-   @IsString()
-      originalLanguage?: string;
+   @IsInt()
+      originalLanguage?: number;
 
    @Expose()
    @IsOptional()
-   @IsString()
-      genre?: string;
+   @IsInt()
+      genre?: number;
 
    @Expose()
    @IsOptional()
@@ -45,4 +45,9 @@ export class BookRequestDTO {
    @IsOptional()
    @IsBoolean()
       addedWithScanner?: boolean;
+
+   @Expose()
+   @IsOptional()
+   @IsString()
+      coverLink?: string;
 }
