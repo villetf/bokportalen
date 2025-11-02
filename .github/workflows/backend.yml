@@ -28,7 +28,7 @@ jobs:
          TARGET_DIR="/var/www/bokportalen_backend"
          rm -rf ${TARGET_DIR:?}/*
          cp -r ./backend/dist/* "$TARGET_DIR"
-      
+         cp ./backend/package.json "$TARGET_DIR"
 
       - name: Restart service
         run: |
