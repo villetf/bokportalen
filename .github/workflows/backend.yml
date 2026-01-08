@@ -1,0 +1,37 @@
+name: Deploy Bokportalen backend
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 1
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: backend
+
+      - name: Build project
+        run: npm run build
+        working-directory: backend
+
+      - name: Move project to target directory
+        run: |
+         TARGET_DIR="/var/www/bokportalen_backend"
+         rm -rf ${TARGET_DIR:?}/*
+         cp -r ./backend/dist/* "$TARGET_DIR"
+         cp ./backend/package.json "$TARGET_DIR"
+         cd "$TARGET_DIR"
+         npm install --production
+
+      - name: Restart service
+        run: |
+          sudo systemctl restart bokportalen_backend.service
