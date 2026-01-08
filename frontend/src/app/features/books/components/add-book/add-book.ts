@@ -28,7 +28,13 @@ export class AddBook {
    allLanguages = signal<Language[]>([]);
    formIsSubmitted = false;
 
-   displayAuthor = (author: Author) => `${author.firstName}${author.lastName ? ' ' + author.lastName : '' }`;
+   displayAuthor = (author: Author) => `${author.lastName ? author.lastName + ', ' : '' }${author.firstName}`;
+
+   compareAuthorsByLastName(a: Author, b: Author) {
+      const aLast = (a.lastName || '').toLocaleLowerCase();
+      const bLast = (b.lastName || '').toLocaleLowerCase();
+      return aLast.localeCompare(bLast);
+   }
 
    constructor(
       private fb: FormBuilder,
