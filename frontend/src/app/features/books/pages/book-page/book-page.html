@@ -36,19 +36,20 @@
             }
          </div>
       
-         <div class="h-full overflow-hidden">
+         <div class="h-full overflow-hidden flex flex-col min-h-0">
             @if (booksByAuthor().length) {
-               <div class="flex flex-col h-full w-full overflow-auto min-h-0 mt-45">
-                  <h5 class="text-2xl mb-5 uppercase">
+               <div class="h-45"></div>
+               <h5 class="text-2xl mb-2 uppercase">
                   @if (book.authors.length == 1) {
                      Mer av {{ book.authors[0].firstName}} {{ book.authors[0].lastName }}:
                   } @else {
                      Mer av dessa författare:
                   }
-                  </h5>
-               @for (bookInList of booksByAuthor(); track bookInList.id) {
-                  <app-book-card [book]="bookInList" class=""></app-book-card>
-               }
+               </h5>
+               <div class="relative flex-1 w-full overflow-auto min-h-0 flex flex-col pt-3 [mask-image:linear-gradient(to_bottom,transparent_0px,black_3px)]">
+                  @for (bookInList of booksByAuthor(); track bookInList.id) {
+                     <app-book-card [book]="bookInList" class=""></app-book-card>
+                  }
                </div>
             }
          </div>
