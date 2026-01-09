@@ -1,7 +1,7 @@
 @if (book$ | async; as book) {
    <div class="flex w-full h-full items-center">
       <div class="h-full w-full place-items-center grid grid-cols-[33%_1fr_20%]">
-         <img [src]="book.coverLink ? book.coverLink : 'book-cover-placeholder.png'" alt="Omslagsbild för {{ book.title }}" class="aspect-[2/3] justify-self-end h-120">
+         <img [src]="book.coverLink ? book.coverLink : 'book-cover-placeholder.png'" alt="Omslagsbild för {{ book.title }}" class="justify-self-end h-120">
          <div class="justify-self-start flex justify-between w-full items-start">
             <div class="ml-10">
                <h1 [ngClass]="getTitleClass(book.title)" class="font-bold text-bookolive">{{ book.title }}</h1>

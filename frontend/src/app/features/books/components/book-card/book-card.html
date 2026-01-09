@@ -1,5 +1,7 @@
 <div class="flex items-start">
-   <img [src]="book.coverLink ? book.coverLink : 'book-cover-placeholder.png'" alt="Omslagsbild för {{ book.title }}" class="cursor-pointer w-40/100 aspect-[2/3] mb-10" [routerLink]="'/books/' + book.id">
+   <div class="w-4/10 aspect-[2/3] mb-10 flex items-start justify-center overflow-hidden shrink-0">
+      <img [src]="book.coverLink ? book.coverLink : 'book-cover-placeholder.png'" alt="Omslagsbild för {{ book.title }}" class="cursor-pointer block h-full w-auto max-w-full max-h-full object-contain object-top" [routerLink]="'/books/' + book.id">
+   </div>
    <div class="ml-2">
       <a routerLink="/books/{{ book.id }}" class="cursor-pointer hover:underline">
          <p class="font-bold amiri-font">{{ book.title }}</p>
