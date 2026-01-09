@@ -57,12 +57,23 @@ export class BookPage implements OnInit {
    };
 
    updateBooksByAuthor = () => {
+      const seenIds = new Set<number>();
+      const aggregated: Book[] = [];
+      console.log('uppdaterar', this.currentBook.authors);
       this.booksByAuthor.set([]);
       this.currentBook.authors.forEach(author => {
          this.booksService.getBooksByAuthor(author.id).subscribe(books => {
             books.forEach(book => {
-               this.booksByAuthor.set([...this.booksByAuthor(), book]);
+               console.log('bok', book);
+               console.log('seenlista', seenIds);
+               console.log('agglista', aggregated);
+               if (book.id !== this.currentBook.id && !seenIds.has(book.id)) {
+                  seenIds.add(book.id);
+                  aggregated.push(book);
+               }
             });
+            console.log('sätter lista', aggregated);
+            this.booksByAuthor.set([...aggregated]);
          });
       });
    };
