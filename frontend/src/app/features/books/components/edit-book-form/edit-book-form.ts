@@ -30,7 +30,7 @@ export class EditBookForm implements OnInit {
    form!: FormGroup;
 
 
-   displayAuthor = (author: Author) => `${author.firstName} ${author.lastName}`;
+   displayAuthor = (author: Author) => `${author.lastName ? author.lastName + ', ' : '' }${author.firstName}`;
 
    constructor(
       private fb: FormBuilder,
