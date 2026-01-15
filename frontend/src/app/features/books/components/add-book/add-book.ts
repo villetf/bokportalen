@@ -1,5 +1,5 @@
 import { Component, ElementRef, signal, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, AbstractControl, ValidatorFn } from '@angular/forms';
 import { AuthorsService } from '../../../../services/authorsService';
 import { GenresService } from '../../../../services/genresService';
 import { LanguagesService } from '../../../../services/languagesService';
@@ -52,7 +52,7 @@ export class AddBook {
 
       this.form = this.fb.group({
          title: [[], [Validators.required]],
-         authors: [[{}], [Validators.required, Validators.minLength(1)]],
+         authors: [[{}], [this.atLeastOneAuthor()]],
          yearWritten: [[], [Validators.max(this.getCurrentYear())]],
          genre: [],
          language: [],
@@ -85,7 +85,7 @@ export class AddBook {
 
    save() {
       this.formIsSubmitted = true;
-      if (this.form.valid && !JSON.stringify(this.form.value.authors).match('{}')) {
+      if (this.form.valid) {
          const newBook: AddBookDTO = this.form.value;
          if (newBook.isbn) {
             newBook.isbn = Number(newBook.isbn);
@@ -144,5 +144,16 @@ export class AddBook {
 
    updateLanguagesList() {
       this.languagesService.getAllLanguages().then(languages => this.allLanguages.set(languages));
+   }
+
+   private atLeastOneAuthor(): ValidatorFn {
+      return (control: AbstractControl) => {
+         const value = control.value;
+         if (Array.isArray(value)) {
+            const hasRealAuthor = value.some((author: Author) => author && author.id != null);
+            return hasRealAuthor ? null : { required: true };
+         }
+         return { required: true };
+      };
    }
 }
