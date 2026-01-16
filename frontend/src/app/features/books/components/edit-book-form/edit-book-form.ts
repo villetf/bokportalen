@@ -59,7 +59,7 @@ export class EditBookForm implements OnInit {
          language: [this.book.language ? this.book.language.id : null],
          originalLanguage: [this.book.originalLanguage ? this.book.originalLanguage.id : null],
          format: [this.book.format],
-         isbn: [Number(this.book.isbn), [Validators.pattern('^[0-9-]+$')]],
+         isbn: [this.book.isbn, [Validators.pattern('^[0-9-]+$')]],
          status: [this.book.status],
          copies: [this.book.copies, [Validators.required, Validators.min(1)]],
          rating: [this.book.rating],
@@ -70,10 +70,11 @@ export class EditBookForm implements OnInit {
    save() {
       this.formIsSubmitted = true;
       if (this.form.valid) {
-         const updatedBook: Book = this.form.value;
-         if (updatedBook.isbn) {
-            updatedBook.isbn = Number(updatedBook.isbn);
-         }
+         const rawIsbn = this.form.get('isbn')?.value as string | number | null;
+         const normalizedIsbn = rawIsbn == null || rawIsbn === '' ? null : Number(rawIsbn);
+
+         const updatedBook: Book = { ...this.form.value, isbn: normalizedIsbn };
+
          this.booksService.editBook(updatedBook)
             .pipe(
                this.toast.observe({
