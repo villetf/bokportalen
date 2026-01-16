@@ -32,12 +32,12 @@ export class AddAuthor {
       this.countriesService.getAllCountries().then(countries => this.allCountries.set(countries));
 
       this.form = this.fb.group({
-         firstName: [[], [Validators.required]],
-         lastName: [],
-         gender: [],
-         birthYear: [[], [Validators.max(this.getCurrentYear())]],
-         country: [167],
-         imageLink: []
+         firstName: [null, Validators.required],
+         lastName: [null],
+         gender: [null],
+         birthYear: [null, Validators.max(this.getCurrentYear())],
+         country: [null],
+         imageLink: [null]
       });
    }
 
@@ -47,12 +47,12 @@ export class AddAuthor {
 
    resetForm() {
       this.form.reset({
-         firstName: [],
-         lastName: [],
-         gender: [],
-         birthYear: [],
-         country: [],
-         imageLink: []
+         firstName: null,
+         lastName: null,
+         gender: null,
+         birthYear: null,
+         country: null,
+         imageLink: null
       });
       setTimeout(() => this.focusTitle(), 0);
       this.formIsSubmitted = false;
@@ -66,7 +66,12 @@ export class AddAuthor {
             newAuthor.birthYear = Number(newAuthor.birthYear);
          }
 
-         newAuthor.country = this.form.value.country.id;
+         const selectedCountry = this.form.value.country;
+         if (selectedCountry && typeof selectedCountry === 'object' && 'id' in selectedCountry) {
+            newAuthor.country = (selectedCountry as Country).id;
+         } else {
+            newAuthor.country = selectedCountry ?? null;
+         }
 
          this.authorsService.addAuthor(newAuthor)
             .pipe(
