@@ -2,10 +2,10 @@
    <form [formGroup]="form" class="mx-20 my-10 w-1/2">
       <div class="grid grid-cols-[auto_75%] gap-y-2 gap-x-5 [&>label]:justify-self-end">
          <label for="firstName" class="self-center">Förnamn:</label>
-         <input type="text" formControlName="firstName" class="form-text-input" id="firstName">
+         <input type="text" formControlName="firstName" class="form-text-input" id="firstName" autocorrect="off" autocapitalize="off" spellcheck="false">
          
          <label for="lastName">Efternamn:</label>
-         <input type="text" formControlName="lastName" class="form-text-input" id="lastName">
+         <input type="text" formControlName="lastName" class="form-text-input" id="lastName" autocorrect="off" autocapitalize="off" spellcheck="false">
       
          <label for="genre">Kön:</label>
          <select formControlName="gender" id="gender">
@@ -15,7 +15,7 @@
          </select>
          
          <label for="birthYear" class="self-center">Födelseår:</label>
-         <input type="number" formControlName="birthYear" [max]="this.getCurrentYear()" class="form-text-input" id="birthYear">
+         <input type="number" formControlName="birthYear" [max]="this.getCurrentYear()" class="form-text-input" id="birthYear" autocorrect="off" autocapitalize="off" spellcheck="false">
       
          <label for="country">Land:</label>
          <select formControlName="countryId" id="country">
@@ -25,7 +25,7 @@
          </select>
       
          <label for="imageLink" class="self-center">Bildlänk:</label>
-         <input formControlName="imageLink" class="form-text-input" id="imageLink">
+         <input formControlName="imageLink" class="form-text-input" id="imageLink" autocorrect="off" autocapitalize="off" spellcheck="false">
       </div>
 
       <div class="flex justify-around mt-10">
