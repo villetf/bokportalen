@@ -57,12 +57,18 @@ export class BookPage implements OnInit {
    };
 
    updateBooksByAuthor = () => {
+      const seenIds = new Set<number>();
+      const aggregated: Book[] = [];
       this.booksByAuthor.set([]);
       this.currentBook.authors.forEach(author => {
          this.booksService.getBooksByAuthor(author.id).subscribe(books => {
             books.forEach(book => {
-               this.booksByAuthor.set([...this.booksByAuthor(), book]);
+               if (book.id !== this.currentBook.id && !seenIds.has(book.id)) {
+                  seenIds.add(book.id);
+                  aggregated.push(book);
+               }
             });
+            this.booksByAuthor.set([...aggregated]);
          });
       });
    };

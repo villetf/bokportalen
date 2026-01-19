@@ -5,7 +5,9 @@ import { Author } from '../../../../types/Author.model';
 import { AuthorsService } from '../../../../services/authorsService';
 import { Genre } from '../../../../types/Genre.model';
 import { GenresService } from '../../../../services/genresService';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, AbstractControl, ValidatorFn } from '@angular/forms';
+import { HotToastService } from '@ngxpert/hot-toast';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Language } from '../../../../types/Language.model';
 import { LanguagesService } from '../../../../services/languagesService';
 import { Button } from '../../../../shared/components/button/button';
@@ -28,16 +30,18 @@ export class EditBookForm implements OnInit {
    allLanguages = signal<Language[]>([]);
    deleteConfirmationIsOpen = signal<boolean>(false);
    form!: FormGroup;
+   formIsSubmitted = false;
 
 
-   displayAuthor = (author: Author) => `${author.firstName} ${author.lastName}`;
+   displayAuthor = (author: Author) => `${author.lastName ? author.lastName + ', ' : '' }${author.firstName}`;
 
    constructor(
       private fb: FormBuilder,
       private authorsService: AuthorsService,
       private genresService: GenresService,
       private languagesService: LanguagesService,
-      private booksService: BooksService
+      private booksService: BooksService,
+      private toast: HotToastService
    ) {}
 
    ngOnInit(): void {
@@ -48,14 +52,14 @@ export class EditBookForm implements OnInit {
 
       this.form = this.fb.group({
          id: [this.book.id],
-         title: [this.book.title],
-         authors: [this.book.authors],
-         yearWritten: [this.book.yearWritten],
+         title: [this.book.title, [Validators.required]],
+         authors: [this.book.authors, [this.atLeastOneAuthor()]],
+         yearWritten: [this.book.yearWritten, [Validators.max(this.getCurrentYear())]],
          genre: [this.book.genre ? this.book.genre.id : null],
          language: [this.book.language ? this.book.language.id : null],
          originalLanguage: [this.book.originalLanguage ? this.book.originalLanguage.id : null],
          format: [this.book.format],
-         isbn: [Number(this.book.isbn)],
+         isbn: [this.book.isbn, [Validators.pattern('^[0-9-]+$')]],
          status: [this.book.status],
          copies: [this.book.copies, [Validators.required, Validators.min(1)]],
          rating: [this.book.rating],
@@ -64,18 +68,31 @@ export class EditBookForm implements OnInit {
    }
 
    save() {
+      this.formIsSubmitted = true;
       if (this.form.valid) {
-         const updatedBook: Book = this.form.value;
-         if (updatedBook.isbn) {
-            updatedBook.isbn = Number(updatedBook.isbn);
-         }
+         const rawIsbn = this.form.get('isbn')?.value as string | number | null;
+         const normalizedIsbn = rawIsbn == null || rawIsbn === '' ? null : Number(rawIsbn);
+
+         const updatedBook: Book = { ...this.form.value, isbn: normalizedIsbn };
 
          this.booksService.editBook(updatedBook)
-            .subscribe((res: unknown) => {
-               this.bookChange.emit(res as Book);
-               this.closeEditView();
-            });
+            .pipe(
+               this.toast.observe({
+                  loading: 'Uppdaterar bok...',
+                  success: (res) => {
+                     this.bookChange.emit(res as Book);
+                     this.closeEditView();
+                     return `Uppdaterade ${(res as Book).title}!`;
+                  },
+                  error: (err) => {
+                     return `Något gick fel vid uppdatering av bok: ${(err as HttpErrorResponse).message}`;
+                  }
+               })
+            )
+            .subscribe();
 
+      } else {
+         this.toast.error('Formuläret är inte giltigt. Kontrollera att allt är rätt och försök igen.');
       }
    }
 
@@ -123,5 +140,16 @@ export class EditBookForm implements OnInit {
 
    updateLanguagesList() {
       this.languagesService.getAllLanguages().then(languages => this.allLanguages.set(languages));
+   }
+
+   private atLeastOneAuthor(): ValidatorFn {
+      return (control: AbstractControl) => {
+         const value = control.value;
+         if (Array.isArray(value)) {
+            const hasRealAuthor = value.some((author: Author) => author && author.id != null);
+            return hasRealAuthor ? null : { required: true };
+         }
+         return { required: true };
+      };
    }
 }

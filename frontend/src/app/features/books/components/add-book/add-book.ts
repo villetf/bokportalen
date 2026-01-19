@@ -1,5 +1,5 @@
 import { Component, ElementRef, signal, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, AbstractControl, ValidatorFn } from '@angular/forms';
 import { AuthorsService } from '../../../../services/authorsService';
 import { GenresService } from '../../../../services/genresService';
 import { LanguagesService } from '../../../../services/languagesService';
@@ -28,7 +28,13 @@ export class AddBook {
    allLanguages = signal<Language[]>([]);
    formIsSubmitted = false;
 
-   displayAuthor = (author: Author) => `${author.firstName}${author.lastName ? ' ' + author.lastName : '' }`;
+   displayAuthor = (author: Author) => `${author.lastName ? author.lastName + ', ' : '' }${author.firstName}`;
+
+   compareAuthorsByLastName(a: Author, b: Author) {
+      const aLast = (a.lastName || '').toLocaleLowerCase();
+      const bLast = (b.lastName || '').toLocaleLowerCase();
+      return aLast.localeCompare(bLast);
+   }
 
    constructor(
       private fb: FormBuilder,
@@ -45,15 +51,15 @@ export class AddBook {
       this.updateLanguagesList();
 
       this.form = this.fb.group({
-         title: [[], [Validators.required]],
-         authors: [[{}], [Validators.required, Validators.minLength(1)]],
-         yearWritten: [[], [Validators.max(this.getCurrentYear())]],
-         genre: [],
-         language: [],
-         originalLanguage: [],
-         format: [],
-         isbn: [[], [Validators.pattern('^[0-9-]+$')]],
-         coverLink: []
+         title: [null, Validators.required],
+         authors: [[{}], this.atLeastOneAuthor()],
+         yearWritten: [null, Validators.max(this.getCurrentYear())],
+         genre: [null],
+         language: [null],
+         originalLanguage: [null],
+         format: [null],
+         isbn: [null, Validators.pattern('^[0-9-]+$')],
+         coverLink: [null]
       });
    }
 
@@ -63,15 +69,15 @@ export class AddBook {
 
    resetForm() {
       this.form.reset({
-         title: [],
+         title: null,
          authors: [[{}]],
-         yearWritten: [],
-         genre: [],
-         language: [],
-         originalLanguage: [],
-         format: [],
-         isbn: [],
-         coverLink: []
+         yearWritten: null,
+         genre: null,
+         language: null,
+         originalLanguage: null,
+         format: null,
+         isbn: null,
+         coverLink: null
       });
       setTimeout(() => this.focusTitle(), 0);
       this.formIsSubmitted = false;
@@ -79,8 +85,9 @@ export class AddBook {
 
    save() {
       this.formIsSubmitted = true;
-      if (this.form.valid && !JSON.stringify(this.form.value.authors).match('{}')) {
+      if (this.form.valid) {
          const newBook: AddBookDTO = this.form.value;
+
          if (newBook.isbn) {
             newBook.isbn = Number(newBook.isbn);
          }
@@ -89,9 +96,19 @@ export class AddBook {
             newBook.yearWritten = Number(newBook.yearWritten);
          }
 
-         let authorIds = [];
-         authorIds = this.form.value.authors.map((author: Author) => author.id);
-         newBook.authors = authorIds;
+         const selectedAuthors = this.form.value.authors;
+         newBook.authors = Array.isArray(selectedAuthors)
+            ? selectedAuthors.filter((a: Author) => a && a.id != null).map((a: Author) => a.id)
+            : [];
+
+         const g = this.form.value.genre;
+         newBook.genre = g && typeof g === 'object' && 'id' in g ? (g as Genre).id : g ?? null;
+
+         const lang = this.form.value.language;
+         newBook.language = lang && typeof lang === 'object' && 'id' in lang ? (lang as Language).id : lang ?? null;
+
+         const origLang = this.form.value.originalLanguage;
+         newBook.originalLanguage = origLang && typeof origLang === 'object' && 'id' in origLang ? (origLang as Language).id : origLang ?? null;
 
          newBook.addedWithScanner = false;
 
@@ -138,5 +155,16 @@ export class AddBook {
 
    updateLanguagesList() {
       this.languagesService.getAllLanguages().then(languages => this.allLanguages.set(languages));
+   }
+
+   private atLeastOneAuthor(): ValidatorFn {
+      return (control: AbstractControl) => {
+         const value = control.value;
+         if (Array.isArray(value)) {
+            const hasRealAuthor = value.some((author: Author) => author && author.id != null);
+            return hasRealAuthor ? null : { required: true };
+         }
+         return { required: true };
+      };
    }
 }

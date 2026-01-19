@@ -1,14 +1,24 @@
 <div class="flex justify-center">
-   <form [formGroup]="form" class="mx-20 my-10 w-1/2">
+   <form [formGroup]="form" class="w-2/3">
       <div class="grid grid-cols-[auto_75%] gap-y-2 gap-x-5 [&>label]:justify-self-end">
          <label for="bookTitle" class="self-center">Titel:</label>
-         <input type="text" name="bookTitle" formControlName="title" class="form-text-input">
+         <input type="text" name="bookTitle" formControlName="title" class="form-text-input" autocorrect="off" autocapitalize="off" spellcheck="false">
+         @if (form.get('title')?.invalid && formIsSubmitted) {
+            @if (form.get('title')?.errors?.['required']) {
+               <div></div>
+               <span class="text-red-500">Titel är obligatorisk.</span>
+            }
+         }
          
          <label for="bookAuthors">Författare:</label>
          <div class="flex items-center">
             <app-array-input formControlName="authors" [displayFn]="displayAuthor" [selectableItems]="allAuthors()" class="w-full" defaultSelectText="Välj författare..."></app-array-input>
             <i class="fa-solid fa-rotate ml-2 cursor-pointer active:rotate-180 active:transition-all" (click)="updateAuthorsList()"></i>
          </div>
+         @if (form.get('authors')?.invalid && formIsSubmitted) {
+            <div></div>
+            <span class="text-red-500">Du måste välja minst en författare.</span>
+         }
       
          <label for="genre">Genre:</label>
          <div class="flex items-center">
@@ -21,7 +31,13 @@
          </div>
          
          <label for="yearWritten" class="self-center">Utgivningsår:</label>
-         <input type="number" formControlName="yearWritten" [max]="this.getCurrentYear()" class="form-text-input">
+         <input type="number" formControlName="yearWritten" [max]="this.getCurrentYear()" class="form-text-input" autocorrect="off" autocapitalize="off" spellcheck="false">
+         @if (form.get('yearWritten')?.invalid) {
+            @if (form.get('yearWritten')?.errors?.['max']) {
+               <div></div>
+               <span class="text-red-500">Året kan inte vara i framtiden.</span>
+            }
+         }
       
          <label for="language">Språk:</label>
          <div class="flex items-center">
@@ -56,7 +72,13 @@
          </select>
       
          <label for="isbn" class="self-center">ISBN:</label>
-         <input formControlName="isbn" class="form-text-input" >
+         <input formControlName="isbn" class="form-text-input"  autocorrect="off" autocapitalize="off" spellcheck="false">
+         @if (form.get('isbn')?.invalid && formIsSubmitted) {
+            @if (form.get('isbn')?.errors?.['pattern']) {
+               <div></div>
+               <span class="text-red-500">ISBN får inte innehålla bokstäver.</span>
+            }
+         }
       
          <label for="status">Status:</label>
          <select formControlName="status">
@@ -68,14 +90,14 @@
          </select>
       
          <label for="copies" class="self-center">Antal exemplar:</label>
-         <input type="number" formControlName="copies" min="1" class="form-text-input">
+         <input type="number" formControlName="copies" min="1" class="form-text-input" autocorrect="off" autocapitalize="off" spellcheck="false">
       
          <label for="coverLink" class="self-center">Länk till omslag:</label>
-         <input type="text" formControlName="coverLink" class="form-text-input">
+         <input type="text" formControlName="coverLink" class="form-text-input" autocorrect="off" autocapitalize="off" spellcheck="false">
       
          <label for="rating">Betyg:</label>
          <div>
-            <input formControlName="rating" type="range" min="0" max="10" step="0.1">
+            <input formControlName="rating" type="range" min="0" max="10" step="0.1" autocorrect="off" autocapitalize="off" spellcheck="false">
             <span>{{ form.get('rating')?.value ?? "Ej betygsatt" }}</span>
          </div>
       </div>

@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { Component, DestroyRef, HostListener, ViewChild, ElementRef, inject, signal } from '@angular/core';
 import { Book } from '../../../../types/Book.model';
 import { BookCard } from '../../components/book-card/book-card';
 import { BooksService } from '../../../../services/booksService';
@@ -8,7 +8,7 @@ import { FilterList } from '../../components/filter-list/filter-list';
 import { SearchBar } from '../../components/search-bar/search-bar';
 import { AsyncPipe } from '@angular/common';
 import { SortList } from '../../components/sort-list/sort-list';
-import { Router } from '@angular/router';
+import { Router, NavigationStart } from '@angular/router';
 import { HotToastService } from '@ngxpert/hot-toast';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
@@ -20,6 +20,9 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
    styles: ''
 })
 export class AllBooks {
+   private readonly scrollStorageKey = 'all-books-scrollTop';
+   private hasRestoredScroll = false;
+   @ViewChild('scrollContainer') private scrollContainer?: ElementRef<HTMLElement>;
    booksOriginal$ = new BehaviorSubject<Book[]>([]);
    booksFiltered$ = new BehaviorSubject<Book[]>([]);
    booksSearched$ = new BehaviorSubject<Book[]>([]);
@@ -33,6 +36,56 @@ export class AllBooks {
          .subscribe(() => {
             this.numberOfBooks.set(this.countBooks());
          });
+
+      this.router.events
+         .pipe(takeUntilDestroyed(this.destroyRef))
+         .subscribe(event => {
+            if (event instanceof NavigationStart) {
+               this.saveScrollPosition();
+            }
+         });
+   }
+
+   ngAfterViewInit() {
+      this.restoreScrollPosition();
+   }
+
+   @HostListener('window:beforeunload')
+   handleBeforeUnload() {
+      this.saveScrollPosition();
+   }
+
+   private saveScrollPosition() {
+      try {
+         const el = this.scrollContainer?.nativeElement;
+         if (el) {
+            sessionStorage.setItem(this.scrollStorageKey, String(Math.max(0, Math.floor(el.scrollTop || 0))));
+         }
+      } catch {
+         // Ignore storage errors (e.g., Safari private mode)
+      }
+   }
+
+   private restoreScrollPosition() {
+      if (this.hasRestoredScroll) {
+         return;
+      }
+      try {
+         const saved = sessionStorage.getItem(this.scrollStorageKey);
+         const el = this.scrollContainer?.nativeElement;
+         if (saved && el) {
+            const y = parseInt(saved, 10);
+            if (!Number.isNaN(y) && y >= 0) {
+               requestAnimationFrame(() => {
+                  el.scrollTop = y;
+               });
+            }
+            this.hasRestoredScroll = true;
+            sessionStorage.removeItem(this.scrollStorageKey);
+         }
+      } catch {
+         // Ignore storage errors
+      }
    }
 
    countBooks() {
@@ -55,6 +108,7 @@ export class AllBooks {
       }
       const randomNumber = Math.floor(Math.random() * (currentBooks.length));
       const randomBookId = currentBooks[randomNumber].id;
+      this.saveScrollPosition();
       this.router.navigate([`/books/${randomBookId}`]);
    }
 }

@@ -5,7 +5,7 @@
          <h1 class="text-5xl font-bold text-bookolive mb-5">LÄGG TILL FÖRFATTARE</h1>
 
          <label for="firstName" class="self-center">Förnamn:</label>
-         <input type="text" formControlName="firstName" class="form-text-input" id="firstName" #nameInput>
+         <input type="text" formControlName="firstName" class="form-text-input" id="firstName" #nameInput autocorrect="off" autocapitalize="off" spellcheck="false">
 
          @if (form.get('firstName')?.invalid && formIsSubmitted) {
             @if (form.get('firstName')?.errors?.['required']) {
@@ -15,7 +15,7 @@
          }
          
          <label for="lastName">Efternamn:</label>
-         <input type="text" formControlName="lastName" class="form-text-input" id="lastName">
+         <input type="text" formControlName="lastName" class="form-text-input" id="lastName" autocorrect="off" autocapitalize="off" spellcheck="false">
 
          <label for="gender">Kön:</label>
          <select formControlName="gender" id="gender">
@@ -25,7 +25,7 @@
          </select>
          
          <label for="birthYear" class="self-center">Födelseår:</label>
-         <input type="number" formControlName="birthYear" [max]="this.getCurrentYear()" class="form-text-input" id="birthYear">
+         <input type="number" formControlName="birthYear" [max]="this.getCurrentYear()" class="form-text-input" id="birthYear" autocorrect="off" autocapitalize="off" spellcheck="false">
 
          @if (form.get('birthYear')?.invalid) {
             @if (form.get('birthYear')?.errors?.['max']) {
@@ -42,7 +42,7 @@
          </select>
       
          <label for="imageLink">Bildlänk:</label>
-         <input type="text" formControlName="imageLink" class="form-text-input" id="imageLink">
+         <input type="text" formControlName="imageLink" class="form-text-input" id="imageLink" autocorrect="off" autocapitalize="off" spellcheck="false">
 
          <div></div>
          <div class="flex justify-start gap-10 mt-5">

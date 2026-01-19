@@ -5,7 +5,7 @@
          <h1 class="text-5xl font-bold text-bookolive mb-5">LÄGG TILL BOK</h1>
 
          <label for="bookTitle" class="self-center">Titel:</label>
-         <input type="text" name="bookTitle" formControlName="title" class="form-text-input" id="bookTitle" #titleInput>
+         <input type="text" name="bookTitle" formControlName="title" class="form-text-input" id="bookTitle" #titleInput autocorrect="off" autocapitalize="off" spellcheck="false">
 
          @if (form.get('title')?.invalid && formIsSubmitted) {
             @if (form.get('title')?.errors?.['required']) {
@@ -17,7 +17,7 @@
          <label for="bookAuthors">Författare:</label>
          <div class="flex items-center">
             <div class="w-full">
-               <app-array-input formControlName="authors" [displayFn]="displayAuthor" [selectableItems]="allAuthors()" defaultSelectText="Välj författare..." id="bookAuthors"></app-array-input>
+               <app-array-input formControlName="authors" [displayFn]="displayAuthor" [selectableItems]="allAuthors().slice().sort(compareAuthorsByLastName)" defaultSelectText="Välj författare..." id="bookAuthors"></app-array-input>
             
                @if (form.get('authors')?.invalid && formIsSubmitted) {
                   @if (form.get('authors')?.errors?.['required'] || form.get('authors')?.errors?.['minLength']) {
@@ -40,7 +40,7 @@
          </div>
          
          <label for="yearWritten" class="self-center">Utgivningsår:</label>
-         <input type="number" formControlName="yearWritten" [max]="this.getCurrentYear()" class="form-text-input" id="yearWritten">
+         <input type="number" formControlName="yearWritten" [max]="this.getCurrentYear()" class="form-text-input" id="yearWritten" autocorrect="off" autocapitalize="off" spellcheck="false">
 
          @if (form.get('yearWritten')?.invalid) {
             @if (form.get('yearWritten')?.errors?.['max']) {
@@ -80,7 +80,7 @@
          </select>
       
          <label for="isbn" class="self-center">ISBN:</label>
-         <input formControlName="isbn" class="form-text-input" id="isbn">
+         <input formControlName="isbn" class="form-text-input" id="isbn" autocorrect="off" autocapitalize="off" spellcheck="false">
 
          @if (form.get('isbn')?.invalid && formIsSubmitted) {
             @if (form.get('isbn')?.errors?.['pattern']) {
@@ -90,7 +90,7 @@
          }
       
          <label for="coverLink" class="self-center">Länk till omslag:</label>
-         <input type="text" formControlName="coverLink" class="form-text-input" id="coverLink">
+         <input type="text" formControlName="coverLink" class="form-text-input" id="coverLink" autocorrect="off" autocapitalize="off" spellcheck="false">
 
          <div></div>
          <div class="flex justify-start gap-10 mt-5">

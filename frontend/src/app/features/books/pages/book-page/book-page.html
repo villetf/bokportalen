@@ -1,7 +1,7 @@
 @if (book$ | async; as book) {
    <div class="flex w-full h-full items-center">
       <div class="h-full w-full place-items-center grid grid-cols-[33%_1fr_20%]">
-         <img [src]="book.coverLink ? book.coverLink : 'book-cover-placeholder.png'" alt="Omslagsbild för {{ book.title }}" class="aspect-[2/3] justify-self-end h-120">
+         <img [src]="book.coverLink ? book.coverLink : 'book-cover-placeholder.png'" alt="Omslagsbild för {{ book.title }}" class="justify-self-end h-120">
          <div class="justify-self-start flex justify-between w-full items-start">
             <div class="ml-10">
                <h1 [ngClass]="getTitleClass(book.title)" class="font-bold text-bookolive">{{ book.title }}</h1>
@@ -36,25 +36,21 @@
             }
          </div>
       
-         <div class="h-full overflow-hidden">
-            
-            @if (booksByAuthor()) {
-               @if (booksByAuthor().length > book.authors.length) {
-                  <div class="flex flex-col h-full w-full overflow-auto min-h-0 mt-45">
-                     <h5 class="text-2xl mb-5 uppercase">
-                     @if (book.authors.length == 1) {
-                        Mer av {{ book.authors[0].firstName}} {{ book.authors[0].lastName }}:
-                     } @else {
-                        Mer av dessa författare:
-                     }
-                     </h5>
-                  @for (bookInList of booksByAuthor(); track $index) {
-                     @if (bookInList.title != book.title) {
-                        <app-book-card [book]="bookInList" class=""></app-book-card>
-                     }
+         <div class="h-full overflow-hidden flex flex-col min-h-0">
+            @if (booksByAuthor().length) {
+               <div class="h-45"></div>
+               <h5 class="text-2xl mb-2 uppercase">
+                  @if (book.authors.length == 1) {
+                     Mer av {{ book.authors[0].firstName}} {{ book.authors[0].lastName }}:
+                  } @else {
+                     Mer av dessa författare:
                   }
-                  </div>
-               }
+               </h5>
+               <div class="relative flex-1 w-full overflow-auto min-h-0 flex flex-col pt-3 [mask-image:linear-gradient(to_bottom,transparent_0px,black_3px)]">
+                  @for (bookInList of booksByAuthor(); track bookInList.id) {
+                     <app-book-card [book]="bookInList" class=""></app-book-card>
+                  }
+               </div>
             }
          </div>
       </div>
