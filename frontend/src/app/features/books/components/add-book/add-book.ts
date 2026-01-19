@@ -88,11 +88,11 @@ export class AddBook {
       if (this.form.valid) {
          const newBook: AddBookDTO = this.form.value;
 
-         if (!newBook.isbn) {
+         if (newBook.isbn) {
             newBook.isbn = Number(newBook.isbn);
          }
 
-         if (!newBook.yearWritten) {
+         if (newBook.yearWritten) {
             newBook.yearWritten = Number(newBook.yearWritten);
          }
 
