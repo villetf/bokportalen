@@ -9,7 +9,7 @@ import { EditPanel } from '../../../../shared/components/edit-panel/edit-panel';
 import { EditBookForm } from '../../components/edit-author-form/edit-author-form';
 import { Button } from '../../../../shared/components/button/button';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { switchMap, from } from 'rxjs';
+import { switchMap, from, of } from 'rxjs';
 
 @Component({
    selector: 'app-author-page',
@@ -36,9 +36,9 @@ export class AuthorPage {
             switchMap(params => {
                const authorId = params.get('id');
                if (authorId) {
-                  return from(this.authorService.getAuthorById(Number.parseInt(authorId)));
+                  return from(this.authorService.getAuthorById(Number.parseInt(authorId, 10)));
                }
-               return from(Promise.resolve(null));
+               return of(null);
             })
          )
          .subscribe(author => {
