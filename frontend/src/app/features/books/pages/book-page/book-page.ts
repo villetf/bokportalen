@@ -1,6 +1,6 @@
 import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { BehaviorSubject, forkJoin, switchMap } from 'rxjs';
+import { BehaviorSubject, switchMap } from 'rxjs';
 import { BooksService } from '../../../../services/booksService';
 import { Book } from '../../../../types/Book.model';
 import { AsyncPipe, DatePipe, NgClass } from '@angular/common';
@@ -57,28 +57,19 @@ export class BookPage implements OnInit {
    };
 
    updateBooksByAuthor = () => {
+      const seenIds = new Set<number>();
+      const aggregated: Book[] = [];
       this.booksByAuthor.set([]);
-
-      if (this.currentBook.authors.length === 0) {
-         return;
-      }
-
-      const authorRequests = this.currentBook.authors.map((author) => this.booksService.getBooksByAuthor(author.id));
-
-      forkJoin(authorRequests).subscribe(allAuthorsBooks => {
-         const seenIds = new Set<number>();
-         const aggregated: Book[] = [];
-
-         allAuthorsBooks.forEach(books => {
+      this.currentBook.authors.forEach(author => {
+         this.booksService.getBooksByAuthor(author.id).subscribe(books => {
             books.forEach(book => {
                if (book.id !== this.currentBook.id && !seenIds.has(book.id)) {
                   seenIds.add(book.id);
                   aggregated.push(book);
                }
             });
+            this.booksByAuthor.set([...aggregated]);
          });
-
-         this.booksByAuthor.set(aggregated);
       });
    };
 
