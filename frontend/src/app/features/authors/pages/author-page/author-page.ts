@@ -9,6 +9,7 @@ import { EditPanel } from '../../../../shared/components/edit-panel/edit-panel';
 import { EditBookForm } from '../../components/edit-author-form/edit-author-form';
 import { Button } from '../../../../shared/components/button/button';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { switchMap, from, of } from 'rxjs';
 
 @Component({
    selector: 'app-author-page',
@@ -30,14 +31,21 @@ export class AuthorPage {
 
    ngOnInit() {
       this.route.paramMap
-         .pipe(takeUntilDestroyed(this.destroyRef))
-         .subscribe(async params => {
-            const authorId = params.get('id');
-            if (authorId) {
-               this.author.set(await this.authorService.getAuthorById(Number.parseInt(authorId)));
+         .pipe(
+            takeUntilDestroyed(this.destroyRef),
+            switchMap(params => {
+               const authorId = params.get('id');
+               if (authorId) {
+                  return from(this.authorService.getAuthorById(Number.parseInt(authorId, 10)));
+               }
+               return of(null);
+            })
+         )
+         .subscribe(author => {
+            this.author.set(author);
+            if (author) {
                this.updateBooksByAuthor();
             } else {
-               this.author.set(null);
                this.booksByAuthor.set([]);
             }
          });
