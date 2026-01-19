@@ -48,7 +48,9 @@
                </h5>
                <div class="relative flex-1 w-full overflow-auto min-h-0 flex flex-col pt-3 [mask-image:linear-gradient(to_bottom,transparent_0px,black_3px)]">
                   @for (bookInList of booksByAuthor(); track bookInList.id) {
-                     <app-book-card [book]="bookInList" class=""></app-book-card>
+                     <div class="w-90">
+                        <app-book-card [book]="bookInList" class=""></app-book-card>
+                     </div>
                   }
                </div>
             }
