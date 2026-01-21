@@ -27,6 +27,7 @@ export class AllBooks {
    booksFiltered$ = new BehaviorSubject<Book[]>([]);
    booksSearched$ = new BehaviorSubject<Book[]>([]);
    numberOfBooks = signal<number>(0);
+   showRealCovers = signal<boolean>(this.getCoverSetting());
 
    private destroyRef = inject(DestroyRef);
 
@@ -110,5 +111,15 @@ export class AllBooks {
       const randomBookId = currentBooks[randomNumber].id;
       this.saveScrollPosition();
       this.router.navigate([`/books/${randomBookId}`]);
+   }
+
+   getCoverSetting() {
+      const setting = localStorage.getItem('showRealCovers');
+
+      if (!setting) {
+         return true;
+      }
+
+      return setting === 'true';
    }
 }
