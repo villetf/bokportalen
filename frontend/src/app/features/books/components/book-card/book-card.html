@@ -1,6 +1,13 @@
 <div class="flex items-start">
    <div class="w-4/10 aspect-[2/3] mb-10 flex items-start justify-center overflow-hidden shrink-0">
-      <img [src]="book.coverLink ? book.coverLink : 'book-cover-placeholder.png'" alt="Omslagsbild för {{ book.title }}" class="cursor-pointer block h-full w-auto max-w-full max-h-full object-contain object-top" [routerLink]="'/books/' + book.id">
+      <img 
+         [src]="book.coverLink ? book.coverLink : 'book-cover-placeholder.png'" 
+         alt="Omslagsbild för {{ book.title }}" 
+         class="cursor-pointer block h-full w-auto max-w-full max-h-full object-top" [routerLink]="'/books/' + book.id"
+         [ngClass]="{
+            'aspect-2/3': !showRealCovers,
+            'object-contain': showRealCovers
+         }">
    </div>
    <div class="ml-2">
       <a routerLink="/books/{{ book.id }}" class="cursor-pointer hover:underline">
