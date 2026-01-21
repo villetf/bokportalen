@@ -24,7 +24,7 @@
    <div #scrollContainer class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mt-8 overflow-y-auto overflow-x-hidden">
       @if (booksSearched$ | async; as books ) {
          @for (book of books; track book.id) {
-            <app-book-card [book]="book"></app-book-card>
+            <app-book-card [book]="book" [showRealCovers]="showRealCovers()"></app-book-card>
          }
       }
    </div>

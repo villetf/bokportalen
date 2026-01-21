@@ -1,14 +1,53 @@
 <header class="w-full h-23 bg-headerbrown flex justify-between items-center">
    <div class="ml-20 w-1/2 flex">
       <app-burger-menu backgroundColor="backgroundbeige" class="mr-30">
-         <a routerLink="/" class="text-4xl hover:underline mb-5">Start</a>
-         <a routerLink="/books" class="text-3xl hover:underline">Alla böcker</a>
-         <a routerLink="/books/deleted" class="text-3xl hover:underline">Raderade böcker</a>
-         <a routerLink="/add" [queryParams]="{ resource: 'book' }" class="text-3xl mt-5">Lägg till...</a>
-         <a routerLink="/add" [queryParams]="{ resource: 'book' }" class="text-2xl hover:underline">Bok</a>
-         <a routerLink="/add" [queryParams]="{ resource: 'author' }" class="text-2xl hover:underline">Författare</a>
-         <a routerLink="/add" [queryParams]="{ resource: 'genre' }" class="text-2xl hover:underline">Genre</a>
-         <a routerLink="/add" [queryParams]="{ resource: 'language' }" class="text-2xl hover:underline">Språk</a>
+         <div class="h-full flex flex-col justify-between">
+            <div class="flex flex-col">
+               <a routerLink="/" class="text-4xl hover:underline mb-5">Start</a>
+               <a routerLink="/books" class="text-3xl hover:underline">Alla böcker</a>
+               <a routerLink="/books/deleted" class="text-3xl hover:underline">Raderade böcker</a>
+               <a routerLink="/add" [queryParams]="{ resource: 'book' }" class="text-3xl mt-5">Lägg till...</a>
+               <a routerLink="/add" [queryParams]="{ resource: 'book' }" class="text-2xl hover:underline">Bok</a>
+               <a routerLink="/add" [queryParams]="{ resource: 'author' }" class="text-2xl hover:underline">Författare</a>
+               <a routerLink="/add" [queryParams]="{ resource: 'genre' }" class="text-2xl hover:underline">Genre</a>
+               <a routerLink="/add" [queryParams]="{ resource: 'language' }" class="text-2xl hover:underline">Språk</a>
+            </div>
+            <div class="text-center">
+               <div class="rounded-lg bg-gray-100 p-1 mb-5">
+                  <h6 class="my-1 cabin-font">Bokomslag:</h6>
+                  <div class="inline-flex cabin-font">
+                     <button
+                        type="button"
+                        (click)="setCoverSetting(true)"
+                        [attr.aria-pressed]="showRealCovers()"
+                        [class]="
+                           'px-4 py-2 rounded-md text-sm font-medium ' +
+                           (showRealCovers()
+                           ? 'bg-white text-gray-900 shadow'
+                           : 'text-gray-600 hover:text-gray-900')
+                        "
+                     >
+                        Visa verkliga storlekar
+                     </button>
+
+                     <button
+                        type="button"
+                        (click)="setCoverSetting(false)"
+                        [attr.aria-pressed]="!showRealCovers()"
+                        [class]="
+                           'px-4 py-2 rounded-md text-sm font-medium ' +
+                           (!showRealCovers()
+                           ? 'bg-white text-gray-900 shadow'
+                           : 'text-gray-600 hover:text-gray-900')
+                        "
+                     >
+                        Visa enhetliga storlekar
+                     </button>
+                  </div>
+               </div>
+            </div>
+         </div>
+
       </app-burger-menu>
       <a routerLink="/books" class="text-3xl text-backgroundbeige mr-30">BOKHYLLA</a>
       <a routerLink="/add" [queryParams]="{ resource: 'book' }" class="text-3xl text-backgroundbeige mr-30">LÄGG TILL</a>
