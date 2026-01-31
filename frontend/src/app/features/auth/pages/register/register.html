@@ -4,8 +4,9 @@
 
 		<form class="space-y-4" [formGroup]="form" (ngSubmit)="register()">
 			<div>
-				<label class="block text-sm text-gray-700 mb-1">E-post</label>
+				<label for="email" class="block text-sm text-gray-700 mb-1">E-post</label>
 				<input
+					id="email"
 					type="email"
 					class="form-text-input w-full"
 					formControlName="email"
@@ -15,8 +16,9 @@
 			</div>
 
 			<div>
-				<label class="block text-sm text-gray-700 mb-1">Lösenord</label>
+				<label for="password" class="block text-sm text-gray-700 mb-1">Lösenord</label>
 				<input
+					id="password"
 					type="password"
 					class="form-text-input w-full"
 					formControlName="password"
@@ -28,8 +30,9 @@
 			</div>
 
 			<div>
-				<label class="block text-sm text-gray-700 mb-1">Bekräfta lösenord</label>
+				<label for="confirmPassword" class="block text-sm text-gray-700 mb-1">Bekräfta lösenord</label>
 				<input
+					id="confirmPassword"
 					type="password"
 					class="form-text-input w-full"
 					formControlName="confirmPassword"
