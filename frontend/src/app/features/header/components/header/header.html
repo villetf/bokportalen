@@ -1,6 +1,6 @@
-<header class="w-full h-23 bg-headerbrown flex justify-between items-center">
-   <div class="ml-20 w-1/2 flex">
-      @if (auth.user$ | async) {
+@if (auth.user$ | async) {
+   <header class="w-full h-23 bg-headerbrown flex justify-between items-center">
+      <div class="ml-20 w-1/2 flex">
          <app-burger-menu backgroundColor="backgroundbeige" class="mr-30">
             <div class="h-full flex flex-col justify-between">
                <div class="flex flex-col">
@@ -54,14 +54,8 @@
          <a routerLink="/add" [queryParams]="{ resource: 'book' }" class="text-3xl text-backgroundbeige mr-30">LÄGG TILL</a>
          <!-- <a routerLink="/scan" class="text-3xl text-backgroundbeige mr-30">SKANNA</a> -->
          <!-- <a routerLink="/search" class="text-3xl text-backgroundbeige">SÖK</a> -->
-      } @else {
-         <a routerLink="/login" class="text-3xl text-backgroundbeige mr-30">LOGGA IN</a>
-         <a routerLink="/register" class="text-3xl text-backgroundbeige mr-30">SKAPA KONTO</a>
-      }
-   </div>
+      </div>
 
-
-   @if (auth.user$ | async) {
       <div class="mr-6 relative group select-none pb-2">
          <div
             class="w-10 h-10 rounded-full bg-backgroundbeige text-headerbrown flex items-center justify-center font-semibold shadow cursor-pointer"
@@ -82,5 +76,12 @@
             </div>
          </div>
       </div>
-   }
-</header>
+   </header>
+} @else {
+   <header class="w-full h-23 bg-headerbrown flex justify-between items-center">
+      <div class="ml-20 w-1/2 flex">
+         <a routerLink="/login" class="text-3xl text-backgroundbeige mr-30">LOGGA IN</a>
+         <a routerLink="/register" class="text-3xl text-backgroundbeige mr-30">SKAPA KONTO</a>
+      </div>
+   </header>
+}
