@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, Validators, ValidatorFn, AbstractControl, FormGroup } from '@angular/forms';
@@ -12,8 +12,8 @@ import { AuthService } from '../../../../services/authService';
    styles: '',
 })
 export class Register {
-   loading = false;
-   errorMsg = '';
+   loading = signal<boolean>(false);
+   errorMsg = signal<string>('');
    form!: FormGroup;
 
    constructor(private auth: AuthService, private router: Router, private fb: FormBuilder) {}
@@ -37,25 +37,30 @@ export class Register {
    };
 
    get canSubmit() {
-      return this.form.valid && !this.loading;
+      return this.form.valid && !this.loading();
    }
 
    async register() {
       if (!this.canSubmit) {
          return;
       }
-      this.errorMsg = '';
-      this.loading = true;
+      this.errorMsg.set('');
+      this.loading.set(true);
       try {
          const email = this.form.value.email;
          const password = this.form.value.password;
          await this.auth.registerAccount(email, password);
          await this.router.navigate(['/books']);
       } catch (err: any) {
-         const msg = typeof err?.message === 'string' ? err.message : 'Kunde inte skapa konto.';
-         this.errorMsg = msg;
+         let msg;
+         if (err.code === 'auth/email-already-in-use') {
+            msg = 'E-postadressen används redan.';
+         } else {
+            msg = typeof err?.message === 'string' ? err.message : 'Kunde inte skapa konto.';
+         }
+         this.errorMsg.set(msg);
       } finally {
-         this.loading = false;
+         this.loading.set(false);
       }
    }
 }

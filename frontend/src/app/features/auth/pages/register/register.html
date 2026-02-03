@@ -56,13 +56,13 @@
 			</button>
 		</form>
 
-      @if (loading) {
+		@if (loading()) {
          <div class="text-sm text-gray-600">Skapar konto…</div>
       }
 
-      @if (errorMsg) {
+		@if (errorMsg()) {
          <div class="rounded-md border border-red-300 bg-red-50 text-red-700 px-3 py-2 text-sm">
-            {{ errorMsg }}
+				{{ errorMsg() }}
          </div>
       }
 
