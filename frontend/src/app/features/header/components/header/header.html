@@ -1,57 +1,87 @@
-<header class="w-full h-23 bg-headerbrown flex justify-between items-center">
-   <div class="ml-20 w-1/2 flex">
-      <app-burger-menu backgroundColor="backgroundbeige" class="mr-30">
-         <div class="h-full flex flex-col justify-between">
-            <div class="flex flex-col">
-               <a routerLink="/" class="text-4xl hover:underline mb-5">Start</a>
-               <a routerLink="/books" class="text-3xl hover:underline">Alla böcker</a>
-               <a routerLink="/books/deleted" class="text-3xl hover:underline">Raderade böcker</a>
-               <a routerLink="/add" [queryParams]="{ resource: 'book' }" class="text-3xl mt-5">Lägg till...</a>
-               <a routerLink="/add" [queryParams]="{ resource: 'book' }" class="text-2xl hover:underline">Bok</a>
-               <a routerLink="/add" [queryParams]="{ resource: 'author' }" class="text-2xl hover:underline">Författare</a>
-               <a routerLink="/add" [queryParams]="{ resource: 'genre' }" class="text-2xl hover:underline">Genre</a>
-               <a routerLink="/add" [queryParams]="{ resource: 'language' }" class="text-2xl hover:underline">Språk</a>
-            </div>
-            <div class="text-center">
-               <div class="rounded-lg bg-gray-100 p-1 mb-5">
-                  <h6 class="my-1 cabin-font">Bokomslag:</h6>
-                  <div class="inline-flex cabin-font">
-                     <button
-                        type="button"
-                        (click)="setCoverSetting(true)"
-                        [attr.aria-pressed]="showRealCovers()"
-                        [class]="
-                           'px-4 py-2 rounded-md text-sm font-medium ' +
-                           (showRealCovers()
-                           ? 'bg-white text-gray-900 shadow'
-                           : 'text-gray-600 hover:text-gray-900')
-                        "
-                     >
-                        Visa verkliga storlekar
-                     </button>
-
-                     <button
-                        type="button"
-                        (click)="setCoverSetting(false)"
-                        [attr.aria-pressed]="!showRealCovers()"
-                        [class]="
-                           'px-4 py-2 rounded-md text-sm font-medium ' +
-                           (!showRealCovers()
-                           ? 'bg-white text-gray-900 shadow'
-                           : 'text-gray-600 hover:text-gray-900')
-                        "
-                     >
-                        Visa enhetliga storlekar
-                     </button>
+@if (auth.user$ | async) {
+   <header class="w-full h-23 bg-headerbrown flex justify-between items-center">
+      <div class="ml-20 w-1/2 flex">
+         <app-burger-menu backgroundColor="backgroundbeige" class="mr-30">
+            <div class="h-full flex flex-col justify-between">
+               <div class="flex flex-col">
+                  <a routerLink="/" class="text-4xl hover:underline mb-5">Start</a>
+                  <a routerLink="/books" class="text-3xl hover:underline">Alla böcker</a>
+                  <a routerLink="/books/deleted" class="text-3xl hover:underline">Raderade böcker</a>
+                  <a routerLink="/add" [queryParams]="{ resource: 'book' }" class="text-3xl mt-5">Lägg till...</a>
+                  <a routerLink="/add" [queryParams]="{ resource: 'book' }" class="text-2xl hover:underline">Bok</a>
+                  <a routerLink="/add" [queryParams]="{ resource: 'author' }" class="text-2xl hover:underline">Författare</a>
+                  <a routerLink="/add" [queryParams]="{ resource: 'genre' }" class="text-2xl hover:underline">Genre</a>
+                  <a routerLink="/add" [queryParams]="{ resource: 'language' }" class="text-2xl hover:underline">Språk</a>
+               </div>
+               <div class="text-center">
+                  <div class="rounded-lg bg-gray-100 p-1 mb-5">
+                     <h6 class="my-1 cabin-font">Bokomslag:</h6>
+                     <div class="inline-flex cabin-font">
+                        <button
+                           type="button"
+                           (click)="setCoverSetting(true)"
+                           [attr.aria-pressed]="showRealCovers()"
+                           [class]="
+                              'px-4 py-2 rounded-md text-sm font-medium ' +
+                              (showRealCovers()
+                              ? 'bg-white text-gray-900 shadow'
+                              : 'text-gray-600 hover:text-gray-900')
+                           "
+                        >
+                           Visa verkliga storlekar
+                        </button>
+   
+                        <button
+                           type="button"
+                           (click)="setCoverSetting(false)"
+                           [attr.aria-pressed]="!showRealCovers()"
+                           [class]="
+                              'px-4 py-2 rounded-md text-sm font-medium ' +
+                              (!showRealCovers()
+                              ? 'bg-white text-gray-900 shadow'
+                              : 'text-gray-600 hover:text-gray-900')
+                           "
+                        >
+                           Visa enhetliga storlekar
+                        </button>
+                     </div>
                   </div>
                </div>
             </div>
-         </div>
+   
+         </app-burger-menu>
+         <a routerLink="/books" class="text-3xl text-backgroundbeige mr-30">BOKHYLLA</a>
+         <a routerLink="/add" [queryParams]="{ resource: 'book' }" class="text-3xl text-backgroundbeige mr-30">LÄGG TILL</a>
+         <!-- <a routerLink="/scan" class="text-3xl text-backgroundbeige mr-30">SKANNA</a> -->
+         <!-- <a routerLink="/search" class="text-3xl text-backgroundbeige">SÖK</a> -->
+      </div>
 
-      </app-burger-menu>
-      <a routerLink="/books" class="text-3xl text-backgroundbeige mr-30">BOKHYLLA</a>
-      <a routerLink="/add" [queryParams]="{ resource: 'book' }" class="text-3xl text-backgroundbeige mr-30">LÄGG TILL</a>
-      <!-- <a routerLink="/scan" class="text-3xl text-backgroundbeige mr-30">SKANNA</a> -->
-      <!-- <a routerLink="/search" class="text-3xl text-backgroundbeige">SÖK</a> -->
-   </div>
-</header>
+      <div class="mr-6 relative group select-none pb-2">
+         <div
+            class="w-10 h-10 rounded-full bg-backgroundbeige text-headerbrown flex items-center justify-center font-semibold shadow cursor-pointer"
+            aria-haspopup="true"
+         >
+            U
+         </div>
+   
+         <div
+            class="absolute right-0 top-full w-56 rounded-lg border border-gray-200 bg-white shadow-lg opacity-0 scale-95 origin-top-right transition transform duration-150 ease-out pointer-events-none group-hover:opacity-100 group-hover:scale-100 group-hover:pointer-events-auto"
+            role="menu"
+         >
+            <div class="py-2 text-sm text-gray-700">
+               <div class="px-4 py-2 text-gray-400 cursor-not-allowed" aria-disabled="true">Min profil</div>
+               <div class="px-4 py-2 text-gray-400 cursor-not-allowed" aria-disabled="true">Inställningar</div>
+               <div class="my-2 border-t border-gray-200"></div>
+               <div class="px-4 py-2 cursor-pointer hover:bg-backgroundbeige" (click)="logout()">Logga ut</div>
+            </div>
+         </div>
+      </div>
+   </header>
+} @else {
+   <header class="w-full h-23 bg-headerbrown flex justify-between items-center">
+      <div class="ml-20 w-1/2 flex">
+         <a routerLink="/login" class="text-3xl text-backgroundbeige mr-30">LOGGA IN</a>
+         <a routerLink="/register" class="text-3xl text-backgroundbeige mr-30">SKAPA KONTO</a>
+      </div>
+   </header>
+}
