@@ -52,7 +52,7 @@ export class Register {
          await this.auth.registerAccount(email, password);
          await this.router.navigate(['/books']);
       } catch (err: any) {
-         let msg;
+         let msg = '';
          if (err.code === 'auth/email-already-in-use') {
             msg = 'E-postadressen används redan.';
          } else {

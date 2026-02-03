@@ -3,6 +3,7 @@ import { BurgerMenu } from '../burger-menu/burger-menu';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../../services/authService';
 import { AsyncPipe } from '@angular/common';
+import { HotToastService } from '@ngxpert/hot-toast';
 
 @Component({
    selector: 'app-header',
@@ -13,7 +14,7 @@ import { AsyncPipe } from '@angular/common';
 export class Header {
    showRealCovers = signal<boolean>(this.getCoverSettingFromLs());
 
-   constructor(public auth: AuthService, private router: Router) {}
+   constructor(public auth: AuthService, private router: Router, private toast: HotToastService,) {}
 
    getCoverSettingFromLs() {
       const setting = localStorage.getItem('showRealCovers');
@@ -30,8 +31,13 @@ export class Header {
       window.location.reload();
    }
 
-   logout() {
-      this.auth.logout();
-      this.router.navigate(['/login']);
+   async logout() {
+      try {
+         await this.auth.logout();
+         this.router.navigate(['/login']);
+      } catch (err: any) {
+         this.toast.error('Utloggning misslyckades. Försök igen.');
+         console.error('Logout failed with error:', err);
+      }
    }
 }

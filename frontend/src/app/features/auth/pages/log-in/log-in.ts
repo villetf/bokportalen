@@ -42,7 +42,7 @@ export class LogIn {
          await this.auth.logInWithEmail(email, password);
          await this.router.navigate(['/books']);
       } catch (err: any) {
-         let msg;
+         let msg = '';
          if (err.code === 'auth/invalid-credential') {
             msg = 'Felaktigt användarnamn eller lösenord.';
          } else {
