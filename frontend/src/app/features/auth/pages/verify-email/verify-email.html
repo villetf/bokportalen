@@ -1,0 +1,58 @@
+<div class="flex justify-center p-6">
+	<div class="w-full max-w-md rounded-xl border border-gray-200 bg-white shadow-sm p-6 space-y-4">
+		<h1 class="text-2xl font-semibold text-headerbrown">Verifiera e-post</h1>
+
+		<div class="space-y-2 text-gray-800">
+			<p>
+				Ett verifieringsmail har skickats till
+				<strong class="font-semibold">{{ (user$ | async)?.email }}</strong>.
+			</p>
+			<p>Öppna mailet och följ länken för att bekräfta din e-postadress.</p>
+		</div>
+
+		<div class="flex gap-3">
+			<button
+				type="button"
+				class="flex-1 rounded-lg bg-bookolive text-white hover:bg-bookolive-dark disabled:opacity-50 disabled:cursor-not-allowed px-4 py-2 transition-colors"
+				(click)="sendVerificationEmail()"
+				[disabled]="loading()"
+			>
+				Skicka igen
+			</button>
+			<button
+				type="button"
+				class="flex-1 rounded-lg bg-gray-800 text-white hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed px-4 py-2 transition-colors"
+				(click)="refreshUser()"
+				[disabled]="loading()"
+			>
+				Jag har verifierat
+			</button>
+		</div>
+
+		@if (loading()) {
+			<div class="text-sm text-gray-600">Laddar...</div>
+		}
+
+		@if (successMsg()) {
+			<div class="rounded-md border border-green-300 bg-green-50 text-green-700 px-3 py-2 text-sm">
+				{{ successMsg() }}
+			</div>
+		}
+
+		@if (errorMsg()) {
+			<div class="rounded-md border border-red-300 bg-red-50 text-red-700 px-3 py-2 text-sm">
+				{{ errorMsg() }}
+			</div>
+		}
+
+		@if ((emailVerified$ | async)) {
+			<div class="rounded-md border border-green-300 bg-green-50 text-green-700 px-3 py-2 text-sm">
+				Din e-post är verifierad! Du kan fortsätta.
+			</div>
+		}
+
+		<div class="text-sm text-gray-700">
+			Hittar du inte mailet? Kontrollera skräpposten eller skicka ett nytt verifieringsmail.
+		</div>
+	</div>
+</div>
