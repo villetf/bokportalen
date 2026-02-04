@@ -28,7 +28,7 @@
 
 			<button
 				type="submit"
-				class="w-full rounded-lg bg-bookolive-dark text-white hover:bg-bookolive disabled:opacity-50 disabled:cursor-not-allowed px-4 py-2 transition-colors cursor-pointer"
+				class="w-full rounded-lg bg-bookolive text-white hover:bg-bookolive-dark disabled:opacity-50 disabled:cursor-not-allowed px-4 py-2 transition-colors cursor-pointer"
 				[disabled]="!canSubmit"
 			>
 				Logga in
@@ -41,13 +41,13 @@
 
 		@if (errorMsg()) {
          <div class="rounded-md border border-red-300 bg-red-50 text-red-700 px-3 py-2 text-sm">
-				{{ errorMsg() }}
+				{{ errorMsg() }} Om du har glömt ditt lösenord, <a routerLink="/reset-password" class="cabin-font text-blue-500 hover:underline">återställ det här.</a>
          </div>
       }
 
 		<div class="text-sm text-gray-700">
 			Har du inget konto?
-			<a routerLink="/register" class="text-blue-600 hover:underline cabin-font">Registrera dig</a>
+			<a routerLink="/register" class="text-blue-600 hover:underline cabin-font">Registrera dig här!</a>
 		</div>
 	</div>
 </div>

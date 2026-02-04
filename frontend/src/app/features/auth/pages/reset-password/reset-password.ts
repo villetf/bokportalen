@@ -1,13 +1,12 @@
 import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterModule } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { AuthService } from '../../../../services/authService';
 
 @Component({
    selector: 'app-reset-password',
    standalone: true,
-   imports: [CommonModule, RouterModule, ReactiveFormsModule],
+   imports: [CommonModule, ReactiveFormsModule],
    templateUrl: './reset-password.html',
    styles: '',
 })
@@ -18,7 +17,7 @@ export class ResetPassword {
    form!: FormGroup;
 
 
-   constructor(private auth: AuthService, private router: Router, private fb: FormBuilder) {}
+   constructor(private auth: AuthService, private fb: FormBuilder) {}
 
    ngOnInit() {
       this.form = this.fb.nonNullable.group({
