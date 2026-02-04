@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, Router } from '@angular/router';
+import { CanActivate, Router, UrlTree } from '@angular/router';
+import { Observable } from 'rxjs';
 import { take, map } from 'rxjs';
 import { AuthService } from './services/authService';
 
@@ -9,15 +10,19 @@ import { AuthService } from './services/authService';
 export class AuthGuard implements CanActivate {
    constructor(private authService: AuthService, private router: Router) {}
 
-   canActivate() {
+   canActivate(): Observable<boolean | UrlTree> {
       return this.authService.user$.pipe(
          take(1),
          map(user => {
-            if (user) {
-               return true;
+            if (!user) {
+               return this.router.createUrlTree(['/login']);
             }
-            this.router.navigate(['/login']);
-            return false;
+
+            if (!user.emailVerified) {
+               return this.router.createUrlTree(['/register/verify-email']);
+            }
+
+            return true;
          })
       );
    }

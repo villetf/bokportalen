@@ -6,9 +6,11 @@ import {
    sendPasswordResetEmail,
    signOut,
    authState,
-   User
+   User,
+   sendEmailVerification,
+   reload
 } from '@angular/fire/auth';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 
 @Injectable({
@@ -17,9 +19,13 @@ import { environment } from '../../environments/environment';
 export class AuthService {
    private auth: Auth = inject(Auth);
    user$: Observable<User | null> = authState(this.auth);
+   emailVerified$ = this.user$.pipe(
+      map(user => user?.emailVerified === true)
+   );
 
-   registerAccount(email: string, password: string) {
-      return createUserWithEmailAndPassword(this.auth, email, password);
+   async registerAccount(email: string, password: string) {
+      const cred = await createUserWithEmailAndPassword(this.auth, email, password);
+      await sendEmailVerification(cred.user);
    }
 
    logInWithEmail(email: string, password: string) {
@@ -34,5 +40,21 @@ export class AuthService {
       return sendPasswordResetEmail(this.auth, email, {
          url: environment.passwordResetRedirect
       });
+   }
+
+   sendVerificationEmail() {
+      const user = this.auth.currentUser;
+      if (!user) {
+         return Promise.reject(new Error('Ingen användare är inloggad.'));
+      }
+      return sendEmailVerification(user);
+   }
+
+   refreshUser() {
+      const user = this.auth.currentUser;
+      if (!user) {
+         return Promise.reject(new Error('Ingen användare är inloggad.'));
+      }
+      return reload(user);
    }
 }

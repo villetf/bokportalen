@@ -8,6 +8,7 @@ import { AuthGuard } from './auth.guard';
 import { Register } from './features/auth/pages/register/register';
 import { LogIn } from './features/auth/pages/log-in/log-in';
 import { ResetPassword } from './features/auth/pages/reset-password/reset-password';
+import { VerifyEmail } from './features/auth/pages/verify-email/verify-email';
 
 export const routes: Routes = [
    // { path: '', component: HomePage },
@@ -19,5 +20,6 @@ export const routes: Routes = [
    { path: 'add', component: AddView, canActivate: [AuthGuard] },
    { path: 'register', component: Register},
    { path: 'login', component: LogIn },
-   { path: 'reset-password', component: ResetPassword}
+   { path: 'reset-password', component: ResetPassword},
+   { path: 'register/verify-email', component: VerifyEmail }
 ];
