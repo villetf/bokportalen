@@ -3,6 +3,7 @@ import {
    Auth,
    createUserWithEmailAndPassword,
    signInWithEmailAndPassword,
+   sendPasswordResetEmail,
    signOut,
    authState,
    User
@@ -26,5 +27,9 @@ export class AuthService {
 
    logout() {
       return signOut(this.auth);
+   }
+
+   resetPassword(email: string) {
+      return sendPasswordResetEmail(this.auth, email);
    }
 }

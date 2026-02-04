@@ -7,6 +7,7 @@ import { DeletedBooks } from './features/books/pages/deleted-books/deleted-books
 import { AuthGuard } from './auth.guard';
 import { Register } from './features/auth/pages/register/register';
 import { LogIn } from './features/auth/pages/log-in/log-in';
+import { ResetPassword } from './features/auth/pages/reset-password/reset-password';
 
 export const routes: Routes = [
    // { path: '', component: HomePage },
@@ -17,5 +18,6 @@ export const routes: Routes = [
    { path: 'authors/:id', component: AuthorPage, canActivate: [AuthGuard] },
    { path: 'add', component: AddView, canActivate: [AuthGuard] },
    { path: 'register', component: Register},
-   { path: 'login', component: LogIn }
+   { path: 'login', component: LogIn },
+   { path: 'reset-password', component: ResetPassword}
 ];
