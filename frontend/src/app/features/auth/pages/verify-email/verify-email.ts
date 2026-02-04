@@ -1,6 +1,6 @@
 import { Component, signal } from '@angular/core';
-import { CommonModule, AsyncPipe } from '@angular/common';
-import { Router, RouterModule } from '@angular/router';
+import { AsyncPipe } from '@angular/common';
+import { Router } from '@angular/router';
 import { AuthService } from '../../../../services/authService';
 import { firstValueFrom, Observable } from 'rxjs';
 import { User } from '@angular/fire/auth';
@@ -9,7 +9,7 @@ import { HotToastService } from '@ngxpert/hot-toast';
 @Component({
    selector: 'app-verify-email',
    standalone: true,
-   imports: [CommonModule, RouterModule, AsyncPipe],
+   imports: [AsyncPipe],
    templateUrl: './verify-email.html',
    styles: '',
 })
@@ -24,6 +24,14 @@ export class VerifyEmail {
    constructor(private auth: AuthService, private router: Router, private toast: HotToastService) {
       this.user$ = this.auth.user$;
       this.emailVerified$ = this.auth.emailVerified$;
+   }
+
+   ngOnInit() {
+      firstValueFrom(this.user$).then(user => {
+         if (!user) {
+            this.router.navigate(['/login']);
+         }
+      });
    }
 
    async sendVerificationEmail() {
@@ -47,7 +55,7 @@ export class VerifyEmail {
       this.loading.set(true);
       try {
          await this.auth.refreshUser();
-         const verified = await firstValueFrom(this.emailVerified$);
+         const verified = await firstValueFrom(this.auth.emailVerified$);
          if (verified) {
             this.toast.success('Din e-postadress har verifierats!');
             await this.router.navigate(['/books']);
