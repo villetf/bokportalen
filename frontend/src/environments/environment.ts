@@ -9,5 +9,6 @@ export const environment = {
       authDomain: 'bokportalen-dev.firebaseapp.com',
       messagingSenderId: '612976115439',
       projectNumber: '612976115439'
-   }
+   },
+   passwordResetRedirect: 'http://localhost:4200/login'
 };

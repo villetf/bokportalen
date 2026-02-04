@@ -3,11 +3,13 @@ import {
    Auth,
    createUserWithEmailAndPassword,
    signInWithEmailAndPassword,
+   sendPasswordResetEmail,
    signOut,
    authState,
    User
 } from '@angular/fire/auth';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Injectable({
    providedIn: 'root',
@@ -26,5 +28,11 @@ export class AuthService {
 
    logout() {
       return signOut(this.auth);
+   }
+
+   resetPassword(email: string) {
+      return sendPasswordResetEmail(this.auth, email, {
+         url: environment.passwordResetRedirect
+      });
    }
 }

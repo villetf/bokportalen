@@ -11,5 +11,6 @@ export const environment = {
       measurementId: 'G-7JF59KCTNC',
       projectNumber: '460714933595',
       version: '2'
-   }
+   },
+   passwordResetRedirect: 'https://bokportalen.waitless.se/login'
 };
