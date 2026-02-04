@@ -40,7 +40,7 @@ export class ResetPassword {
       try {
          const email = this.form.value.email;
          await this.auth.resetPassword(email);
-         this.successMsg.set('Återställningslänk skickad. Du kommer få ett mail från noreply@bokportalen.firebaseapp.com. Om du inte hittar det, kontrollera skräpposten.');
+         this.successMsg.set('Återställningslänk skickad. Om kontot finns kommer du få ett mail från noreply@bokportalen.firebaseapp.com. Om du inte hittar det, kontrollera skräpposten.');
       } catch (err: any) {
          let msg = '';
          if (err.code === 'auth/invalid-email') {
