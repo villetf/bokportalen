@@ -1,11 +1,15 @@
 import { HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Auth } from '@angular/fire/auth';
-import { from, switchMap } from 'rxjs';
+import { Router } from '@angular/router';
+import { catchError, EMPTY, from, switchMap } from 'rxjs';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-   constructor(private auth: Auth) {}
+   constructor(
+      private auth: Auth,
+      private router: Router
+   ) {}
 
    intercept(req: HttpRequest<any>, next: HttpHandler) {
       const user = this.auth.currentUser;
@@ -22,6 +26,11 @@ export class AuthInterceptor implements HttpInterceptor {
                },
             });
             return next.handle(authReq);
+         }),
+         catchError(error => {
+            console.error('Failed to retrieve ID token. Redirecting to login.', error);
+            this.router.navigate(['/login']);
+            return EMPTY;
          })
       );
    }
