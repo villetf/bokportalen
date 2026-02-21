@@ -1,4 +1,5 @@
 import express from 'express';
+import './firebaseAdmin.js';
 import bookRoutes from './routes/books.routes.js';
 import authorRoutes from './routes/authors.routes.js';
 import countryRoutes from './routes/countries.routes.js';
