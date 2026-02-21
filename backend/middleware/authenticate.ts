@@ -21,7 +21,12 @@ export async function authenticate(
          return res.status(403).json({ message: 'Email not verified' });
       }
       next();
-   } catch {
+   } catch (error) {
+      console.error('Authentication error while verifying token', {
+         error,
+         path: req.path,
+         method: req.method,
+      });
       return res.status(401).json({ message: 'Invalid token' });
    }
 }
