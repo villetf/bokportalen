@@ -7,7 +7,7 @@ export class UserStore {
    private _loading = signal<boolean>(false);
 
    user = this._user.asReadonly();
-   loading = this._user.asReadonly();
+   loading = this._loading.asReadonly();
 
    setUser(user: AppUser) {
       this._user.set(user);

@@ -1,6 +1,7 @@
 import { DecodedIdToken } from 'firebase-admin/auth';
 import { AppDataSource } from '../data-source.js';
 import { User } from '../entities/User.js';
+import { UserUpdateDTO } from '../dto/UserUpdateDTO.js';
 
 export class UsersService {
    static async getFirebaseUser(firebaseId: string): Promise<User | null> {
@@ -35,5 +36,10 @@ export class UsersService {
 
       currentUser.email = firebaseEmail;
       await AppDataSource.getRepository(User).save(currentUser);
+   }
+
+   static async updateUserSettings(user: User, updatedFields: UserUpdateDTO): Promise<User> {
+      user.showRealCovers = updatedFields.showRealCovers;
+      return AppDataSource.getRepository(User).save(user);
    }
 }

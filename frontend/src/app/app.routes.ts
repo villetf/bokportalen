@@ -9,6 +9,7 @@ import { Register } from './features/auth/pages/register/register';
 import { LogIn } from './features/auth/pages/log-in/log-in';
 import { ResetPassword } from './features/auth/pages/reset-password/reset-password';
 import { VerifyEmail } from './features/auth/pages/verify-email/verify-email';
+import { SettingsPage } from './features/settings/pages/settings-page/settings-page';
 
 export const routes: Routes = [
    // { path: '', component: HomePage },
@@ -21,5 +22,6 @@ export const routes: Routes = [
    { path: 'register', component: Register},
    { path: 'login', component: LogIn },
    { path: 'reset-password', component: ResetPassword},
-   { path: 'register/verify-email', component: VerifyEmail }
+   { path: 'register/verify-email', component: VerifyEmail },
+   { path: 'settings', component: SettingsPage, canActivate: [AuthGuard] }
 ];
