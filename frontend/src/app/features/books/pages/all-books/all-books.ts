@@ -1,4 +1,4 @@
-import { Component, DestroyRef, HostListener, ViewChild, ElementRef, inject, signal } from '@angular/core';
+import { Component, DestroyRef, HostListener, ViewChild, ElementRef, inject, signal, computed } from '@angular/core';
 import { Book } from '../../../../types/Book.model';
 import { BookCard } from '../../components/book-card/book-card';
 import { BooksService } from '../../../../services/booksService';
@@ -11,6 +11,7 @@ import { SortList } from '../../components/sort-list/sort-list';
 import { Router, NavigationStart } from '@angular/router';
 import { HotToastService } from '@ngxpert/hot-toast';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { UserStore } from '../../../../stores/user.store';
 
 @Component({
    selector: 'app-all-books',
@@ -27,9 +28,10 @@ export class AllBooks {
    booksFiltered$ = new BehaviorSubject<Book[]>([]);
    booksSearched$ = new BehaviorSubject<Book[]>([]);
    numberOfBooks = signal<number>(0);
-   showRealCovers = signal<boolean>(this.getCoverSetting());
 
    private destroyRef = inject(DestroyRef);
+   private userStore = inject(UserStore);
+   protected user = computed(() => this.userStore.user());
 
    constructor(private booksService: BooksService, private router: Router, private toast: HotToastService) {
       this.booksSearched$
@@ -111,15 +113,5 @@ export class AllBooks {
       const randomBookId = currentBooks[randomNumber].id;
       this.saveScrollPosition();
       this.router.navigate([`/books/${randomBookId}`]);
-   }
-
-   getCoverSetting() {
-      const setting = localStorage.getItem('showRealCovers');
-
-      if (!setting) {
-         return true;
-      }
-
-      return setting === 'true';
    }
 }
