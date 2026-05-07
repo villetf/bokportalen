@@ -27,7 +27,8 @@ export class UsersController {
       const user = new UserInfoDTO();
       user.id = dbUser.id;
       user.email = dbUser.email;
-      user.displayName = dbUser.displayName;
+      user.firstName = dbUser.firstName;
+      user.lastName = dbUser.lastName;
       user.showRealCovers = dbUser.showRealCovers;
       user.createdAt = dbUser.createdAt;
       user.updatedAt = dbUser.updatedAt;
@@ -59,7 +60,8 @@ export class UsersController {
       const user = new UserInfoDTO();
       user.id = updatedUser.id;
       user.email = updatedUser.email;
-      user.displayName = updatedUser.displayName;
+      user.firstName = updatedUser.firstName;
+      user.lastName = updatedUser.lastName;
       user.showRealCovers = updatedUser.showRealCovers;
       user.createdAt = updatedUser.createdAt;
       user.updatedAt = updatedUser.updatedAt;

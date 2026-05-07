@@ -9,7 +9,7 @@ import { AppUser } from '../types/AppUser.model';
 export class UsersService {
    constructor(private http: HttpClient, private auth: Auth) {}
 
-   async updateCurrentUserSettings(showRealCovers: boolean): Promise<AppUser> {
+   async updateCurrentUserSettings(payload: { showRealCovers?: boolean; firstName?: string | null; lastName?: string | null }): Promise<AppUser> {
       const currentUser = this.auth.currentUser;
 
       if (!currentUser) {
@@ -21,7 +21,7 @@ export class UsersService {
       return firstValueFrom(
          this.http.patch<AppUser>(
             `${environment.apiUrl}/users/me`,
-            { showRealCovers },
+            payload,
             {
                headers: {
                   Authorization: `Bearer ${token}`

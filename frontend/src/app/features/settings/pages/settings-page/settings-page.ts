@@ -47,7 +47,7 @@ export class SettingsPage {
 
       try {
          const showRealCovers = this.coverDisplayMode() === 'natural';
-         const updatedUser = await this.usersService.updateCurrentUserSettings(showRealCovers);
+         const updatedUser = await this.usersService.updateCurrentUserSettings({ showRealCovers });
          this.userStore.setUser(updatedUser);
       } catch (error: any) {
          console.error('Failed to save user settings:', error);

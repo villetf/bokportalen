@@ -13,8 +13,11 @@ export class User {
    @Column('varchar', { name: 'email', length: 255 })
       email!: string;
 
-   @Column('varchar', { name: 'display_name', length: 255, nullable: true })
-      displayName!: string | null;
+   @Column('varchar', { name: 'first_name', length: 255, nullable: true })
+      firstName!: string | null;
+
+   @Column('varchar', { name: 'last_name', length: 255, nullable: true })
+      lastName!: string | null;
 
    @Column({ type: 'boolean', name: 'show_real_covers', default: true })
       showRealCovers!: boolean;

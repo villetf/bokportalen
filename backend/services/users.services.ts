@@ -18,7 +18,8 @@ export class UsersService {
       const newUser = repo.create({
          firebaseUuid: firebaseUser.uid,
          email: firebaseUser.email ?? '',
-         displayName: firebaseUser.name ?? null
+         firstName: firebaseUser.name ?? null,
+         lastName: null
       });
 
       return repo.save(newUser);
@@ -39,7 +40,15 @@ export class UsersService {
    }
 
    static async updateUserSettings(user: User, updatedFields: UserUpdateDTO): Promise<User> {
-      user.showRealCovers = updatedFields.showRealCovers;
+      if (updatedFields.showRealCovers !== undefined) {
+         user.showRealCovers = updatedFields.showRealCovers;
+      }
+      if (updatedFields.firstName !== undefined) {
+         user.firstName = updatedFields.firstName;
+      }
+      if (updatedFields.lastName !== undefined) {
+         user.lastName = updatedFields.lastName;
+      }
       return AppDataSource.getRepository(User).save(user);
    }
 }
