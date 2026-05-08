@@ -1,0 +1,100 @@
+<div class="flex justify-center p-6">
+   <div class="w-full max-w-2xl space-y-8">
+      <div class="space-y-2">
+         <p class="text-xs uppercase tracking-[0.22em] text-gray-500">Användarinställningar</p>
+         <h1 class="text-4xl font-semibold text-headerbrown">Inställningar</h1>
+      </div>
+
+      @if (user()) {
+         <div class="space-y-8">
+            <!-- Book Cover Display Setting -->
+            <div class="rounded-2xl border border-gray-200 bg-white shadow-sm p-6 space-y-4">
+               <div class="space-y-2">
+                  <h2 class="text-xl font-semibold text-headerbrown">Bokomslag</h2>
+                  <p class="text-sm text-gray-600">
+                     Välj hur bokomslagen ska visas i bokgalleriet.
+                  </p>
+               </div>
+
+               <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <button
+                     type="button"
+                     class="relative rounded-lg border-2 p-4 text-left transition-all"
+                     [class.border-bookolive]="coverDisplayMode() === 'natural'"
+                     [class.border-gray-300]="coverDisplayMode() !== 'natural'"
+                     [class.bg-blue-50]="coverDisplayMode() === 'natural'"
+                     [class.bg-gray-50]="coverDisplayMode() !== 'natural'"
+                     (click)="coverDisplayMode.set('natural')"
+                  >
+                     <div class="flex items-start gap-3">
+                        <div
+                           class="mt-1 h-4 w-4 rounded-full border-2 flex-shrink-0"
+                           [class.bg-bookolive]="coverDisplayMode() === 'natural'"
+                           [class.border-bookolive]="coverDisplayMode() === 'natural'"
+                           [class.border-gray-400]="coverDisplayMode() !== 'natural'"
+                        ></div>
+                        <div class="space-y-1">
+                           <span class="block font-medium text-headerbrown">Ursprungliga proportioner</span>
+                           <span class="block text-xs text-gray-600">
+                              Visar bokomslag i sina verkliga proportioner, olika höjder beroende på originalet
+                           </span>
+                        </div>
+                     </div>
+                  </button>
+
+                  <button
+                     type="button"
+                     class="relative rounded-lg border-2 p-4 text-left transition-all"
+                     [class.border-bookolive]="coverDisplayMode() === 'uniform'"
+                     [class.border-gray-300]="coverDisplayMode() !== 'uniform'"
+                     [class.bg-blue-50]="coverDisplayMode() === 'uniform'"
+                     [class.bg-gray-50]="coverDisplayMode() !== 'uniform'"
+                     (click)="coverDisplayMode.set('uniform')"
+                  >
+                     <div class="flex items-start gap-3">
+                        <div
+                           class="mt-1 h-4 w-4 rounded-full border-2 flex-shrink-0"
+                           [class.bg-bookolive]="coverDisplayMode() === 'uniform'"
+                           [class.border-bookolive]="coverDisplayMode() === 'uniform'"
+                           [class.border-gray-400]="coverDisplayMode() !== 'uniform'"
+                        ></div>
+                        <div class="space-y-1">
+                           <span class="block font-medium text-headerbrown">Enhetliga storlekar</span>
+                           <span class="block text-xs text-gray-600">
+                              Visar alla bokomslag med samma höjd, proportioner justeras för enhetlighet
+                           </span>
+                        </div>
+                     </div>
+                  </button>
+               </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex items-center gap-3">
+               <button
+                  type="button"
+                  class="rounded-lg bg-bookolive px-6 py-2 text-white transition-colors hover:bg-bookolive-dark disabled:cursor-not-allowed disabled:opacity-50"
+                  [disabled]="!canSubmit"
+                  (click)="saveSettings()"
+               >
+                  Spara inställningar
+               </button>
+
+               @if (saving()) {
+                  <span class="text-sm text-gray-600">Sparar…</span>
+               }
+            </div>
+
+            @if (errorMsg()) {
+               <div class="rounded-md border border-red-300 bg-red-50 px-3 py-2 text-sm text-red-700">
+                  {{ errorMsg() }}
+               </div>
+            }
+         </div>
+      } @else {
+         <div class="rounded-2xl border border-gray-200 bg-white shadow-sm p-6">
+            <div class="text-sm text-gray-600">Laddar inställningar…</div>
+         </div>
+      }
+   </div>
+</div>

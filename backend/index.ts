@@ -7,6 +7,7 @@ import { AppDataSource } from './data-source.js';
 import languageRoutes from './routes/language.routes.js';
 import genreRoutes from './routes/genres.routes.js';
 import cors from 'cors';
+import usersRoutes from './routes/users.routes.js';
 
 const app = express();
 app.use(express.json());
@@ -18,6 +19,7 @@ app.use('/api/v1/authors', authorRoutes);
 app.use('/api/v1/countries', countryRoutes);
 app.use('/api/v1/languages', languageRoutes);
 app.use('/api/v1/genres', genreRoutes);
+app.use('/api/v1/users', usersRoutes);
 
 AppDataSource.initialize()
    .then(() => {

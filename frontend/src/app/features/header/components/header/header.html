@@ -13,40 +13,6 @@
                   <a routerLink="/add" [queryParams]="{ resource: 'genre' }" class="text-2xl hover:underline">Genre</a>
                   <a routerLink="/add" [queryParams]="{ resource: 'language' }" class="text-2xl hover:underline">Språk</a>
                </div>
-               <div class="text-center">
-                  <div class="rounded-lg bg-gray-100 p-1 mb-5">
-                     <h6 class="my-1 cabin-font">Bokomslag:</h6>
-                     <div class="inline-flex cabin-font">
-                        <button
-                           type="button"
-                           (click)="setCoverSetting(true)"
-                           [attr.aria-pressed]="showRealCovers()"
-                           [class]="
-                              'px-4 py-2 rounded-md text-sm font-medium ' +
-                              (showRealCovers()
-                              ? 'bg-white text-gray-900 shadow'
-                              : 'text-gray-600 hover:text-gray-900')
-                           "
-                        >
-                           Visa verkliga storlekar
-                        </button>
-   
-                        <button
-                           type="button"
-                           (click)="setCoverSetting(false)"
-                           [attr.aria-pressed]="!showRealCovers()"
-                           [class]="
-                              'px-4 py-2 rounded-md text-sm font-medium ' +
-                              (!showRealCovers()
-                              ? 'bg-white text-gray-900 shadow'
-                              : 'text-gray-600 hover:text-gray-900')
-                           "
-                        >
-                           Visa enhetliga storlekar
-                        </button>
-                     </div>
-                  </div>
-               </div>
             </div>
    
          </app-burger-menu>
@@ -69,8 +35,8 @@
             role="menu"
          >
             <div class="py-2 text-sm text-gray-700">
-               <div class="px-4 py-2 text-gray-400 cursor-not-allowed" aria-disabled="true">Min profil</div>
-               <div class="px-4 py-2 text-gray-400 cursor-not-allowed" aria-disabled="true">Inställningar</div>
+               <a routerLink="/profile" class="block px-4 py-2 hover:bg-backgroundbeige cabin-font">Min profil</a>
+               <a routerLink="/settings" class="block px-4 py-2 hover:bg-backgroundbeige cabin-font">Inställningar</a>
                <div class="my-2 border-t border-gray-200"></div>
                <div class="px-4 py-2 cursor-pointer hover:bg-backgroundbeige" (click)="logout()">Logga ut</div>
             </div>
