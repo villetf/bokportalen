@@ -27,8 +27,6 @@ export class BooksService {
          genre: 'genre.name',
          format: 'book.format',
          isbn: 'book.isbn',
-         status: 'book.status',
-         rating: 'book.rating',
       };
 
       // För varje inskickad filterparameter, kolla att den finns i listan över giltiga filter
@@ -118,11 +116,8 @@ export class BooksService {
       newBook.originalLanguage = originalLanguage;
       newBook.genre = genre;
       newBook.format = inputBook.format ? inputBook.format : null;
-      newBook.status = null;
-      newBook.rating = null;
       newBook.isDeleted = false;
       newBook.createdAt = new Date();
-      newBook.copies = 1;
       newBook.addedWithScanner = inputBook.addedWithScanner ? inputBook.addedWithScanner : false;
       newBook.coverLink = inputBook.coverLink ? inputBook.coverLink : null;
 

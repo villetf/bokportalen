@@ -7,6 +7,7 @@ import { Book } from './entities/Book.js';
 import { Country } from './entities/Country.js';
 import { Genre } from './entities/Genre.js';
 import { User } from './entities/User.js';
+import { UserBook } from './entities/UserBook.js';
 dotenv.config();
 
 export const AppDataSource = new DataSource({
@@ -18,7 +19,7 @@ export const AppDataSource = new DataSource({
    database: process.env.DB_NAME,
    synchronize: true,
    logging: false,
-   entities: [Author, Book, Country, Genre, Language, User],
+   entities: [Author, Book, Country, Genre, Language, User, UserBook],
    migrations: [],
    subscribers: [],
 });
