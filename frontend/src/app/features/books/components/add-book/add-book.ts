@@ -130,7 +130,11 @@ export class AddBook {
                })
             )
             .subscribe({
-               next: (res) => this.booksService.setBook(res as Book)
+               next: (res) => {
+                  const createdBook = res as Book;
+                  this.booksService.addToShelf({ bookId: createdBook.id })
+                     .subscribe();
+               }
             });
       } else {
          this.toast.error('Formuläret är inte giltigt. Kontrollera att allt är rätt och försök igen.');

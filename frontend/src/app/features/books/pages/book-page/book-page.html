@@ -21,14 +21,50 @@
                   <p><span class="book-properties alumni-font">FORMAT:</span><span class="amiri-font text-2xl"> {{ book.format ? book.format : 'Ej angivet' }}</span></p>
                   <p><span class="book-properties alumni-font">TILLAGD:</span><span class="amiri-font text-2xl"> {{ book.createdAt ? (book.createdAt | date: 'yyyy-MM-dd HH:mm' ) : 'Ej angivet' }}</span></p>
                   <p><span class="book-properties alumni-font">ISBN:</span><span class="amiri-font text-2xl"> {{ book.isbn ? book.isbn : 'Ej angivet' }}</span></p>
-                  <p><span class="book-properties alumni-font">STATUS:</span><span class="amiri-font text-2xl"> {{ book.status ? book.status : 'Ej angivet' }}</span></p>
-                  <p><span class="book-properties alumni-font">ANTAL EXEMPLAR:</span><span class="amiri-font text-2xl"> {{ book.copies ? book.copies : 'Ej angivet' }}</span></p>
-                  <p><span class="book-properties alumni-font">BETYG:</span><span class="amiri-font text-2xl"> {{ book.rating ? book.rating : 'Inget betyg satt' }}</span></p>
+                  @if (shelfBook$ | async; as shelfBook) {
+                     <p><span class="book-properties alumni-font">STATUS:</span><span class="amiri-font text-2xl"> {{ shelfBook.status ? shelfBook.status : 'Ej angivet' }}</span></p>
+                     <p><span class="book-properties alumni-font">ANTAL EXEMPLAR:</span><span class="amiri-font text-2xl"> {{ shelfBook.copies }}</span></p>
+                     <p><span class="book-properties alumni-font">BETYG:</span><span class="amiri-font text-2xl"> {{ shelfBook.rating != null ? shelfBook.rating : 'Inget betyg satt' }}</span></p>
+                  } @else {
+                     <p><span class="book-properties alumni-font">STATUS:</span><span class="amiri-font text-2xl"> Ej i bokhyllan</span></p>
+                     <p><span class="book-properties alumni-font">ANTAL EXEMPLAR:</span><span class="amiri-font text-2xl"> Ej i bokhyllan</span></p>
+                     <p><span class="book-properties alumni-font">BETYG:</span><span class="amiri-font text-2xl"> Ej i bokhyllan</span></p>
+                  }
+               </div>
+
+               <div class="mt-6 p-4 border border-headerbrown/30 rounded-lg">
+                  <h4 class="text-xl font-semibold text-headerbrown mb-3">MIN BOKHYLLA</h4>
+                  <div class="grid grid-cols-[auto_1fr] gap-y-2 gap-x-4 items-center">
+                     <label for="shelfStatus" class="self-center">Status:</label>
+                     <select id="shelfStatus" [value]="shelfStatus() ?? ''" (change)="shelfStatus.set($any($event.target).value || null)">
+                        <option value="">Ej angivet</option>
+                        <option value="Läst">Läst</option>
+                        <option value="Ej läst">Ej läst</option>
+                        <option value="Läser">Läser</option>
+                        <option value="Utlånad">Utlånad</option>
+                     </select>
+
+                     <label for="shelfCopies" class="self-center">Antal exemplar:</label>
+                     <input id="shelfCopies" type="number" min="0" class="form-text-input" [value]="shelfCopies()" (input)="shelfCopies.set($any($event.target).valueAsNumber || 0)">
+
+                     <label for="shelfRating" class="self-center">Betyg:</label>
+                     <div>
+                        <input id="shelfRating" type="range" min="0" max="10" step="0.1" [value]="shelfRating() ?? 0" (input)="shelfRating.set($any($event.target).valueAsNumber)">
+                        <span>{{ shelfRating() ?? 'Ej betygsatt' }}</span>
+                     </div>
+                  </div>
+
+                  <div class="flex gap-4 mt-4">
+                     <app-button (click)="saveShelfChanges()">Spara bokhylla</app-button>
+                     @if (shelfBook$ | async) {
+                        <app-button color="bg-red-700" hoverColor="hover:bg-red-900" (click)="removeFromShelf()">Ta bort</app-button>
+                     }
+                  </div>
                </div>
             </div>
 
             @if (currentBook.isDeleted) {
-               <h1 class="absolute z-40 bottom-100 left-1/10 text-red-500 text-[200px] rotate-[25deg]">RADERAD</h1>
+               <h1 class="absolute z-40 bottom-100 left-1/10 text-red-500 text-[200px] rotate-25">RADERAD</h1>
                <app-button (click)="resetDeletedBook()">Återställ</app-button>
             } @else {
                <app-button (click)="openEditView()" class="min-h-0">Redigera</app-button>
@@ -46,7 +82,7 @@
                      Mer av dessa författare:
                   }
                </h5>
-               <div class="relative flex-1 w-full overflow-auto min-h-0 flex flex-col pt-3 [mask-image:linear-gradient(to_bottom,transparent_0px,black_3px)]">
+               <div class="relative flex-1 w-full overflow-auto min-h-0 flex flex-col pt-3 mask-[linear-gradient(to_bottom,transparent_0px,black_3px)]">
                   @for (bookInList of booksByAuthor(); track bookInList.id) {
                      <div class="w-90">
                         <app-book-card [book]="bookInList" class=""></app-book-card>

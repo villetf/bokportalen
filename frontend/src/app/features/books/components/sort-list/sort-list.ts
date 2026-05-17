@@ -1,7 +1,7 @@
 import { CdkMenuModule } from '@angular/cdk/menu';
 import { Component, DestroyRef, effect, inject, Input, signal } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { Book } from '../../../../types/Book.model';
+import { UserBook } from '../../../../types/UserBook.model';
 import { BooksService } from '../../../../services/booksService';
 import { ActivatedRoute, Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -13,7 +13,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
    styles: ''
 })
 export class SortList {
-   @Input() booksOriginal$!: BehaviorSubject<Book[]>;
+   @Input() booksOriginal$!: BehaviorSubject<UserBook[]>;
    sortBy = signal<{ clearText: string, bookProperty: string }>({ clearText: 'Titel', bookProperty: 'title' });
    sortAscending = signal<boolean>(true);
 
@@ -87,7 +87,7 @@ export class SortList {
    }
 
    ngOnInit(): void {
-      this.booksService.getBooks().subscribe(books => {
+      this.booksService.getShelfBooks().subscribe(books => {
          this.booksOriginal$.next(books);
          this.sortBooks(this.sortBy().bookProperty);
       });
@@ -105,7 +105,7 @@ export class SortList {
       }
 
       const sorted = preSorted.sort((a, b) => {
-         // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
          const getValue = (obj: any, path: string) => {
             return path.split('.').reduce((acc, key) => acc?.[key], obj) ?? '';
          };

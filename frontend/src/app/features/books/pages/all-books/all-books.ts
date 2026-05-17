@@ -1,5 +1,5 @@
 import { Component, DestroyRef, HostListener, ViewChild, ElementRef, inject, signal, computed } from '@angular/core';
-import { Book } from '../../../../types/Book.model';
+import { UserBook } from '../../../../types/UserBook.model';
 import { BookCard } from '../../components/book-card/book-card';
 import { BooksService } from '../../../../services/booksService';
 import { BehaviorSubject } from 'rxjs';
@@ -24,9 +24,9 @@ export class AllBooks {
    private readonly scrollStorageKey = 'all-books-scrollTop';
    private hasRestoredScroll = false;
    @ViewChild('scrollContainer') private scrollContainer?: ElementRef<HTMLElement>;
-   booksOriginal$ = new BehaviorSubject<Book[]>([]);
-   booksFiltered$ = new BehaviorSubject<Book[]>([]);
-   booksSearched$ = new BehaviorSubject<Book[]>([]);
+   booksOriginal$ = new BehaviorSubject<UserBook[]>([]);
+   booksFiltered$ = new BehaviorSubject<UserBook[]>([]);
+   booksSearched$ = new BehaviorSubject<UserBook[]>([]);
    numberOfBooks = signal<number>(0);
 
    private destroyRef = inject(DestroyRef);

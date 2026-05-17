@@ -60,9 +60,6 @@ export class EditBookForm implements OnInit {
          originalLanguage: [this.book.originalLanguage ? this.book.originalLanguage.id : null],
          format: [this.book.format],
          isbn: [this.book.isbn, [Validators.pattern('^[0-9-]+$')]],
-         status: [this.book.status],
-         copies: [this.book.copies, [Validators.required, Validators.min(1)]],
-         rating: [this.book.rating],
          coverLink: [this.book.coverLink]
       });
    }
@@ -111,9 +108,6 @@ export class EditBookForm implements OnInit {
          originalLanguage: [this.book.originalLanguage ? this.book.originalLanguage.id : null],
          format: [this.book.format],
          isbn: [this.book.isbn],
-         status: [this.book.status],
-         copies: [this.book.copies, [Validators.required, Validators.min(1)]],
-         rating: [this.book.rating],
          coverLink: [this.book.coverLink]
       });
    }

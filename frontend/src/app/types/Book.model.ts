@@ -12,11 +12,8 @@ export interface Book {
    genre: Genre;
    format: string;
    isbn: number;
-   status: string;
-   rating: number;
    createdAt: Date | null;
    addedWithScanner: boolean | null;
-   copies: number | null;
    isDeleted: boolean;
    coverLink: string | null;
 }

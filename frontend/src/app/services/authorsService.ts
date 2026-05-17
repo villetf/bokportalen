@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Author } from '../types/Author.model';
 import { AddAuthorDTO } from '../dtos/AddAuthorDTO';
 import { HttpClient } from '@angular/common/http';
-import { catchError, throwError } from 'rxjs';
+import { catchError, firstValueFrom, throwError } from 'rxjs';
 import { EditAuthorDTO } from '../dtos/EditAuthorDTO';
 import { environment } from '../../environments/environment';
 
@@ -14,21 +14,20 @@ export class AuthorsService {
    constructor(private http: HttpClient) {}
 
    async getAuthorById(id: number): Promise<Author | null> {
-      const response = await fetch(`${this.apiUrl}/authors/${id}`);
-      if (!response.ok) {
+      try {
+         return await firstValueFrom(this.http.get<Author>(`${this.apiUrl}/authors/${id}`));
+      } catch {
          return null;
       }
-      return response.json();
    }
 
    async getAllAuthors(): Promise<Author[]> {
-      const response = await fetch(`${this.apiUrl}/authors`);
-      if (!response.ok) {
+      try {
+         const data = await firstValueFrom(this.http.get<Author[]>(`${this.apiUrl}/authors`));
+         return data.sort((a, b) => a.firstName.localeCompare(b.firstName));
+      } catch {
          return [];
       }
-
-      const data: Author[] = await response.json();
-      return data.sort((a, b) => a.firstName.localeCompare(b.firstName));
    }
 
    addAuthor(author: AddAuthorDTO) {

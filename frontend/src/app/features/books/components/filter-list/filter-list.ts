@@ -1,6 +1,6 @@
 import { Component, DestroyRef, effect, inject, Input, signal } from '@angular/core';
 import { CdkMenuModule } from '@angular/cdk/menu';
-import { Book } from '../../../../types/Book.model';
+import { UserBook } from '../../../../types/UserBook.model';
 import { Genre } from '../../../../types/Genre.model';
 import { BehaviorSubject } from 'rxjs';
 import { Filter } from '../../../../types/Filter.model';
@@ -19,8 +19,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 })
 
 export class FilterList {
-   @Input() booksOriginal$!: BehaviorSubject<Book[]>;
-   @Input() booksFiltered$!: BehaviorSubject<Book[]>;
+   @Input() booksOriginal$!: BehaviorSubject<UserBook[]>;
+   @Input() booksFiltered$!: BehaviorSubject<UserBook[]>;
 
    // Den lista av filter som ska appliceras på böckerna
    filterBy = signal<Filter[]>([]);
@@ -30,13 +30,13 @@ export class FilterList {
 
    // Det som är möjligt att filtrera på
    filterOptions = [
-      { key: 'format' as keyof Book, label: 'Format' },
-      { key: 'language' as keyof Book, label: 'Språk' },
-      { key: 'originalLanguage' as keyof Book, label: 'Originalspråk' },
-      { key: 'yearWritten' as keyof Book, label: 'Publiceringsår' },
-      { key: 'genre' as keyof Book, label: 'Genre' },
-      { key: 'status' as keyof Book, label: 'Status' },
-      { key: 'authors' as keyof Book, label: 'Författare' },
+      { key: 'format' as keyof UserBook, label: 'Format' },
+      { key: 'language' as keyof UserBook, label: 'Språk' },
+      { key: 'originalLanguage' as keyof UserBook, label: 'Originalspråk' },
+      { key: 'yearWritten' as keyof UserBook, label: 'Publiceringsår' },
+      { key: 'genre' as keyof UserBook, label: 'Genre' },
+      { key: 'status' as keyof UserBook, label: 'Status' },
+      { key: 'authors' as keyof UserBook, label: 'Författare' },
    ];
 
    private suppressEffect = false;
@@ -134,14 +134,14 @@ export class FilterList {
          return Object.entries(groupedFilters).every(([property, allowedValues]) => {
             if (property == 'language' || property == 'originalLanguage' || property == 'genre') {
                if (!book[property]) {
-                  return allowedValues.includes(book[property as keyof Book] as string | null);
+                  return allowedValues.includes(book[property as keyof UserBook] as string | null);
                }
 
-               return allowedValues.includes((book[property as keyof Book] as Language | Genre).name as string | null);
+               return allowedValues.includes((book[property as keyof UserBook] as Language | Genre).name as string | null);
             }
 
             if (property == 'yearPublished') {
-               return allowedValues.includes(String(book[property as keyof Book]));
+               return allowedValues.includes(String(book[property as keyof UserBook]));
             }
 
             if (property == 'authorName') {
@@ -162,7 +162,7 @@ export class FilterList {
                });
             }
 
-            return allowedValues.includes(String(book[property as keyof Book] as string | null));
+            return allowedValues.includes(String(book[property as keyof UserBook] as string | null));
          }
          );
       }
@@ -172,7 +172,7 @@ export class FilterList {
    }
 
    // Sätter valt filter till filterBy
-   setFilter(filter: keyof Book, filterString: string | null, displayString: string) {
+   setFilter(filter: keyof UserBook, filterString: string | null, displayString: string) {
       if (filterString == '(Ej angivet)') {
          filterString = null;
       }
@@ -201,7 +201,7 @@ export class FilterList {
             }
             value = book[filterProperty].name;
          } else {
-            value = book[(filterProperty as keyof Book)];
+            value = book[(filterProperty as keyof UserBook)];
          }
 
          // Specialfall för författarnamn
@@ -272,7 +272,7 @@ export class FilterList {
    }
 
    // Skapar ett Filter-objekt av inskickade argument
-   constructFilterObject(bookProperty: keyof Book, filterString: string | null, displayString: string) {
+   constructFilterObject(bookProperty: keyof UserBook, filterString: string | null, displayString: string) {
       const newObject: Filter = {
          bookProperty: bookProperty,
          filterString: filterString,
@@ -282,9 +282,9 @@ export class FilterList {
       return newObject;
    }
 
-   // Konverterar en string till en keyof Book
-   stringToKeyof(inputString: string): keyof Book {
-      return inputString as keyof Book;
+   // Konverterar en string till en keyof UserBook
+   stringToKeyof(inputString: string): keyof UserBook {
+      return inputString as keyof UserBook;
    }
 
    // Grupperar filter efter sin kolumn och returnerar som ett objekt av key (kolumnen) och values (array av filter för kolumnen)
