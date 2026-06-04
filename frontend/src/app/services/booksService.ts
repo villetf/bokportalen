@@ -1,4 +1,4 @@
-import { BehaviorSubject, catchError, filter, map, of, tap, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, combineLatest, filter, map, of, tap, throwError } from 'rxjs';
 import { Book } from '../types/Book.model';
 import { UserBook } from '../types/UserBook.model';
 import { Injectable } from '@angular/core';
@@ -10,6 +10,7 @@ import { environment } from '../../environments/environment';
 @Injectable({ providedIn: 'root' })
 export class BooksService {
    private shelfBooks$ = new BehaviorSubject<UserBook[] | null>(null);
+   private allBooks$ = new BehaviorSubject<Book[] | null>(null);
    private apiUrl = environment.apiUrl;
 
    constructor(private http: HttpClient) {}
@@ -95,8 +96,37 @@ export class BooksService {
       return this.http.get<Book>(`${this.apiUrl}/books/${id}`);
    }
 
+   getAllBooks() {
+      if (!this.allBooks$.value) {
+         return this.http.get<Book[]>(`${this.apiUrl}/books`).pipe(
+            tap(books => this.allBooks$.next(books))
+         );
+      }
+
+      return this.allBooks$.asObservable().pipe(
+         filter((books): books is Book[] => books != null)
+      );
+   }
+
+   getAllBooksWithShelfStatus() {
+      return combineLatest([
+         this.getAllBooks(),
+         this.getShelfBooks()
+      ]).pipe(
+         map(([allBooks, shelfBooks]) => {
+            const shelfBookIds = new Set(shelfBooks.map((b: UserBook) => b.id));
+            return allBooks.map(book => ({
+               ...book,
+               inShelf: shelfBookIds.has(book.id)
+            }));
+         })
+      );
+   }
+
    editBook(book: Book) {
-      return this.http.patch<Book>(`${this.apiUrl}/books/${book.id}`, book);
+      return this.http.patch<Book>(`${this.apiUrl}/books/${book.id}`, book).pipe(
+         tap(() => this.allBooks$.next(null))
+      );
    }
 
    addBook(book: AddBookDTO) {
@@ -104,7 +134,8 @@ export class BooksService {
          catchError(err => {
             console.error('Error when posting book:', err);
             return throwError(() => err);
-         })
+         }),
+         tap(() => this.allBooks$.next(null))
       );
    }
 
@@ -123,7 +154,9 @@ export class BooksService {
    }
 
    deleteBook(book: Book) {
-      return this.http.delete(`${this.apiUrl}/books/${book.id}`);
+      return this.http.delete(`${this.apiUrl}/books/${book.id}`).pipe(
+         tap(() => this.allBooks$.next(null))
+      );
    }
 
    getDeletedBooks() {
@@ -133,6 +166,8 @@ export class BooksService {
    resetDeletedBook(book: Book) {
       return this.http.patch<Book>(`${this.apiUrl}/books/${book.id}`, {
          isDeleted: false
-      });
+      }).pipe(
+         tap(() => this.allBooks$.next(null))
+      );
    }
 }

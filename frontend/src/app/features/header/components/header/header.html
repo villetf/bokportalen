@@ -6,6 +6,7 @@
                <div class="flex flex-col">
                   <a routerLink="/" class="text-4xl hover:underline mb-5">Start</a>
                   <a routerLink="/books" class="text-3xl hover:underline">Alla böcker</a>
+                  <a routerLink="/books/archive" class="text-3xl hover:underline">Bokarkiv</a>
                   <a routerLink="/books/deleted" class="text-3xl hover:underline">Raderade böcker</a>
                   <a routerLink="/add" [queryParams]="{ resource: 'book' }" class="text-3xl mt-5">Lägg till...</a>
                   <a routerLink="/add" [queryParams]="{ resource: 'book' }" class="text-2xl hover:underline">Bok</a>
@@ -16,7 +17,8 @@
             </div>
    
          </app-burger-menu>
-         <a routerLink="/books" class="text-3xl text-backgroundbeige mr-30">BOKHYLLA</a>
+         <a routerLink="/books" class="text-3xl text-backgroundbeige mr-30">MIN BOKHYLLA</a>
+         <a routerLink="/books/archive" class="text-3xl text-backgroundbeige mr-30">BOKARKIV</a>
          <a routerLink="/add" [queryParams]="{ resource: 'book' }" class="text-3xl text-backgroundbeige mr-30">LÄGG TILL</a>
          <!-- <a routerLink="/scan" class="text-3xl text-backgroundbeige mr-30">SKANNA</a> -->
          <!-- <a routerLink="/search" class="text-3xl text-backgroundbeige">SÖK</a> -->

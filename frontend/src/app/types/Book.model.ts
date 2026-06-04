@@ -16,4 +16,5 @@ export interface Book {
    addedWithScanner: boolean | null;
    isDeleted: boolean;
    coverLink: string | null;
+   inShelf?: boolean;
 }

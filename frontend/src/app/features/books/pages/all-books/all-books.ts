@@ -1,8 +1,9 @@
-import { Component, DestroyRef, HostListener, ViewChild, ElementRef, inject, signal, computed } from '@angular/core';
+import { Component, DestroyRef, HostListener, ViewChild, ElementRef, inject, signal, computed, Input, Output, EventEmitter } from '@angular/core';
 import { UserBook } from '../../../../types/UserBook.model';
+import { Book } from '../../../../types/Book.model';
 import { BookCard } from '../../components/book-card/book-card';
 import { BooksService } from '../../../../services/booksService';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { CdkMenuModule } from '@angular/cdk/menu';
 import { FilterList } from '../../components/filter-list/filter-list';
 import { SearchBar } from '../../components/search-bar/search-bar';
@@ -21,12 +22,29 @@ import { UserStore } from '../../../../stores/user.store';
    styles: ''
 })
 export class AllBooks {
+   private booksSourceSubscription?: Subscription;
+   private booksSourceInternal$?: Observable<(UserBook | Book)[]>;
+
+   @Input()
+   set booksSource$(value: Observable<(UserBook | Book)[]> | undefined) {
+      this.booksSourceInternal$ = value;
+      this.bindBooksSource();
+   }
+
+   get booksSource$() {
+      return this.booksSourceInternal$;
+   }
+
+   @Input() mode: 'shelf' | 'archive' = 'shelf';
+   @Input() title: string = 'BOKSAMLING';
+   @Output() addBookToShelf = new EventEmitter<number>();
+
    private readonly scrollStorageKey = 'all-books-scrollTop';
    private hasRestoredScroll = false;
    @ViewChild('scrollContainer') private scrollContainer?: ElementRef<HTMLElement>;
-   booksOriginal$ = new BehaviorSubject<UserBook[]>([]);
-   booksFiltered$ = new BehaviorSubject<UserBook[]>([]);
-   booksSearched$ = new BehaviorSubject<UserBook[]>([]);
+   booksOriginal$ = new BehaviorSubject<(UserBook | Book)[]>([]);
+   booksFiltered$ = new BehaviorSubject<(UserBook | Book)[]>([]);
+   booksSearched$ = new BehaviorSubject<(UserBook | Book)[]>([]);
    numberOfBooks = signal<number>(0);
 
    private destroyRef = inject(DestroyRef);
@@ -47,6 +65,22 @@ export class AllBooks {
                this.saveScrollPosition();
             }
          });
+   }
+
+   ngOnInit() {
+      this.bindBooksSource();
+   }
+
+   ngOnDestroy() {
+      this.booksSourceSubscription?.unsubscribe();
+   }
+
+   private bindBooksSource() {
+      const source = this.booksSourceInternal$ ?? this.booksService.getShelfBooks();
+      this.booksSourceSubscription?.unsubscribe();
+      this.booksSourceSubscription = source.subscribe(books => {
+         this.booksOriginal$.next([...books]);
+      });
    }
 
    ngAfterViewInit() {
@@ -93,9 +127,13 @@ export class AllBooks {
 
    countBooks() {
       const currentBooks = this.booksSearched$.value;
+      if (this.mode === 'archive') {
+         return currentBooks.length;
+      }
+
       let numberOfBooks = 0;
       currentBooks.forEach(book => {
-         if (book.copies) {
+         if ('copies' in book && book.copies) {
             numberOfBooks += book.copies;
          }
       });
@@ -113,5 +151,9 @@ export class AllBooks {
       const randomBookId = currentBooks[randomNumber].id;
       this.saveScrollPosition();
       this.router.navigate([`/books/${randomBookId}`]);
+   }
+
+   onAddBookToShelf(bookId: number) {
+      this.addBookToShelf.emit(bookId);
    }
 }

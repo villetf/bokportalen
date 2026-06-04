@@ -1,6 +1,7 @@
 import { Component, DestroyRef, effect, inject, Input, signal } from '@angular/core';
 import { CdkMenuModule } from '@angular/cdk/menu';
 import { UserBook } from '../../../../types/UserBook.model';
+import { Book } from '../../../../types/Book.model';
 import { Genre } from '../../../../types/Genre.model';
 import { BehaviorSubject } from 'rxjs';
 import { Filter } from '../../../../types/Filter.model';
@@ -19,8 +20,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 })
 
 export class FilterList {
-   @Input() booksOriginal$!: BehaviorSubject<UserBook[]>;
-   @Input() booksFiltered$!: BehaviorSubject<UserBook[]>;
+   @Input() booksOriginal$!: BehaviorSubject<(UserBook | Book)[]>;
+   @Input() booksFiltered$!: BehaviorSubject<(UserBook | Book)[]>;
 
    // Den lista av filter som ska appliceras på böckerna
    filterBy = signal<Filter[]>([]);
@@ -133,15 +134,15 @@ export class FilterList {
       const filteredBooks = originalBooks.filter(book => {
          return Object.entries(groupedFilters).every(([property, allowedValues]) => {
             if (property == 'language' || property == 'originalLanguage' || property == 'genre') {
-               if (!book[property]) {
-                  return allowedValues.includes(book[property as keyof UserBook] as string | null);
+               if (!(book as any)[property]) {
+                  return allowedValues.includes((book as any)[property] as string | null);
                }
 
-               return allowedValues.includes((book[property as keyof UserBook] as Language | Genre).name as string | null);
+               return allowedValues.includes(((book as any)[property] as Language | Genre).name as string | null);
             }
 
             if (property == 'yearPublished') {
-               return allowedValues.includes(String(book[property as keyof UserBook]));
+               return allowedValues.includes(String((book as any)[property]));
             }
 
             if (property == 'authorName') {
@@ -162,7 +163,7 @@ export class FilterList {
                });
             }
 
-            return allowedValues.includes(String(book[property as keyof UserBook] as string | null));
+            return allowedValues.includes(String((book as any)[property] as string | null));
          }
          );
       }
@@ -196,12 +197,12 @@ export class FilterList {
 
          // Specialfall för språk, originalspråk och genre
          if (filterProperty == 'language' || filterProperty == 'originalLanguage' || filterProperty == 'genre') {
-            if (!book[filterProperty]) {
+            if (!(book as any)[filterProperty]) {
                return;
             }
-            value = book[filterProperty].name;
+            value = (book as any)[filterProperty].name;
          } else {
-            value = book[(filterProperty as keyof UserBook)];
+            value = (book as any)[filterProperty];
          }
 
          // Specialfall för författarnamn
