@@ -36,7 +36,7 @@ export class AllBooks {
    }
 
    @Input() mode: 'shelf' | 'archive' = 'shelf';
-   @Input() title: string = 'BOKSAMLING';
+   @Input() title: string = 'MIN BOKHYLLA';
    @Output() addBookToShelf = new EventEmitter<number>();
 
    private readonly scrollStorageKey = 'all-books-scrollTop';

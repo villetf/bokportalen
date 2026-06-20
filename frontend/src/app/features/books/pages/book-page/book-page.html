@@ -55,7 +55,7 @@
                   </div>
 
                   <div class="flex gap-4 mt-4">
-                     <app-button (click)="saveShelfChanges()">Spara bokhylla</app-button>
+                     <app-button (click)="saveShelfChanges()">Spara i bokhylla</app-button>
                      @if (shelfBook$ | async) {
                         <app-button color="bg-red-700" hoverColor="hover:bg-red-900" (click)="removeFromShelf()">Ta bort</app-button>
                      }
