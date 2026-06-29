@@ -33,7 +33,11 @@ jobs:
          npm install --production
 
       - name: Run migrations
-        run: npm run migration:run
+        run: |
+         set -a
+         source /etc/default/bokportalen_db.env
+         set +a
+         npm run migration:run
         working-directory: backend
 
       - name: Restart service
