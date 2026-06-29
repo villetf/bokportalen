@@ -1,6 +1,7 @@
 import { CdkMenuModule } from '@angular/cdk/menu';
 import { Component, DestroyRef, effect, inject, Input, signal } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { UserBook } from '../../../../types/UserBook.model';
 import { Book } from '../../../../types/Book.model';
 import { BooksService } from '../../../../services/booksService';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -13,11 +14,12 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
    styles: ''
 })
 export class SortList {
-   @Input() booksOriginal$!: BehaviorSubject<Book[]>;
+   @Input() booksOriginal$!: BehaviorSubject<(UserBook | Book)[]>;
    sortBy = signal<{ clearText: string, bookProperty: string }>({ clearText: 'Titel', bookProperty: 'title' });
    sortAscending = signal<boolean>(true);
 
    private suppressEffect = false;
+   private suppressOwnEmission = false;
    private destroyRef = inject(DestroyRef);
 
    constructor(private booksService: BooksService, private route: ActivatedRoute, private router: Router) {
@@ -87,10 +89,15 @@ export class SortList {
    }
 
    ngOnInit(): void {
-      this.booksService.getBooks().subscribe(books => {
-         this.booksOriginal$.next(books);
-         this.sortBooks(this.sortBy().bookProperty);
-      });
+      // Subscribe to booksOriginal$ changes and apply sorting
+      this.booksOriginal$
+         .pipe(takeUntilDestroyed(this.destroyRef))
+         .subscribe(() => {
+            if (this.suppressOwnEmission) {
+               return;
+            }
+            this.sortBooks(this.sortBy().bookProperty);
+         });
    }
 
    sortBooks(by: string) {
@@ -105,7 +112,7 @@ export class SortList {
       }
 
       const sorted = preSorted.sort((a, b) => {
-         // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
          const getValue = (obj: any, path: string) => {
             return path.split('.').reduce((acc, key) => acc?.[key], obj) ?? '';
          };
@@ -124,7 +131,9 @@ export class SortList {
          sorted.reverse();
       }
 
+      this.suppressOwnEmission = true;
       this.booksOriginal$.next(sorted);
+      queueMicrotask(() => this.suppressOwnEmission = false);
    }
 
    setSortOrder(property: string, label: string) {

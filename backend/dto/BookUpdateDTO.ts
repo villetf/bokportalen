@@ -56,21 +56,6 @@ export class BookUpdateDTO {
 
    @Expose()
    @IsOptional()
-   @IsInt()
-      copies?: number;
-
-   @Expose()
-   @IsOptional()
-   @IsString()
-      status?: string;
-
-   @Expose()
-   @IsOptional()
-   @IsNumber({ maxDecimalPlaces: 1 })
-      rating?: number;
-
-   @Expose()
-   @IsOptional()
    @IsString()
       coverLink?: string;
 

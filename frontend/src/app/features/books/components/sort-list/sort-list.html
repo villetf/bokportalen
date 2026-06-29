@@ -14,14 +14,14 @@
 </div>
 
 <ng-template #sortMenu>
-   <div class="inline-flex gap-1 flex-col min-w-[180px] max-w-[280px] bg-white" cdkMenu>
+   <div class="inline-flex gap-1 flex-col min-w-45 max-w-70 bg-white" cdkMenu>
       <button class="example-menu-item" cdkMenuItem (click)="setSortOrder('title', 'Titel')">Titel</button>
       <button class="example-menu-item" cdkMenuItem (click)="setSortOrder('authors.0.lastName', 'Författare, efternamn')">Författare, efternamn</button>
       <button class="example-menu-item" cdkMenuItem (click)="setSortOrder('authors.0.firstName', 'Författare, förnamn')">Författare, förnamn</button>
       <button class="example-menu-item" cdkMenuItem (click)="setSortOrder('yearWritten', 'Utgivningsår')">Utgivningsår</button>
       <button class="example-menu-item" cdkMenuItem (click)="setSortOrder('createdAt', 'Tillagd')">Tillagd</button>
       <button class="example-menu-item" cdkMenuItem (click)="setSortOrder('isbn', 'ISBN')">ISBN</button>
-      <button class="example-menu-item" cdkMenuItem (click)="setSortOrder('numberOfCopies', 'Antal')">Antal exemplar</button>
+      <button class="example-menu-item" cdkMenuItem (click)="setSortOrder('copies', 'Antal')">Antal exemplar</button>
       <button class="example-menu-item" cdkMenuItem (click)="setSortOrder('rating', 'Betyg')">Betyg</button>
    </div>
 </ng-template>

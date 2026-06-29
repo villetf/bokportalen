@@ -5,7 +5,6 @@
       "moduleResolution": "nodenext",
       "outDir": "./dist",
       "esModuleInterop": true,
-      "allowImportingTsExtensions": false,
       "allowSyntheticDefaultImports": true,
       "strict": true,
       "experimentalDecorators": true,
@@ -14,7 +13,9 @@
       "forceConsistentCasingInFileNames": true,
       "resolveJsonModule": true,
       "isolatedModules": true,
+      "typeRoots": ["./types", "./node_modules/@types"]
    },
+   "include": ["**/*.ts", "types/**/*.d.ts"],
    "ts-node": {
       "esm": true
    }

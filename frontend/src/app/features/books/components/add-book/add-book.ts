@@ -59,7 +59,8 @@ export class AddBook {
          originalLanguage: [null],
          format: [null],
          isbn: [null, Validators.pattern('^[0-9-]+$')],
-         coverLink: [null]
+         coverLink: [null],
+         addToShelf: [true]
       });
    }
 
@@ -77,7 +78,8 @@ export class AddBook {
          originalLanguage: null,
          format: null,
          isbn: null,
-         coverLink: null
+         coverLink: null,
+         addToShelf: true
       });
       setTimeout(() => this.focusTitle(), 0);
       this.formIsSubmitted = false;
@@ -86,7 +88,12 @@ export class AddBook {
    save() {
       this.formIsSubmitted = true;
       if (this.form.valid) {
-         const newBook: AddBookDTO = this.form.value;
+         const addToShelf = !!this.form.get('addToShelf')?.value;
+         const fv = this.form.value;
+
+         const newBook: any = { ...fv };
+         // Remove UI-only property so backend validation doesn't reject the payload
+         delete newBook.addToShelf;
 
          if (newBook.isbn) {
             newBook.isbn = Number(newBook.isbn);
@@ -96,18 +103,18 @@ export class AddBook {
             newBook.yearWritten = Number(newBook.yearWritten);
          }
 
-         const selectedAuthors = this.form.value.authors;
+         const selectedAuthors = fv.authors;
          newBook.authors = Array.isArray(selectedAuthors)
             ? selectedAuthors.filter((a: Author) => a && a.id != null).map((a: Author) => a.id)
             : [];
 
-         const g = this.form.value.genre;
+         const g = fv.genre;
          newBook.genre = g && typeof g === 'object' && 'id' in g ? (g as Genre).id : g ?? null;
 
-         const lang = this.form.value.language;
+         const lang = fv.language;
          newBook.language = lang && typeof lang === 'object' && 'id' in lang ? (lang as Language).id : lang ?? null;
 
-         const origLang = this.form.value.originalLanguage;
+         const origLang = fv.originalLanguage;
          newBook.originalLanguage = origLang && typeof origLang === 'object' && 'id' in origLang ? (origLang as Language).id : origLang ?? null;
 
          newBook.addedWithScanner = false;
@@ -130,7 +137,13 @@ export class AddBook {
                })
             )
             .subscribe({
-               next: (res) => this.booksService.setBook(res as Book)
+               next: (res) => {
+                  const createdBook = res as Book;
+                  if (addToShelf) {
+                     this.booksService.addToShelf({ bookId: createdBook.id, copies: 1 })
+                        .subscribe();
+                  }
+               }
             });
       } else {
          this.toast.error('Formuläret är inte giltigt. Kontrollera att allt är rätt och försök igen.');

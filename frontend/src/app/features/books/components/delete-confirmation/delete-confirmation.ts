@@ -31,7 +31,7 @@ export class DeleteConfirmation {
                loading: 'Raderar bok...',
                success: () => {
                   this.currentBook.isDeleted = true;
-                  this.booksService.setBook(this.currentBook);
+                  this.booksService.evictShelfBook(this.currentBook.id);
                   this.router.navigate(['/books']);
                   return `${this.currentBook.title} raderades!`;
                },

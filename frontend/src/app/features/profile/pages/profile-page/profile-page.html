@@ -1,0 +1,26 @@
+<div class="flex justify-center p-6">
+   <div class="w-full max-w-md rounded-xl border border-gray-200 bg-white shadow-sm p-6 space-y-4">
+      <h1 class="text-2xl font-semibold text-headerbrown">Min profil</h1>
+
+      <div>
+         <label class="block text-sm text-gray-700 mb-1">Förnamn</label>
+         <input type="text" class="form-text-input w-full" [value]="firstName()" (input)="firstName.set($any($event.target).value)" />
+      </div>
+
+      <div>
+         <label class="block text-sm text-gray-700 mb-1">Efternamn</label>
+         <input type="text" class="form-text-input w-full" [value]="lastName()" (input)="lastName.set($any($event.target).value)" />
+      </div>
+
+      <div class="flex items-center gap-3">
+         <button class="rounded-lg bg-bookolive px-4 py-2 text-white" [disabled]="!canSubmit" (click)="save()">Spara</button>
+         @if (saving()) { 
+            <span class="text-sm text-gray-600">Sparar…</span> 
+         }
+      </div>
+
+      @if (errorMsg()) { 
+         <div class="text-sm text-red-700">{{ errorMsg() }}</div> 
+      }
+   </div>
+</div>

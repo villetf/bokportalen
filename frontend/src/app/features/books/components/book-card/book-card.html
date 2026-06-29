@@ -1,5 +1,5 @@
 <div class="flex items-start">
-   <div class="w-4/10 aspect-[2/3] mb-10 flex items-start justify-center overflow-hidden shrink-0">
+   <div class="w-4/10 aspect-2/3 mb-10 flex items-start justify-center overflow-hidden shrink-0">
       <img 
          [src]="book.coverLink ? book.coverLink : 'book-cover-placeholder.png'" 
          alt="Omslagsbild för {{ book.title }}" 
@@ -9,20 +9,35 @@
             'object-contain': showRealCovers
          }">
    </div>
-   <div class="ml-2">
-      <a routerLink="/books/{{ book.id }}" class="cursor-pointer hover:underline">
-         <p class="font-bold amiri-font">{{ book.title }}</p>
-      </a>
-      <p>
-         @for (author of book.authors; track author.id) {
-            <a routerLink="/authors/{{ author.id }}" class="hover:underline cursor-pointer">
-               <span class="amiri-font">{{ author.firstName }} {{ author.lastName }}</span>
-               @if (!$last) {
-                  <span class="amiri-font">, </span>
-               }
-            </a>
-         }
-      </p>
-      <p class="amiri-font">{{ book.yearWritten }}</p>
+   <div class="ml-2 flex-1 flex flex-col">
+      <div class="flex-1">
+         <a routerLink="/books/{{ book.id }}" class="cursor-pointer hover:underline">
+            <p class="font-bold amiri-font">{{ book.title }}</p>
+         </a>
+         <p>
+            @for (author of book.authors; track author.id) {
+               <a routerLink="/authors/{{ author.id }}" class="hover:underline cursor-pointer">
+                  <span class="amiri-font">{{ author.firstName }} {{ author.lastName }}</span>
+                  @if (!$last) {
+                     <span class="amiri-font">, </span>
+                  }
+               </a>
+            }
+         </p>
+         <p class="amiri-font">{{ book.yearWritten }}</p>
+      </div>
+      @if (inShelf !== undefined) {
+         <div class="mt-2">
+            @if (inShelf) {
+               <div class="text-2xl text-bookolive opacity-60">
+                  <i class="fa-solid fa-check"></i>
+               </div>
+            } @else {
+               <div class="text-2xl text-bookolive cursor-pointer hover:opacity-80 transition-opacity" (click)="addToShelf.emit(book.id)">
+                  <i class="fa-solid fa-plus"></i>
+               </div>
+            }
+         </div>
+      }
    </div>
 </div>

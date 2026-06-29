@@ -1,5 +1,5 @@
 <div class="flex flex-col flex-1 ml-25 mr-15 pt-17 h-full">
-   <h1 class="text-5xl font-bold text-bookolive">BOKSAMLING</h1>
+   <h1 class="text-5xl font-bold text-bookolive">{{ title }}</h1>
    <div class="flex justify-between mt-5">
       <div class="flex">
          <div class="flex items-center justify-center">
@@ -24,7 +24,12 @@
    <div #scrollContainer class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mt-8 overflow-y-auto overflow-x-hidden">
       @if (booksSearched$ | async; as books ) {
          @for (book of books; track book.id) {
-            <app-book-card [book]="book" [showRealCovers]="showRealCovers()"></app-book-card>
+            <app-book-card 
+               [book]="book" 
+               [showRealCovers]="user()!.showRealCovers"
+               [inShelf]="mode === 'archive' ? book.inShelf : undefined"
+               (addToShelf)="onAddBookToShelf($event)">
+            </app-book-card>
          }
       }
    </div>

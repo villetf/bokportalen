@@ -1,4 +1,5 @@
 import { Component, DestroyRef, effect, inject, Input, signal } from '@angular/core';
+import { UserBook } from '../../../../types/UserBook.model';
 import { Book } from '../../../../types/Book.model';
 import { FormsModule } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
@@ -12,8 +13,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
    styles: ''
 })
 export class SearchBar {
-   @Input() booksSearched$!: BehaviorSubject<Book[]>;
-   @Input() booksFiltered$!: BehaviorSubject<Book[]>;
+   @Input() booksSearched$!: BehaviorSubject<(UserBook | Book)[]>;
+   @Input() booksFiltered$!: BehaviorSubject<(UserBook | Book)[]>;
 
    searchString = signal<string>('');
    private suppressEffect = false;
