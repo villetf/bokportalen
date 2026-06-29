@@ -23,11 +23,8 @@ export class BooksController {
             genre: book.genre,
             format: book.format,
             isbn: book.isbn,
-            status: book.status,
-            rating: book.rating,
             createdAt: book.createdAt,
             addedWithScanner: book.addedWithScanner,
-            copies: book.copies,
             isDeleted: book.isDeleted,
             coverLink: book.coverLink
          })));
@@ -64,11 +61,8 @@ export class BooksController {
          genre: book.genre,
          format: book.format,
          isbn: book.isbn,
-         status: book.status,
-         rating: book.rating,
          createdAt: book.createdAt,
          addedWithScanner: book.addedWithScanner,
-         copies: book.copies,
          isDeleted: book.isDeleted,
          coverLink: book.coverLink
       });
@@ -86,11 +80,8 @@ export class BooksController {
          genre: book.genre,
          format: book.format,
          isbn: book.isbn,
-         status: book.status,
-         rating: book.rating,
          createdAt: book.createdAt,
          addedWithScanner: book.addedWithScanner,
-         copies: book.copies,
          isDeleted: book.isDeleted,
          coverLink: book.coverLink
       })));
@@ -161,11 +152,8 @@ export class BooksController {
          genre: updatedBook!.genre,
          format: updatedBook!.format,
          isbn: updatedBook!.isbn,
-         status: updatedBook!.status,
-         rating: updatedBook!.rating,
          createdAt: updatedBook!.createdAt,
          addedWithScanner: updatedBook!.addedWithScanner,
-         copies: updatedBook!.copies,
          isDeleted: updatedBook!.isDeleted,
          coverLink: updatedBook!.coverLink
       });

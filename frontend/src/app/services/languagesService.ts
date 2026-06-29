@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Language } from '../types/Language.model';
 import { HttpClient } from '@angular/common/http';
-import { catchError, throwError } from 'rxjs';
+import { catchError, firstValueFrom, throwError } from 'rxjs';
 import { environment } from '../../environments/environment';
 
 
@@ -11,9 +11,12 @@ export class LanguagesService {
    constructor(private http: HttpClient) {}
 
    async getAllLanguages(): Promise<Language[]> {
-      const response = await fetch(`${this.apiUrl}/languages`);
-      const data: Language[] = await response.json();
-      return data.sort((a, b) => a.name.localeCompare(b.name));
+      try {
+         const data = await firstValueFrom(this.http.get<Language[]>(`${this.apiUrl}/languages`));
+         return data.sort((a, b) => a.name.localeCompare(b.name));
+      } catch {
+         return [];
+      }
    }
 
    addLanguage(language: Language) {

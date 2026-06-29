@@ -53,6 +53,7 @@ export default tseslint.config(
          'semi-spacing': 'error',
          'space-before-blocks': 'error',
          'wrap-regex': 'error',
+         '@typescript-eslint/no-explicit-any': 'off'
       },
    },
 );

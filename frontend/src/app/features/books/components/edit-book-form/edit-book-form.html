@@ -80,26 +80,8 @@
             }
          }
       
-         <label for="status">Status:</label>
-         <select formControlName="status">
-            <option [value]="null" disabled>Välj status...</option>
-            <option value="Läst">Läst</option>
-            <option value="Ej läst">Ej läst</option>
-            <option value="Läser">Läser</option>
-            <option value="Utlånad">Utlånad</option>
-         </select>
-      
-         <label for="copies" class="self-center">Antal exemplar:</label>
-         <input type="number" formControlName="copies" min="1" class="form-text-input" autocorrect="off" autocapitalize="off" spellcheck="false">
-      
          <label for="coverLink" class="self-center">Länk till omslag:</label>
          <input type="text" formControlName="coverLink" class="form-text-input" autocorrect="off" autocapitalize="off" spellcheck="false">
-      
-         <label for="rating">Betyg:</label>
-         <div>
-            <input formControlName="rating" type="range" min="0" max="10" step="0.1" autocorrect="off" autocapitalize="off" spellcheck="false">
-            <span>{{ form.get('rating')?.value ?? "Ej betygsatt" }}</span>
-         </div>
       </div>
 
       <div class="flex justify-around mt-10">

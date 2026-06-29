@@ -6,6 +6,8 @@ import { Author } from './entities/Author.js';
 import { Book } from './entities/Book.js';
 import { Country } from './entities/Country.js';
 import { Genre } from './entities/Genre.js';
+import { User } from './entities/User.js';
+import { UserBook } from './entities/UserBook.js';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 dotenv.config();
@@ -21,9 +23,9 @@ export const AppDataSource = new DataSource({
    password: process.env.DB_PASSWORD,
    database: process.env.DB_NAME,
    synchronize: false,
-   logging: false,
-   entities: [Author, Book, Country, Genre, Language],
+   logging: true,
+   entities: [Author, Book, Country, Genre, Language, User, UserBook],
    migrations: [__dirname + '/migrations/**/*.{ts,js}'],
    migrationsRun: false,
-   subscribers: [],
+   subscribers: []
 });

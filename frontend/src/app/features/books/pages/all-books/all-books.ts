@@ -1,8 +1,9 @@
-import { Component, DestroyRef, HostListener, ViewChild, ElementRef, inject, signal } from '@angular/core';
+import { Component, DestroyRef, HostListener, ViewChild, ElementRef, inject, signal, computed, Input, Output, EventEmitter } from '@angular/core';
+import { UserBook } from '../../../../types/UserBook.model';
 import { Book } from '../../../../types/Book.model';
 import { BookCard } from '../../components/book-card/book-card';
 import { BooksService } from '../../../../services/booksService';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { CdkMenuModule } from '@angular/cdk/menu';
 import { FilterList } from '../../components/filter-list/filter-list';
 import { SearchBar } from '../../components/search-bar/search-bar';
@@ -11,6 +12,7 @@ import { SortList } from '../../components/sort-list/sort-list';
 import { Router, NavigationStart } from '@angular/router';
 import { HotToastService } from '@ngxpert/hot-toast';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { UserStore } from '../../../../stores/user.store';
 
 @Component({
    selector: 'app-all-books',
@@ -20,16 +22,34 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
    styles: ''
 })
 export class AllBooks {
+   private booksSourceSubscription?: Subscription;
+   private booksSourceInternal$?: Observable<(UserBook | Book)[]>;
+
+   @Input()
+   set booksSource$(value: Observable<(UserBook | Book)[]> | undefined) {
+      this.booksSourceInternal$ = value;
+      this.bindBooksSource();
+   }
+
+   get booksSource$() {
+      return this.booksSourceInternal$;
+   }
+
+   @Input() mode: 'shelf' | 'archive' = 'shelf';
+   @Input() title: string = 'MIN BOKHYLLA';
+   @Output() addBookToShelf = new EventEmitter<number>();
+
    private readonly scrollStorageKey = 'all-books-scrollTop';
    private hasRestoredScroll = false;
    @ViewChild('scrollContainer') private scrollContainer?: ElementRef<HTMLElement>;
-   booksOriginal$ = new BehaviorSubject<Book[]>([]);
-   booksFiltered$ = new BehaviorSubject<Book[]>([]);
-   booksSearched$ = new BehaviorSubject<Book[]>([]);
+   booksOriginal$ = new BehaviorSubject<(UserBook | Book)[]>([]);
+   booksFiltered$ = new BehaviorSubject<(UserBook | Book)[]>([]);
+   booksSearched$ = new BehaviorSubject<(UserBook | Book)[]>([]);
    numberOfBooks = signal<number>(0);
-   showRealCovers = signal<boolean>(this.getCoverSetting());
 
    private destroyRef = inject(DestroyRef);
+   private userStore = inject(UserStore);
+   protected user = computed(() => this.userStore.user());
 
    constructor(private booksService: BooksService, private router: Router, private toast: HotToastService) {
       this.booksSearched$
@@ -45,6 +65,22 @@ export class AllBooks {
                this.saveScrollPosition();
             }
          });
+   }
+
+   ngOnInit() {
+      this.bindBooksSource();
+   }
+
+   ngOnDestroy() {
+      this.booksSourceSubscription?.unsubscribe();
+   }
+
+   private bindBooksSource() {
+      const source = this.booksSourceInternal$ ?? this.booksService.getShelfBooks();
+      this.booksSourceSubscription?.unsubscribe();
+      this.booksSourceSubscription = source.subscribe(books => {
+         this.booksOriginal$.next([...books]);
+      });
    }
 
    ngAfterViewInit() {
@@ -91,9 +127,13 @@ export class AllBooks {
 
    countBooks() {
       const currentBooks = this.booksSearched$.value;
+      if (this.mode === 'archive') {
+         return currentBooks.length;
+      }
+
       let numberOfBooks = 0;
       currentBooks.forEach(book => {
-         if (book.copies) {
+         if ('copies' in book && book.copies) {
             numberOfBooks += book.copies;
          }
       });
@@ -113,13 +153,7 @@ export class AllBooks {
       this.router.navigate([`/books/${randomBookId}`]);
    }
 
-   getCoverSetting() {
-      const setting = localStorage.getItem('showRealCovers');
-
-      if (!setting) {
-         return true;
-      }
-
-      return setting === 'true';
+   onAddBookToShelf(bookId: number) {
+      this.addBookToShelf.emit(bookId);
    }
 }

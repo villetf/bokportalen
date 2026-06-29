@@ -42,17 +42,8 @@ export class Book {
    @Column('bigint', { name: 'isbn', nullable: true })
       isbn!: number | null;
 
-   @Column('varchar', { name: 'status', nullable: true, length: 255 })
-      status!: string | null;
-
-   @Column('float', { name: 'rating', nullable: true, precision: 12 })
-      rating!: number | null;
-
    @Column('boolean', { name: 'is_deleted', nullable: true })
       isDeleted!: boolean | null;
-
-   @Column('int', { name: 'copies', nullable: true })
-      copies!: number | null;
 
    @Column('datetime', { name: 'created_at', nullable: true })
       createdAt!: Date | null;
