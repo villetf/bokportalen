@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { AllBooks } from './features/books/pages/all-books/all-books';
+import { ArchiveBooks } from './features/books/pages/archive-books/archive-books';
 import { BookPage } from './features/books/pages/book-page/book-page';
 import { AuthorPage } from './features/authors/pages/author-page/author-page';
 import { AddView } from './shared/pages/add-view/add-view';
@@ -16,6 +17,7 @@ export const routes: Routes = [
    // { path: '', component: HomePage },
    { path: '', pathMatch: 'full', redirectTo: 'books' },
    { path: 'books', component: AllBooks, canActivate: [AuthGuard] },
+   { path: 'books/archive', component: ArchiveBooks, canActivate: [AuthGuard] },
    { path: 'books/deleted', component: DeletedBooks, canActivate: [AuthGuard] },
    { path: 'books/:id', component: BookPage, canActivate: [AuthGuard] },
    { path: 'authors/:id', component: AuthorPage, canActivate: [AuthGuard] },

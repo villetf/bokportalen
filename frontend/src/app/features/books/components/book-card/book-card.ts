@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { Book } from '../../../../types/Book.model';
 import { RouterLink } from '@angular/router';
 import { NgClass } from '@angular/common';
@@ -16,4 +16,10 @@ export class BookCard {
 
    @Input()
       showRealCovers!: boolean;
+
+   @Input()
+      inShelf?: boolean;
+
+   @Output()
+      addToShelf = new EventEmitter<number>();
 }

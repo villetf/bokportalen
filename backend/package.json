@@ -6,7 +6,9 @@
    "scripts": {
       "test": "echo \"Error: no test specified\" && exit 1",
       "dev": "tsc && node dist/index.js",
-      "build": "tsc"
+      "build": "tsc",
+      "migration:generate": "npm run build && typeorm migration:generate -d dist/data-source.js",
+      "migration:run": "npm run build && typeorm migration:run -d dist/data-source.js"
    },
    "keywords": [],
    "author": "",
