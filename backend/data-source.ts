@@ -6,7 +6,12 @@ import { Author } from './entities/Author.js';
 import { Book } from './entities/Book.js';
 import { Country } from './entities/Country.js';
 import { Genre } from './entities/Genre.js';
+import { fileURLToPath } from 'node:url';
+import path from 'node:path';
 dotenv.config();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 export const AppDataSource = new DataSource({
    type: 'mariadb',
