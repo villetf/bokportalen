@@ -32,6 +32,10 @@ jobs:
          cd "$TARGET_DIR"
          npm install --production
 
+      - name: Run migrations
+        run: npm run migration:run
+        working-directory: backend
+
       - name: Restart service
         run: |
           sudo systemctl restart bokportalen_backend.service
