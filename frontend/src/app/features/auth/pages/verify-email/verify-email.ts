@@ -58,7 +58,8 @@ export class VerifyEmail {
          const verified = await firstValueFrom(this.auth.emailVerified$);
          if (verified) {
             this.toast.success('Din e-postadress har verifierats!');
-            await this.router.navigate(['/books']);
+            await this.auth.logout();
+            await this.router.navigate(['/login']);
          }
       } catch (err: any) {
          const msg = typeof err?.message === 'string' ? err.message : 'Kunde inte uppdatera kontot.';
