@@ -112,7 +112,7 @@ export class BookPage implements OnInit {
             this.shelfBook$.next(userBook);
             this.currentShelfBook = userBook;
             this.shelfStatus.set(userBook?.status ?? null);
-            this.shelfRating.set(userBook?.rating ?? null);
+            this.shelfRating.set(userBook?.rating != null ? Number(userBook.rating) : null);
             this.shelfCopies.set(userBook?.copies ?? 1);
          });
    }
@@ -124,7 +124,7 @@ export class BookPage implements OnInit {
 
       const payload = {
          status: this.shelfStatus(),
-         rating: this.shelfRating(),
+         rating: this.shelfRating() != null ? Number(this.shelfRating()) : null,
          copies: this.shelfCopies(),
       };
 
