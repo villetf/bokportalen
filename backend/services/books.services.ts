@@ -5,6 +5,9 @@ import { AuthorsService } from './authors.services.js';
 import { GenresService } from './genres.services.js';
 import { LanguagesService } from './languages.services.js';
 import { BookUpdateDTO } from '../dto/BookUpdateDTO.js';
+import dotenv from 'dotenv';
+import type { GoogleBooksResponse, ISBNLookupResponse, OpenLibraryBook } from '../types/books-isbn.types.js';
+dotenv.config();
 
 export class BooksService {
    static async getBooksByQuery(queryParams: Record<string, unknown>) {
@@ -132,5 +135,86 @@ export class BooksService {
    static async markBookAsDeleted(book: Book) {
       book.isDeleted = true;
       return AppDataSource.getRepository(Book).save(book);
+   }
+
+   static async getBookByIsbn(isbn: string): Promise<ISBNLookupResponse> {
+      const normalizedIsbn = isbn.replace(/[^0-9Xx]/g, '');
+
+      if (!normalizedIsbn) {
+         throw new Error('Invalid ISBN');
+      }
+
+      const [googleBooksResult, openLibraryResult] = await Promise.allSettled([
+         fetch(`https://www.googleapis.com/books/v1/volumes?q=isbn:${normalizedIsbn}&key=${process.env.GOOGLE_BOOKS_KEY}`),
+         fetch(`https://openlibrary.org/api/books?bibkeys=ISBN:${normalizedIsbn}&format=json&jscmd=data`)
+      ]);
+
+      const googleBooksData = await this.readGoogleBooksResponse(googleBooksResult);
+      const openLibraryData = await this.readOpenLibraryResponse(openLibraryResult, normalizedIsbn);
+
+      const googleVolume = googleBooksData?.items?.[0]?.volumeInfo;
+      const openLibraryVolume = openLibraryData;
+
+      const title = googleVolume?.title ?? openLibraryVolume?.title ?? null;
+      const subtitle = googleVolume?.subtitle ?? openLibraryVolume?.subtitle ?? null;
+      const authors = this.uniqueStrings([
+         ...(googleVolume?.authors ?? []),
+         ...(openLibraryVolume?.authors?.map((author) => author.name).filter((name): name is string => Boolean(name)) ?? [])
+      ]);
+
+      const publishedDate = googleVolume?.publishedDate ?? openLibraryVolume?.publish_date ?? null;
+      const publishedYear = this.extractYear(publishedDate);
+      const language = googleVolume?.language ?? openLibraryVolume?.languages?.[0]?.name ?? openLibraryVolume?.languages?.[0]?.key ?? null;
+      const categories = this.uniqueStrings([
+         ...(googleVolume?.categories ?? []),
+         ...(openLibraryVolume?.subjects?.map((subject) => subject.name).filter((name): name is string => Boolean(name)) ?? [])
+      ]);
+      const coverLink = openLibraryVolume?.cover?.large ?? openLibraryVolume?.cover?.medium ?? openLibraryVolume?.cover?.small ?? googleVolume?.imageLinks?.thumbnail ?? googleVolume?.imageLinks?.smallThumbnail ?? null;
+
+      return {
+         isbn: normalizedIsbn,
+         found: Boolean(title || authors.length || coverLink || publishedDate),
+         title,
+         subtitle,
+         authors,
+         publishedYear,
+         language,
+         categories,
+         coverLink,
+         sources: {
+            googleBooks: Boolean(googleVolume),
+            openLibrary: Boolean(openLibraryVolume)
+         }
+      };
+   }
+
+   private static async readGoogleBooksResponse(result: PromiseSettledResult<Response>) {
+      if (result.status !== 'fulfilled' || !result.value.ok) {
+         return null;
+      }
+
+      return (await result.value.json()) as GoogleBooksResponse;
+   }
+
+   private static async readOpenLibraryResponse(result: PromiseSettledResult<Response>, isbn: string) {
+      if (result.status !== 'fulfilled' || !result.value.ok) {
+         return null;
+      }
+
+      const payload = (await result.value.json()) as Record<string, OpenLibraryBook>;
+      return payload[`ISBN:${isbn}`] ?? null;
+   }
+
+   private static extractYear(value: string | null | undefined) {
+      if (!value) {
+         return null;
+      }
+
+      const match = value.match(/\b(\d{4})\b/);
+      return match ? Number.parseInt(match[1]) : null;
+   }
+
+   private static uniqueStrings(values: Array<string | undefined | null>) {
+      return [...new Set(values.filter((value): value is string => Boolean(value)).map((value) => value.trim()).filter((value) => value.length > 0))];
    }
 }
