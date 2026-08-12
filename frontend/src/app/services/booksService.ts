@@ -6,6 +6,7 @@ import { HttpClient } from '@angular/common/http';
 import { AddBookDTO } from '../dtos/AddBookDTO';
 import { Author } from '../types/Author.model';
 import { environment } from '../../environments/environment';
+import { ISBNLookupResponse } from '../types/ISBNLookupResponse.model';
 
 @Injectable({ providedIn: 'root' })
 export class BooksService {
@@ -161,6 +162,10 @@ export class BooksService {
 
    getDeletedBooks() {
       return this.http.get<Book[]>(`${this.apiUrl}/books/deleted`);
+   }
+
+   searchBookByIsbn(isbn: string) {
+      return this.http.get<ISBNLookupResponse>(`${this.apiUrl}/books/isbn/${isbn}`);
    }
 
    resetDeletedBook(book: Book) {
