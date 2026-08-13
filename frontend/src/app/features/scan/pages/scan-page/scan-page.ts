@@ -48,6 +48,7 @@ export class ScanPage {
    currentUnresolvedAuthor = signal<string | null>(null);
    authorFormIsOpen = signal(false);
    savingAuthor = signal(false);
+   apiAutofilledFields = signal<string[]>([]);
    formIsSubmitted = false;
 
    displayAuthor = (author: Author) => `${author.lastName ? author.lastName + ', ' : ''}${author.firstName}`;
@@ -109,6 +110,7 @@ export class ScanPage {
       this.selectedTitleBookId.set(null);
       this.selectedBook.set(null);
       this.currentBookInShelf.set(false);
+      this.apiAutofilledFields.set([]);
       this.formIsSubmitted = false;
 
       try {
@@ -272,7 +274,7 @@ export class ScanPage {
 
       if (this.selectedBook()) {
          const updatedBook = {
-            ...this.selectedBook()!,
+            id: this.selectedBook()?.id,
             title: rawValue.title,
             authors,
             yearWritten: this.toNumberOrNull(rawValue.yearWritten),
@@ -283,10 +285,9 @@ export class ScanPage {
             isbn: this.toNumberOrNull(rawValue.isbn),
             coverLink: rawValue.coverLink,
             addedWithScanner: this.selectedBook()!.addedWithScanner,
-            isDeleted: this.selectedBook()!.isDeleted,
-            createdAt: this.selectedBook()!.createdAt,
-            inShelf: this.currentBookInShelf()
+            isDeleted: this.selectedBook()!.isDeleted
          } as Book;
+
 
          this.saving.set(true);
          this.booksService.editBook(updatedBook)
@@ -385,28 +386,76 @@ export class ScanPage {
       return this.currentUnresolvedAuthor() ?? this.unresolvedAuthors()[0] ?? null;
    }
 
+   fieldWasAutofilled(field: string) {
+      return this.apiAutofilledFields().includes(field);
+   }
+
    private openExistingBook(book: Book, lookup: ISBNLookupResponse) {
       this.selectedBook.set(book);
       this.currentBookInShelf.set(Boolean(book.inShelf));
+      this.apiAutofilledFields.set(this.detectAutofilledFields(book, lookup));
       this.scanMode.set('editing');
       this.titleMatches.set([]);
       this.selectedTitleBookId.set(null);
-      this.form.patchValue(this.buildFormValues(book, lookup));
+      const patchat = this.buildFormValues(book, lookup);
+      console.log('patchat', patchat);
+      this.form.patchValue(patchat);
    }
 
    private openNewBook(lookup: ISBNLookupResponse) {
       this.selectedBook.set(null);
       this.currentBookInShelf.set(false);
+      this.apiAutofilledFields.set([]);
       this.scanMode.set('new');
       this.titleMatches.set([]);
       this.selectedTitleBookId.set(null);
       this.form.patchValue(this.buildFormValues(null, lookup));
    }
 
+   private detectAutofilledFields(baseBook: Book, lookup: ISBNLookupResponse) {
+      const fields: string[] = [];
+
+      if (!this.hasText(baseBook.title) && this.hasText(lookup.title)) {
+         fields.push('titel');
+      }
+
+      if ((!baseBook.authors || baseBook.authors.length === 0) && this.matchAuthors(lookup.authors).length > 0) {
+         fields.push('författare');
+      }
+
+      if (baseBook.yearWritten == null && lookup.publishedYear != null) {
+         fields.push('utgivningsår');
+      }
+
+      if (!baseBook.language && this.matchLanguageId(lookup.language) != null) {
+         fields.push('språk');
+      }
+
+      if (!baseBook.originalLanguage && this.matchLanguageId(lookup.language) != null) {
+         fields.push('originalspråk');
+      }
+
+      if (!baseBook.genre && this.matchGenreId(lookup.categories) != null) {
+         fields.push('genre');
+      }
+
+      if (baseBook.isbn == null && this.toNumberOrNull(this.searchIsbn()) != null) {
+         fields.push('ISBN');
+      }
+
+      if (!this.hasText(baseBook.coverLink) && this.hasText(lookup.coverLink)) {
+         fields.push('omslag');
+      }
+
+      return fields;
+   }
+
    private buildFormValues(baseBook: Book | null, lookup: ISBNLookupResponse) {
       const isbn = baseBook?.isbn != null
          ? baseBook.isbn
          : this.toNumberOrNull(this.searchIsbn());
+
+      console.log('true eller inte', baseBook?.coverLink ?? lookup.coverLink ?? null);
 
       return {
          title: baseBook?.title?.trim() ? baseBook.title : lookup.title ?? '',
@@ -417,7 +466,7 @@ export class ScanPage {
          originalLanguage: baseBook?.originalLanguage?.id ?? this.matchLanguageId(lookup.language),
          format: baseBook?.format ?? null,
          isbn,
-         coverLink: baseBook?.coverLink ?? lookup.coverLink ?? null,
+         coverLink: baseBook?.coverLink || lookup.coverLink || null,
          addToShelf: baseBook ? false : true
       };
    }
@@ -511,6 +560,10 @@ export class ScanPage {
 
    private normalizeString(value: string) {
       return value.toLocaleLowerCase().trim().replace(/\s+/g, ' ');
+   }
+
+   private hasText(value: string | null | undefined) {
+      return Boolean(value && value.trim().length > 0);
    }
 
    private toNumberOrNull(value: unknown) {
