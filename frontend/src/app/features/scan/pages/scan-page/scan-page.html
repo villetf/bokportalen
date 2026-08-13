@@ -174,7 +174,7 @@
 
                      <label for="language">Språk:</label>
                      <div>
-                        <select formControlName="language" id="language">
+                        <select formControlName="language" id="language" class="w-full">
                            <option [ngValue]="null">Ej angivet</option>
                            @for (language of allLanguages(); track language.id) {
                               <option [ngValue]="language.id">{{ language.name }}</option>
@@ -187,7 +187,7 @@
 
                      <label for="originalLanguage">Originalspråk:</label>
                      <div>
-                        <select formControlName="originalLanguage" id="originalLanguage">
+                        <select formControlName="originalLanguage" id="originalLanguage" class="w-full">
                            <option [ngValue]="null">Ej angivet</option>
                            @for (language of allLanguages(); track language.id) {
                               <option [ngValue]="language.id">{{ language.name }}</option>

@@ -83,6 +83,10 @@ export class ScanPage {
       ]);
    }
 
+   ngAfterViewInit() {
+      this.focusSearchInput();
+   }
+
    protected updateIsbn(event: Event) {
       const input = event.target as HTMLInputElement | null;
       const digitsOnly = input?.value.replace(/[^0-9]/g, '') ?? '';
@@ -397,9 +401,7 @@ export class ScanPage {
       this.scanMode.set('editing');
       this.titleMatches.set([]);
       this.selectedTitleBookId.set(null);
-      const patchat = this.buildFormValues(book, lookup);
-      console.log('patchat', patchat);
-      this.form.patchValue(patchat);
+      this.form.patchValue(this.buildFormValues(book, lookup));
    }
 
    private openNewBook(lookup: ISBNLookupResponse) {
@@ -431,10 +433,6 @@ export class ScanPage {
          fields.push('språk');
       }
 
-      if (!baseBook.originalLanguage && this.matchLanguageId(lookup.language) != null) {
-         fields.push('originalspråk');
-      }
-
       if (!baseBook.genre && this.matchGenreId(lookup.categories) != null) {
          fields.push('genre');
       }
@@ -455,7 +453,7 @@ export class ScanPage {
          ? baseBook.isbn
          : this.toNumberOrNull(this.searchIsbn());
 
-      console.log('true eller inte', baseBook?.coverLink ?? lookup.coverLink ?? null);
+      console.log('basbok', baseBook);
 
       return {
          title: baseBook?.title?.trim() ? baseBook.title : lookup.title ?? '',
@@ -463,7 +461,7 @@ export class ScanPage {
          yearWritten: baseBook?.yearWritten ?? lookup.publishedYear ?? null,
          genre: baseBook?.genre?.id ?? this.matchGenreId(lookup.categories),
          language: baseBook?.language?.id ?? this.matchLanguageId(lookup.language),
-         originalLanguage: baseBook?.originalLanguage?.id ?? this.matchLanguageId(lookup.language),
+         originalLanguage: baseBook?.originalLanguage?.id ?? null,
          format: baseBook?.format ?? null,
          isbn,
          coverLink: baseBook?.coverLink || lookup.coverLink || null,
@@ -545,6 +543,8 @@ export class ScanPage {
       if (!language) {
          return null;
       }
+
+      language = language === 'en' ? 'Engelska' : language === 'sv' ? 'Svenska' : language;
 
       const normalizedLanguage = this.normalizeString(language);
       return this.allLanguages().find(item => this.normalizeString(item.name) === normalizedLanguage)?.id ?? null;
