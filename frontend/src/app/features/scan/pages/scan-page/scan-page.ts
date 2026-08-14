@@ -453,8 +453,6 @@ export class ScanPage {
          ? baseBook.isbn
          : this.toNumberOrNull(this.searchIsbn());
 
-      console.log('basbok', baseBook);
-
       return {
          title: baseBook?.title?.trim() ? baseBook.title : lookup.title ?? '',
          authors: baseBook?.authors?.length ? baseBook.authors : this.matchAuthors(lookup.authors),

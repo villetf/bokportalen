@@ -149,6 +149,18 @@ export class BooksService {
          fetch(`https://openlibrary.org/api/books?bibkeys=ISBN:${normalizedIsbn}&format=json&jscmd=data`)
       ]);
 
+      if (googleBooksResult.status === 'fulfilled' && !googleBooksResult.value.ok) {
+         console.error(
+            'Google Books API returned error:', googleBooksResult.value.status, googleBooksResult.value.statusText
+         );
+      }
+
+      if (openLibraryResult.status === 'fulfilled' && !openLibraryResult.value.ok) {
+         console.error(
+            'OpenLibrary API returned error:', openLibraryResult.value.status, openLibraryResult.value.statusText
+         );
+      }
+
       const googleBooksData = await this.readGoogleBooksResponse(googleBooksResult);
       const openLibraryData = await this.readOpenLibraryResponse(openLibraryResult, normalizedIsbn);
 
