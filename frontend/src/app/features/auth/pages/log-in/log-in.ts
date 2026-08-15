@@ -1,5 +1,5 @@
 import { Component, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { Router, RouterModule } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { AuthService } from '../../../../services/authService';
@@ -7,7 +7,7 @@ import { AuthService } from '../../../../services/authService';
 @Component({
    selector: 'app-log-in',
    standalone: true,
-   imports: [CommonModule, RouterModule, ReactiveFormsModule],
+   imports: [RouterModule, ReactiveFormsModule],
    templateUrl: './log-in.html',
    styles: '',
 })
