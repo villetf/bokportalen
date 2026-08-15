@@ -22,4 +22,7 @@ export class BookCard {
 
    @Output()
       addToShelf = new EventEmitter<number>();
+
+   @Input()
+      enableLinks: boolean = true;
 }

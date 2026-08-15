@@ -9,6 +9,7 @@ const router = Router();
 
 router.get('/', authenticate, BooksController.getAllBooks);
 router.get('/deleted', authenticate, BooksController.getDeletedBooks);
+router.get('/isbn/:isbn', authenticate, BooksController.getBookByIsbn);
 router.get('/:id', authenticate, BooksController.getBookById);
 router.post('/', authenticate, validateDto(BookRequestDTO), BooksController.createBook);
 router.patch('/:id', authenticate, validateDto(BookUpdateDTO), BooksController.updateBook);

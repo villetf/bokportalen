@@ -87,6 +87,21 @@ export class BooksController {
       })));
    }
 
+   static async getBookByIsbn(req: Request, res: Response) {
+      try {
+         const result = await BooksService.getBookByIsbn(req.params.isbn);
+         res.json(result);
+      } catch (error) {
+         if (error instanceof Error && error.message === 'Invalid ISBN') {
+            res.status(400).json({ error: error.message });
+            return;
+         }
+
+         console.error('Error fetching book by ISBN:', error);
+         res.status(500).json({ error: `Internal server error: ${error}` });
+      }
+   }
+
    static async createBook(req: Request, res: Response) {
       const checkBookReq = {
          title: (req.body as BookRequestDTO).title,
