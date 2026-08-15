@@ -198,7 +198,7 @@ export class ScanPage {
    }
 
    async saveMissingAuthor(firstNameInput: HTMLInputElement, lastNameInput: HTMLInputElement) {
-      const authorName = this.currentUnresolvedAuthor();
+      const authorName = this.currentUnresolvedAuthor() || `${firstNameInput.value} ${lastNameInput.value}`;
       if (!authorName) {
          return;
       }
@@ -542,6 +542,12 @@ export class ScanPage {
    }
 
    parseAuthorName(authorName: string) {
+      if (!authorName) {
+         return {
+            firstName: '',
+            lastName: ''
+         };
+      }
       const normalizedName = authorName.trim();
 
       if (normalizedName.includes(',')) {

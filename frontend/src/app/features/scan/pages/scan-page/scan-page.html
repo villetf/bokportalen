@@ -43,7 +43,7 @@
       }
 
       @if (lookup(); as lookupData) {
-         <div class="flex justify-between">
+         <div class="grid grid-cols-[1fr_auto_1fr] justify-between">
             <div class="mt-6 max-w-4xl">
                <p class="text-xs uppercase tracking-[0.18em] text-headerbrown/60 mb-2">Hämtad information</p>
                <h2 class="text-3xl font-bold text-bookolive">{{ lookupData.title ?? 'Okänd titel' }}</h2>
@@ -54,10 +54,19 @@
                   ISBN {{ lookupData.isbn }} | Google Books: {{ lookupData.sources.googleBooks ? 'Ja' : 'Nej' }} | OpenLibrary: {{ lookupData.sources.openLibrary ? 'Ja' : 'Nej' }}
                </p>
             </div>
+            <div class="border-l mt-5"></div>
+
             <div class="mt-6 text-right">
                <p class="text-xs uppercase tracking-[0.18em] text-headerbrown/60 mb-2">Status</p>
                @if (this.selectedBook()) {
-                  <h2 class="text-2xl font-bold text-bookolive">{{ lookupData.title && currentBookInShelf() ? 'Boken finns i din bokhylla.' : lookupData.title ? 'Boken finns i arkivet, men inte i din bokhylla.' : 'Ingen bok kunde hämtas.' }}</h2>
+                  <h2 class="text-2xl font-bold text-bookolive">{{ 
+                     lookupData.title && currentBookInShelf() || selectedBook() && currentBookInShelf()
+                        ? 'Boken finns i din bokhylla.' 
+                     : lookupData.title || selectedBook()
+                        ? 'Boken finns i arkivet, men inte i din bokhylla.'  
+                     : 
+                        'Ingen bok kunde hämtas.' 
+                  }}</h2>
                   @if (apiAutofilledFields().length > 0) {
                      <ul class="text-sm text-headerbrown/80 mt-1">Dessa fält saknades och har lagts till:</ul>
                      @for (field of apiAutofilledFields(); track $index) {
@@ -67,7 +76,7 @@
                      <p class="text-sm text-headerbrown/80 mt-1">Ingen ny info har lagts till.</p>
                   }
                } @else if (this.scanMode() === 'new') {
-                  <h2 class="text-2xl font-bold text-bookolive">Denna bok finns inte i arkivet eller i din bokhylla.</h2>
+                  <h2 class="text-2xl font-bold text-bookolive">Boken finns inte i arkivet eller i din bokhylla.</h2>
                   <button class="rounded-lg bg-bookolive px-5 py-2 mt-5 text-white transition-colors hover:bg-bookolive-dark" (click)="showBookChoices.set(true)">
                      Jo, den finns visst
                   </button>
@@ -100,12 +109,16 @@
 
       
 
-      @if (authorFormIsOpen() && pendingAuthorName) {
+      @if (authorFormIsOpen()) {
          <div class="mt-8 w-full max-w-4xl border border-[#d8cfbd] rounded-2xl bg-[#fefcf5] p-6">
             <div class="mb-5">
-               <p class="text-xs uppercase tracking-[0.18em] text-headerbrown/60">Saknad författare</p>
-               <h2 class="text-2xl font-bold text-bookolive">Skapa författare för {{ pendingAuthorName }}</h2>
-               <p class="mt-1 text-sm text-headerbrown/80">Den här författaren finns inte i databasen ännu. Skapa den här så läggs den automatiskt till på boken.</p>
+               @if (pendingAuthorName) {
+                  <p class="text-xs uppercase tracking-[0.18em] text-headerbrown/60">Saknad författare</p>
+                  <h2 class="text-2xl font-bold text-bookolive">Skapa författare för {{ pendingAuthorName }}</h2>
+                  <p class="mt-1 text-sm text-headerbrown/80">Den här författaren finns inte sparad ännu. Skapa den så läggs den automatiskt till på boken.</p>
+               } @else {
+                  <h2 class="text-2xl font-bold text-bookolive">Skapa ny författare</h2>
+               }
             </div>
 
             <div class="grid grid-cols-[auto_1fr] gap-y-2 gap-x-5 [&>label]:justify-self-end max-w-3xl">
@@ -156,7 +169,7 @@
       }
 
       @if (scanMode() === 'editing' || scanMode() === 'new') {
-         <hr class="bg-headerbrown opacity-80 mt-10">
+         <hr class="bg-headerbrown opacity-80 mt-5">
          <div class="flex items-start mt-10">
             <div class="w-2/3 pr-10">
                <p class="text-xs uppercase tracking-[0.18em] text-headerbrown/60 mb-2">{{ searchSummary }}</p>
@@ -183,6 +196,7 @@
                         @if (selectedBook() && fieldWasAutofilled('författare')) {
                            <p class="mt-1 text-xs text-green-500"><i class="fa-solid fa-circle-plus mr-1"></i>Ny info tillagd</p>
                         }
+                        <button (click)="authorFormIsOpen.set(true)" class="rounded-lg bg-bookolive px-3 py-1 mt-2 text-white transition-colors hover:bg-bookolive-dark">Lägg till ny</button>
                      </div>
 
                      @if (form.get('authors')?.invalid && formIsSubmitted) {
