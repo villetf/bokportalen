@@ -1,12 +1,12 @@
 import { Component, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { AuthService } from '../../../../services/authService';
 
 @Component({
    selector: 'app-reset-password',
    standalone: true,
-   imports: [CommonModule, ReactiveFormsModule],
+   imports: [ReactiveFormsModule],
    templateUrl: './reset-password.html',
    styles: '',
 })
