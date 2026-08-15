@@ -180,7 +180,7 @@
                      <label for="bookTitle" class="self-center">Titel:</label>
                      <div>
                         <input id="bookTitle" type="text" formControlName="title" class="form-text-input w-full" autocorrect="off" autocapitalize="off" spellcheck="false">
-                        @if (selectedBook() && fieldWasAutofilled('titel')) {
+                        @if (fieldWasAutofilled('titel')) {
                            <p class="mt-1 text-xs text-green-500"><i class="fa-solid fa-circle-plus mr-1"></i>Ny info tillagd</p>
                         }
                      </div>
@@ -193,10 +193,10 @@
                      <label for="bookAuthors">Författare:</label>
                      <div class="flex flex-col items-start">
                         <app-array-input formControlName="authors" [displayFn]="displayAuthor" [selectableItems]="allAuthors()" class="w-full" defaultSelectText="Välj författare..."></app-array-input>
-                        @if (selectedBook() && fieldWasAutofilled('författare')) {
+                        @if (fieldWasAutofilled('författare')) {
                            <p class="mt-1 text-xs text-green-500"><i class="fa-solid fa-circle-plus mr-1"></i>Ny info tillagd</p>
                         }
-                        <button (click)="authorFormIsOpen.set(true)" class="rounded-lg bg-bookolive px-3 py-1 mt-2 text-white transition-colors hover:bg-bookolive-dark">Lägg till ny</button>
+                        <div (click)="authorFormIsOpen.set(true)" class="rounded-lg bg-bookolive px-3 py-1 mt-2 text-white transition-colors hover:bg-bookolive-dark">Lägg till ny</div>
                      </div>
 
                      @if (form.get('authors')?.invalid && formIsSubmitted) {
@@ -212,7 +212,7 @@
                               <option [ngValue]="genre.id">{{ genre.name }}</option>
                            }
                         </select>
-                        @if (selectedBook() && fieldWasAutofilled('genre')) {
+                        @if (fieldWasAutofilled('genre')) {
                            <p class="mt-1 text-xs text-green-500"><i class="fa-solid fa-circle-plus mr-1"></i>Ny info tillagd</p>
                         }
                      </div>
@@ -220,8 +220,9 @@
                      <label for="yearWritten" class="self-center">Utgivningsår:</label>
                      <div>
                         <input id="yearWritten" type="number" formControlName="yearWritten" [max]="getCurrentYear()" class="form-text-input w-full" autocorrect="off" autocapitalize="off" spellcheck="false">
-                        @if (selectedBook() && fieldWasAutofilled('utgivningsår')) {
+                        @if (fieldWasAutofilled('utgivningsår')) {
                            <p class="mt-1 text-xs text-green-500"><i class="fa-solid fa-circle-plus mr-1"></i>Ny info tillagd</p>
+                           <p class="mt-1 text-xs text-red-500"><i class="fa-solid fa-triangle-exclamation mr-1"></i>Dubbelkolla årtalet! Ofta autofylls tryckåret, och inte när boken gavs ut.</p>
                         }
                      </div>
 
@@ -240,7 +241,7 @@
                               <option [ngValue]="language.id">{{ language.name }}</option>
                            }
                         </select>
-                        @if (selectedBook() && fieldWasAutofilled('språk')) {
+                        @if (fieldWasAutofilled('språk')) {
                            <p class="mt-1 text-xs text-green-500"><i class="fa-solid fa-circle-plus mr-1"></i>Ny info tillagd</p>
                         }
                      </div>
@@ -253,7 +254,7 @@
                               <option [ngValue]="language.id">{{ language.name }}</option>
                            }
                         </select>
-                        @if (selectedBook() && fieldWasAutofilled('originalspråk')) {
+                        @if (fieldWasAutofilled('originalspråk')) {
                            <p class="mt-1 text-xs text-green-500"><i class="fa-solid fa-circle-plus mr-1"></i>Ny info tillagd</p>
                         }
                      </div>
@@ -272,7 +273,7 @@
                      <label for="isbn" class="self-center">ISBN:</label>
                      <div>
                         <input id="isbn" type="text" formControlName="isbn" class="form-text-input w-full" autocorrect="off" autocapitalize="off" spellcheck="false">
-                        @if (selectedBook() && fieldWasAutofilled('ISBN')) {
+                        @if (fieldWasAutofilled('ISBN')) {
                            <p class="mt-1 text-xs text-green-500"><i class="fa-solid fa-circle-plus mr-1"></i>Ny info tillagd</p>
                         }
                      </div>
@@ -287,7 +288,7 @@
                      <label for="coverLink" class="self-center">Länk till omslag:</label>
                      <div>
                         <input id="coverLink" type="text" formControlName="coverLink" class="form-text-input w-full" autocorrect="off" autocapitalize="off" spellcheck="false">
-                        @if (selectedBook() && fieldWasAutofilled('omslag')) {
+                        @if (fieldWasAutofilled('omslag')) {
                            <p class="mt-1 text-xs text-green-500"><i class="fa-solid fa-circle-plus mr-1"></i>Ny info tillagd</p>
                         }
                      </div>

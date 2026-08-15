@@ -308,6 +308,9 @@ export class ScanPage {
                   success: (res) => {
                      this.selectedBook.set(res as Book);
                      this.currentBookInShelf.set(this.currentBookInShelf());
+                     this.scanMode.set('idle');
+                     this.lookup.set(null);
+                     this.focusSearchInput();
                      return `Uppdaterade ${(res as Book).title}!`;
                   },
                   error: (err) => `Något gick fel vid uppdatering av bok: ${(err as HttpErrorResponse).message}`
@@ -344,6 +347,9 @@ export class ScanPage {
                      this.booksService.addToShelf({ bookId: createdBook.id, copies: 1 }).subscribe();
                   }
 
+                  this.scanMode.set('idle');
+                  this.lookup.set(null);
+                  this.focusSearchInput();
                   return `Lade till ${createdBook.title}!`;
                },
                error: (err) => {
@@ -468,7 +474,7 @@ export class ScanPage {
          fields.push('genre');
       }
 
-      if (baseBook.isbn == null && this.toNumberOrNull(this.searchIsbn()) != null) {
+      if (baseBook.isbn == null && (lookup.isbn != null || this.toNumberOrNull(this.searchIsbn()) != null) ) {
          fields.push('ISBN');
       }
 
@@ -482,7 +488,9 @@ export class ScanPage {
    private buildFormValues(baseBook: Book | null, lookup: ISBNLookupResponse) {
       const isbn = baseBook?.isbn != null
          ? baseBook.isbn
-         : this.toNumberOrNull(this.searchIsbn());
+         : lookup.isbn
+            ? lookup.isbn
+            : this.toNumberOrNull(this.searchIsbn());
 
       return {
          title: baseBook?.title?.trim() ? baseBook.title : lookup.title ?? '',
