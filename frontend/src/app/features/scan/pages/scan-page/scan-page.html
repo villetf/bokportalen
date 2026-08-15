@@ -1,0 +1,333 @@
+<div class="flex min-h-[calc(100vh-5.75rem)] justify-center bg-backgroundbeige px-6 py-10">
+   <div class="w-full max-w-4xl">
+      <h1 class="text-5xl font-bold text-bookolive mb-8">SKANNA ISBN</h1>
+
+      <div class="rounded-full bg-[#EEE7D3] p-3 text-headerbrown w-full">
+         <div class="flex items-center gap-3">
+            <i class="fa-solid fa-barcode ml-2 text-lg opacity-70"></i>
+            <input
+               #searchIsbnInput
+               id="isbn"
+               type="text"
+               inputmode="numeric"
+               autocomplete="off"
+               spellcheck="false"
+               maxlength="13"
+               placeholder="ISBN-nummer"
+               class="w-full bg-transparent border-none outline-none text-lg tracking-widest placeholder:text-headerbrown/45"
+               [value]="searchIsbn()"
+               (input)="updateIsbn($event)"
+               (keydown.enter)="search()"
+            />
+            <button
+               type="button"
+               class="rounded-full bg-bookolive px-5 py-2 text-white transition-colors hover:bg-bookolive-dark disabled:cursor-not-allowed disabled:opacity-50"
+               [disabled]="searching() || !searchIsbn()"
+               (click)="search()"
+            >
+               Sök
+            </button>
+         </div>
+      </div>
+
+      @if (searching()) {
+         <p class="mt-4 text-sm text-headerbrown/80">Hämtar bokinformation...</p>
+      }
+
+      @if (searchError()) {
+         <p class="mt-4 text-sm text-red-700">{{ searchError() }}</p>
+      }
+
+      @if (noInfoFound()) {
+         <p class="mt-4 text-sm text-headerbrown">Ingen bokinformation kunde hittas för det ISBN-numret.</p>
+      }
+
+      @if (lookup(); as lookupData) {
+         <div class="grid grid-cols-[1fr_auto_1fr] justify-between">
+            <div class="mt-6 max-w-4xl">
+               <p class="text-xs uppercase tracking-[0.18em] text-headerbrown/60 mb-2">Hämtad information</p>
+               <h2 class="text-3xl font-bold text-bookolive">{{ lookupData.title ?? 'Okänd titel' }}</h2>
+               <p class="text-sm text-headerbrown/80 mt-1">
+                  {{ lookupData.authors.length ? lookupData.authors.join(', ') : 'Inga författare hittades' }}
+               </p>
+               <p class="text-xs text-headerbrown/60 mt-2">
+                  ISBN {{ lookupData.isbn }} | Google Books: {{ lookupData.sources.googleBooks ? 'Ja' : 'Nej' }} | OpenLibrary: {{ lookupData.sources.openLibrary ? 'Ja' : 'Nej' }}
+               </p>
+            </div>
+            <div class="border-l mt-5"></div>
+
+            <div class="mt-6 text-right">
+               <p class="text-xs uppercase tracking-[0.18em] text-headerbrown/60 mb-2">Status</p>
+               @if (this.selectedBook()) {
+                  <h2 class="text-2xl font-bold text-bookolive">{{ 
+                     lookupData.title && currentBookInShelf() || selectedBook() && currentBookInShelf()
+                        ? 'Boken finns i din bokhylla.' 
+                     : lookupData.title || selectedBook()
+                        ? 'Boken finns i arkivet, men inte i din bokhylla.'  
+                     : 
+                        'Ingen bok kunde hämtas.' 
+                  }}</h2>
+                  @if (apiAutofilledFields().length > 0) {
+                     <ul class="text-sm text-headerbrown/80 mt-1">Dessa fält saknades och har lagts till:</ul>
+                     @for (field of apiAutofilledFields(); track $index) {
+                        <li class="text-sm text-headerbrown/80 mt-2 w-auto list-inside">{{ field }}</li>
+                     }
+                  } @else {
+                     <p class="text-sm text-headerbrown/80 mt-1">Ingen ny info har lagts till.</p>
+                  }
+               } @else if (this.scanMode() === 'new') {
+                  <h2 class="text-2xl font-bold text-bookolive">Boken finns inte i arkivet eller i din bokhylla.</h2>
+                  <button class="rounded-lg bg-bookolive px-5 py-2 mt-5 text-white transition-colors hover:bg-bookolive-dark" (click)="showBookChoices.set(true)">
+                     Jo, den finns visst
+                  </button>
+               }
+            </div>
+         </div>
+      }
+
+      @if (showBookChoices()) {
+         <app-edit-panel>
+            <h2 class="text-3xl font-bold text-bookolive ml-10 mt-10 mb-5">Välj din bok</h2>
+            <div class="rounded-full bg-[#EEE7D3] text-headerbrown p-3 w-100 ml-10 mb-10">
+               <i class="fa-solid fa-magnifying-glass ml-2"></i>
+               <input 
+                  type="text" 
+                  (input)="this.searchBooks($any($event.target).value)" 
+                  autocorrect="off"
+                  autocapitalize="off"
+                  spellcheck="false"
+                  class="border-none outline-none ml-3 w-9/10"
+               >
+            </div>
+            <div class="flex overflow-auto h-8/10 mx-10 flex-wrap cursor-pointer">
+               @for (book of searchedBooks; track $index) {
+                  <app-book-card [book]="book" class="w-1/5" [enableLinks]="false" (click)="this.openExistingBook(book, lookup()!);this.showBookChoices.set(false)"></app-book-card>
+               }
+            </div>
+         </app-edit-panel>
+      }
+
+      
+
+      @if (authorFormIsOpen()) {
+         <div class="mt-8 w-full max-w-4xl border border-[#d8cfbd] rounded-2xl bg-[#fefcf5] p-6">
+            <div class="mb-5">
+               @if (pendingAuthorName) {
+                  <p class="text-xs uppercase tracking-[0.18em] text-headerbrown/60">Saknad författare</p>
+                  <h2 class="text-2xl font-bold text-bookolive">Skapa författare för {{ pendingAuthorName }}</h2>
+                  <p class="mt-1 text-sm text-headerbrown/80">Den här författaren finns inte sparad ännu. Skapa den så läggs den automatiskt till på boken.</p>
+               } @else {
+                  <h2 class="text-2xl font-bold text-bookolive">Skapa ny författare</h2>
+               }
+            </div>
+
+            <div class="grid grid-cols-[auto_1fr] gap-y-2 gap-x-5 [&>label]:justify-self-end max-w-3xl">
+               <label class="self-center" for="missingAuthorFirstName">Förnamn:</label>
+               <input #missingAuthorFirstName id="missingAuthorFirstName" type="text" class="form-text-input" [value]="parseAuthorName(pendingAuthorName).firstName" autocorrect="off" autocapitalize="off" spellcheck="false">
+
+               <label class="self-center" for="missingAuthorLastName">Efternamn:</label>
+               <input #missingAuthorLastName id="missingAuthorLastName" type="text" class="form-text-input" [value]="parseAuthorName(pendingAuthorName).lastName || ''" autocorrect="off" autocapitalize="off" spellcheck="false">
+            </div>
+
+            <div class="mt-5 flex flex-wrap gap-3">
+               <button type="button" class="rounded-lg bg-bookolive px-5 py-2 text-white transition-colors hover:bg-bookolive-dark disabled:cursor-not-allowed disabled:opacity-50" [disabled]="savingAuthor()" (click)="saveMissingAuthor(missingAuthorFirstName, missingAuthorLastName)">
+                  Spara och lägg till på boken
+               </button>
+               <button type="button" class="rounded-lg border border-[#d8cfbd] bg-[#fefcf5] px-5 py-2 text-headerbrown transition-colors hover:bg-[#f6f0dd]" (click)="closeAuthorForm()">
+                  Inte nu
+               </button>
+            </div>
+         </div>
+      }
+
+      @if (scanMode() === 'choose-title') {
+         <div class="mt-8 w-full max-w-4xl">
+            <h2 class="text-2xl text-bookolive mb-4">Böcker med denna titel hittades i arkivet. Är någon av dem din bok?</h2>
+
+            <div class="space-y-2">
+               @for (book of titleMatches(); track book.id) {
+                  <button
+                     type="button"
+                     class="w-1/2 text-left p-4 border rounded-2xl mr-10 transition-colors"
+                     [ngClass]="selectedTitleBookId() === book.id ? 'border-bookolive bg-[#f9f3e2]' : 'border-[#d8cfbd] bg-[#fefcf5]'"
+                     (click)="selectedTitleBookId.set(book.id)"
+                  >
+                     <app-book-card [book]="book"></app-book-card>
+                  </button>
+               }
+            </div>
+
+            <div class="flex flex-wrap gap-3 mt-4">
+               <button type="button" class="rounded-lg bg-bookolive px-5 py-2 text-white transition-colors hover:bg-bookolive-dark" (click)="useSelectedTitleBook()">
+                  Använd vald bok
+               </button>
+               <button type="button" class="rounded-lg border border-[#d8cfbd] bg-[#fefcf5] px-5 py-2 text-headerbrown transition-colors hover:bg-[#f6f0dd]" (click)="createNewBookAnyway()">
+                  Nej, skapa som ny bok
+               </button>
+            </div>
+         </div>
+      }
+
+      @if (scanMode() === 'editing' || scanMode() === 'new') {
+         <hr class="bg-headerbrown opacity-80 mt-5">
+         <div class="flex items-start mt-10">
+            <div class="w-2/3 pr-10">
+               <p class="text-xs uppercase tracking-[0.18em] text-headerbrown/60 mb-2">{{ searchSummary }}</p>
+               <h2 class="text-4xl font-bold text-bookolive mb-6">{{ form.get('title')?.value || 'Fyll i bokens uppgifter' }}</h2>
+
+               <form [formGroup]="form" (ngSubmit)="save()">
+                  <div class="grid grid-cols-[auto_75%] gap-y-2 gap-x-5 [&>label]:justify-self-end">
+                     <label for="bookTitle" class="self-center">Titel:</label>
+                     <div>
+                        <input id="bookTitle" type="text" formControlName="title" class="form-text-input w-full" autocorrect="off" autocapitalize="off" spellcheck="false">
+                        @if (fieldWasAutofilled('titel')) {
+                           <p class="mt-1 text-xs text-green-500"><i class="fa-solid fa-circle-plus mr-1"></i>Ny info tillagd</p>
+                        }
+                     </div>
+
+                     @if (form.get('title')?.invalid && formIsSubmitted) {
+                        <div></div>
+                        <span class="text-red-500">Titel är obligatorisk.</span>
+                     }
+
+                     <label for="bookAuthors">Författare:</label>
+                     <div class="flex flex-col items-start">
+                        <app-array-input formControlName="authors" [displayFn]="displayAuthor" [selectableItems]="allAuthors()" class="w-full" defaultSelectText="Välj författare..."></app-array-input>
+                        @if (fieldWasAutofilled('författare')) {
+                           <p class="mt-1 text-xs text-green-500"><i class="fa-solid fa-circle-plus mr-1"></i>Ny info tillagd</p>
+                        }
+                        <div (click)="authorFormIsOpen.set(true)" class="rounded-lg bg-bookolive px-3 py-1 mt-2 text-white transition-colors hover:bg-bookolive-dark">Lägg till ny</div>
+                     </div>
+
+                     @if (form.get('authors')?.invalid && formIsSubmitted) {
+                        <div></div>
+                        <span class="text-red-500">Du måste välja minst en författare.</span>
+                     }
+
+                     <label for="genre">Genre:</label>
+                     <div>
+                        <select formControlName="genre" id="genre" class="w-full">
+                           <option [ngValue]="null">Ej angivet</option>
+                           @for (genre of allGenres(); track genre.id) {
+                              <option [ngValue]="genre.id">{{ genre.name }}</option>
+                           }
+                        </select>
+                        @if (fieldWasAutofilled('genre')) {
+                           <p class="mt-1 text-xs text-green-500"><i class="fa-solid fa-circle-plus mr-1"></i>Ny info tillagd</p>
+                        }
+                     </div>
+
+                     <label for="yearWritten" class="self-center">Utgivningsår:</label>
+                     <div>
+                        <input id="yearWritten" type="number" formControlName="yearWritten" [max]="getCurrentYear()" class="form-text-input w-full" autocorrect="off" autocapitalize="off" spellcheck="false">
+                        @if (fieldWasAutofilled('utgivningsår')) {
+                           <p class="mt-1 text-xs text-green-500"><i class="fa-solid fa-circle-plus mr-1"></i>Ny info tillagd</p>
+                           <p class="mt-1 text-xs text-red-500"><i class="fa-solid fa-triangle-exclamation mr-1"></i>Dubbelkolla årtalet! Ofta autofylls tryckåret, och inte när boken gavs ut.</p>
+                        }
+                     </div>
+
+                     @if (form.get('yearWritten')?.invalid) {
+                        @if (form.get('yearWritten')?.errors?.['max']) {
+                           <div></div>
+                           <span class="text-red-500">Året kan inte vara i framtiden.</span>
+                        }
+                     }
+
+                     <label for="language">Språk:</label>
+                     <div>
+                        <select formControlName="language" id="language" class="w-full">
+                           <option [ngValue]="null">Ej angivet</option>
+                           @for (language of allLanguages(); track language.id) {
+                              <option [ngValue]="language.id">{{ language.name }}</option>
+                           }
+                        </select>
+                        @if (fieldWasAutofilled('språk')) {
+                           <p class="mt-1 text-xs text-green-500"><i class="fa-solid fa-circle-plus mr-1"></i>Ny info tillagd</p>
+                        }
+                     </div>
+
+                     <label for="originalLanguage">Originalspråk:</label>
+                     <div>
+                        <select formControlName="originalLanguage" id="originalLanguage" class="w-full">
+                           <option [ngValue]="null">Ej angivet</option>
+                           @for (language of allLanguages(); track language.id) {
+                              <option [ngValue]="language.id">{{ language.name }}</option>
+                           }
+                        </select>
+                        @if (fieldWasAutofilled('originalspråk')) {
+                           <p class="mt-1 text-xs text-green-500"><i class="fa-solid fa-circle-plus mr-1"></i>Ny info tillagd</p>
+                        }
+                     </div>
+
+                     <label for="format">Format:</label>
+                     <select formControlName="format" id="format">
+                        <option [ngValue]="null">Ej angivet</option>
+                        <option value="Danskt band">Danskt band</option>
+                        <option value="Flexband">Flexband</option>
+                        <option value="Häftad">Häftad</option>
+                        <option value="Inbunden">Inbunden</option>
+                        <option value="Pocket">Pocket</option>
+                        <option value="Storpocket">Storpocket</option>
+                     </select>
+
+                     <label for="isbn" class="self-center">ISBN:</label>
+                     <div>
+                        <input id="isbn" type="text" formControlName="isbn" class="form-text-input w-full" autocorrect="off" autocapitalize="off" spellcheck="false">
+                        @if (fieldWasAutofilled('ISBN')) {
+                           <p class="mt-1 text-xs text-green-500"><i class="fa-solid fa-circle-plus mr-1"></i>Ny info tillagd</p>
+                        }
+                     </div>
+
+                     @if (form.get('isbn')?.invalid && formIsSubmitted) {
+                        @if (form.get('isbn')?.errors?.['pattern']) {
+                           <div></div>
+                           <span class="text-red-500">ISBN får inte innehålla bokstäver.</span>
+                        }
+                     }
+
+                     <label for="coverLink" class="self-center">Länk till omslag:</label>
+                     <div>
+                        <input id="coverLink" type="text" formControlName="coverLink" class="form-text-input w-full" autocorrect="off" autocapitalize="off" spellcheck="false">
+                        @if (fieldWasAutofilled('omslag')) {
+                           <p class="mt-1 text-xs text-green-500"><i class="fa-solid fa-circle-plus mr-1"></i>Ny info tillagd</p>
+                        }
+                     </div>
+
+                     @if (!selectedBook()) {
+                        <div></div>
+                        <div class="inline-flex items-center">
+                           <input type="checkbox" formControlName="addToShelf" class="mr-2" />
+                           <span class="ml-2">Lägg till i min bokhylla</span>
+                        </div>
+                     }
+
+                     <div></div>
+                     <div class="flex flex-wrap items-center gap-3 mt-5">
+                        <button type="submit" class="rounded-lg bg-bookolive px-5 py-2 text-white transition-colors hover:bg-bookolive-dark disabled:cursor-not-allowed disabled:opacity-50" [disabled]="saving()">
+                           Spara
+                        </button>
+
+                        @if (selectedBook() && !currentBookInShelf()) {
+                           <button type="button" class="rounded-lg border border-bookolive px-5 py-2 text-headerbrown transition-colors hover:bg-[#f6f0dd]" (click)="addCurrentBookToShelf()">
+                              Lägg till i bokhyllan
+                           </button>
+                        }
+
+                        @if (selectedBook() && currentBookInShelf()) {
+                           <span class="text-sm text-headerbrown/80">Boken finns redan i din bokhylla.</span>
+                        }
+                     </div>
+                  </div>
+               </form>
+            </div>
+
+            <div class="w-1/3 pl-8">
+
+               @if (coverPreview) {
+                  <img [src]="coverPreview" alt="Omslagsbild" class="block w-full mt-5">
+               }
+            </div>
+         </div>
+      }
+   </div>
+</div>

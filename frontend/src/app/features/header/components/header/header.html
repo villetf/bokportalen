@@ -1,6 +1,6 @@
 @if (auth.user$ && auth.emailVerified$ | async) {
    <header class="w-full h-23 bg-headerbrown flex justify-between items-center">
-      <div class="ml-20 w-1/2 flex">
+      <div class="ml-20 w-2/3 flex">
          <app-burger-menu backgroundColor="backgroundbeige" class="mr-30">
             <div class="h-full flex flex-col justify-between">
                <div class="flex flex-col">
@@ -8,6 +8,7 @@
                   <a routerLink="/books" class="text-3xl hover:underline">Alla böcker</a>
                   <a routerLink="/books/archive" class="text-3xl hover:underline">Bokarkiv</a>
                   <a routerLink="/books/deleted" class="text-3xl hover:underline">Raderade böcker</a>
+                  <a routerLink="/scan" class="text-3xl hover:underline">Skanna</a>
                   <a routerLink="/add" [queryParams]="{ resource: 'book' }" class="text-3xl mt-5">Lägg till...</a>
                   <a routerLink="/add" [queryParams]="{ resource: 'book' }" class="text-2xl hover:underline">Bok</a>
                   <a routerLink="/add" [queryParams]="{ resource: 'author' }" class="text-2xl hover:underline">Författare</a>
@@ -19,8 +20,8 @@
          </app-burger-menu>
          <a routerLink="/books" class="text-3xl text-backgroundbeige mr-30">MIN BOKHYLLA</a>
          <a routerLink="/books/archive" class="text-3xl text-backgroundbeige mr-30">BOKARKIV</a>
+         <a routerLink="/scan" class="text-3xl text-backgroundbeige mr-30">SKANNA</a>
          <a routerLink="/add" [queryParams]="{ resource: 'book' }" class="text-3xl text-backgroundbeige mr-30">LÄGG TILL</a>
-         <!-- <a routerLink="/scan" class="text-3xl text-backgroundbeige mr-30">SKANNA</a> -->
          <!-- <a routerLink="/search" class="text-3xl text-backgroundbeige">SÖK</a> -->
       </div>
 

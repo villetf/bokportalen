@@ -3,20 +3,21 @@
       <img 
          [src]="book.coverLink ? book.coverLink : 'book-cover-placeholder.png'" 
          alt="Omslagsbild för {{ book.title }}" 
-         class="cursor-pointer block h-full w-auto max-w-full max-h-full object-top" [routerLink]="'/books/' + book.id"
+         class="block h-full w-auto max-w-full max-h-full object-top" [routerLink]="enableLinks ? ['/books', book.id] : null"
          [ngClass]="{
             'aspect-2/3': !showRealCovers,
-            'object-contain': showRealCovers
+            'object-contain': showRealCovers,
+            'cursor-pointer': enableLinks
          }">
    </div>
    <div class="ml-2 flex-1 flex flex-col">
       <div class="flex-1">
-         <a routerLink="/books/{{ book.id }}" class="cursor-pointer hover:underline">
+         <a [routerLink]="enableLinks ? ['/books', book.id] : null" [class]="enableLinks ? 'cursor-pointer hover:underline' : 'cursor-default'">
             <p class="font-bold amiri-font">{{ book.title }}</p>
          </a>
          <p>
             @for (author of book.authors; track author.id) {
-               <a routerLink="/authors/{{ author.id }}" class="hover:underline cursor-pointer">
+               <a [routerLink]="enableLinks ? ['/authors/', author.id] : null" [class]="enableLinks ? 'cursor-pointer hover:underline' : 'cursor-default'">
                   <span class="amiri-font">{{ author.firstName }} {{ author.lastName }}</span>
                   @if (!$last) {
                      <span class="amiri-font">, </span>
