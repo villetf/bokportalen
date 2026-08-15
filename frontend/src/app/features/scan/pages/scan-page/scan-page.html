@@ -57,7 +57,7 @@
             <div class="mt-6 text-right">
                <p class="text-xs uppercase tracking-[0.18em] text-headerbrown/60 mb-2">Status</p>
                @if (this.selectedBook()) {
-                  <h2 class="text-2xl font-bold text-bookolive">{{ lookupData.title ? 'Boken finns i bokhyllan.' : 'Ingen bok kunde hämtas.' }}</h2>
+                  <h2 class="text-2xl font-bold text-bookolive">{{ lookupData.title && currentBookInShelf() ? 'Boken finns i din bokhylla.' : lookupData.title ? 'Boken finns i arkivet, men inte i din bokhylla.' : 'Ingen bok kunde hämtas.' }}</h2>
                   @if (apiAutofilledFields().length > 0) {
                      <ul class="text-sm text-headerbrown/80 mt-1">Dessa fält saknades och har lagts till:</ul>
                      @for (field of apiAutofilledFields(); track $index) {
@@ -67,10 +67,35 @@
                      <p class="text-sm text-headerbrown/80 mt-1">Ingen ny info har lagts till.</p>
                   }
                } @else if (this.scanMode() === 'new') {
-                  <h2 class="text-2xl font-bold text-bookolive">Denna bok finns inte i bokhyllan.</h2>
+                  <h2 class="text-2xl font-bold text-bookolive">Denna bok finns inte i arkivet eller i din bokhylla.</h2>
+                  <button class="rounded-lg bg-bookolive px-5 py-2 mt-5 text-white transition-colors hover:bg-bookolive-dark" (click)="showBookChoices.set(true)">
+                     Jo, den finns visst
+                  </button>
                }
             </div>
          </div>
+      }
+
+      @if (showBookChoices()) {
+         <app-edit-panel>
+            <h2 class="text-3xl font-bold text-bookolive ml-10 mt-10 mb-5">Välj din bok</h2>
+            <div class="rounded-full bg-[#EEE7D3] text-headerbrown p-3 w-100 ml-10 mb-10">
+               <i class="fa-solid fa-magnifying-glass ml-2"></i>
+               <input 
+                  type="text" 
+                  (input)="this.searchBooks($any($event.target).value)" 
+                  autocorrect="off"
+                  autocapitalize="off"
+                  spellcheck="false"
+                  class="border-none outline-none ml-3 w-9/10"
+               >
+            </div>
+            <div class="flex overflow-auto h-8/10 mx-10 flex-wrap cursor-pointer">
+               @for (book of searchedBooks; track $index) {
+                  <app-book-card [book]="book" class="w-1/5" [enableLinks]="false" (click)="this.openExistingBook(book, lookup()!);this.showBookChoices.set(false)"></app-book-card>
+               }
+            </div>
+         </app-edit-panel>
       }
 
       

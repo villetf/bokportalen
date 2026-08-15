@@ -17,13 +17,14 @@ import { HotToastService } from '@ngxpert/hot-toast';
 import { HttpErrorResponse } from '@angular/common/http';
 import { BookCard } from '../../../books/components/book-card/book-card';
 import { AddAuthorDTO } from '../../../../dtos/AddAuthorDTO';
+import { EditPanel } from '../../../../shared/components/edit-panel/edit-panel';
 
 type ScanMode = 'idle' | 'choose-title' | 'editing' | 'new';
 
 @Component({
    selector: 'app-scan-page',
    standalone: true,
-   imports: [ReactiveFormsModule, ArrayInput, NgClass, BookCard],
+   imports: [ReactiveFormsModule, ArrayInput, NgClass, BookCard, EditPanel],
    templateUrl: './scan-page.html'
 })
 export class ScanPage {
@@ -50,6 +51,9 @@ export class ScanPage {
    savingAuthor = signal(false);
    apiAutofilledFields = signal<string[]>([]);
    formIsSubmitted = false;
+   showBookChoices = signal<boolean>(false);
+   allBooks: Book[] = [];
+   searchedBooks: Book[] = [];
 
    displayAuthor = (author: Author) => `${author.lastName ? author.lastName + ', ' : ''}${author.firstName}`;
 
@@ -122,6 +126,9 @@ export class ScanPage {
             firstValueFrom(this.booksService.searchBookByIsbn(isbn)),
             firstValueFrom(this.booksService.getAllBooksWithShelfStatus())
          ]);
+
+         this.allBooks = books;
+         this.searchedBooks = books;
 
          this.lookup.set(lookup);
          this.updateAuthorQueue(this.collectUnresolvedAuthors(lookup.authors));
@@ -370,6 +377,30 @@ export class ScanPage {
       this.allLanguages.set(await this.languagesService.getAllLanguages());
    }
 
+   searchBooks(searchString: string) {
+      this.searchedBooks = [];
+
+      if (searchString === '') {
+         this.searchedBooks = this.allBooks;
+         return;
+      }
+
+      searchString = searchString.toLowerCase();
+
+      this.allBooks.forEach(book => {
+         if (book.title.toLowerCase().includes(searchString)) {
+            this.searchedBooks.push(book);
+            return;
+         }
+
+         book.authors.forEach(author => {
+            if (author.firstName.toLowerCase().includes(searchString) || author.lastName.toLowerCase().includes(searchString)) {
+               this.searchedBooks.push(book);
+            }
+         });
+      });
+   }
+
    get searchSummary() {
       if (this.selectedBook()) {
          return `Befintlig bok${this.currentBookInShelf() ? ' i bokhyllan' : ''}`;
@@ -394,7 +425,7 @@ export class ScanPage {
       return this.apiAutofilledFields().includes(field);
    }
 
-   private openExistingBook(book: Book, lookup: ISBNLookupResponse) {
+   public openExistingBook(book: Book, lookup: ISBNLookupResponse) {
       this.selectedBook.set(book);
       this.currentBookInShelf.set(Boolean(book.inShelf));
       this.apiAutofilledFields.set(this.detectAutofilledFields(book, lookup));
