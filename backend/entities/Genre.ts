@@ -1,4 +1,4 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Book } from './Book.js';
 
 @Entity('genres', { schema: 'bokdb' })
@@ -9,6 +9,6 @@ export class Genre {
    @Column('varchar', { name: 'name', nullable: true, length: 255 })
       name!: string | null;
 
-   @OneToMany(() => Book, (books) => books.genre)
+   @ManyToMany(() => Book, (books) => books.genres)
       books!: Book[];
 }

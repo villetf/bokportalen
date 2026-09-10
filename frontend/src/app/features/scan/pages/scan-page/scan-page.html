@@ -204,14 +204,9 @@
                         <span class="text-red-500">Du måste välja minst en författare.</span>
                      }
 
-                     <label for="genre">Genre:</label>
+                     <label for="bookGenres">Genrer:</label>
                      <div>
-                        <select formControlName="genre" id="genre" class="w-full">
-                           <option [ngValue]="null">Ej angivet</option>
-                           @for (genre of allGenres(); track genre.id) {
-                              <option [ngValue]="genre.id">{{ genre.name }}</option>
-                           }
-                        </select>
+                        <app-array-input formControlName="genres" [displayFn]="displayGenre" [selectableItems]="allGenres()" defaultSelectText="Välj genre..." id="bookGenres" class="w-full"></app-array-input>
                         @if (fieldWasAutofilled('genre')) {
                            <p class="mt-1 text-xs text-green-500"><i class="fa-solid fa-circle-plus mr-1"></i>Ny info tillagd</p>
                         }

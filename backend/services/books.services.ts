@@ -17,7 +17,7 @@ export class BooksService {
          .leftJoinAndSelect('author.country', 'country')
          .leftJoinAndSelect('book.language', 'language')
          .leftJoinAndSelect('book.originalLanguage', 'originalLanguage')
-         .leftJoinAndSelect('book.genre', 'genre');
+         .leftJoinAndSelect('book.genres', 'genre');
 
       // Skapar en lista över giltiga filter
       const validFilters: Record<string, string> = {
@@ -65,14 +65,14 @@ export class BooksService {
    static async getBookById(id: number) {
       return AppDataSource.getRepository(Book).findOne({
          where: { id },
-         relations: ['authors', 'language', 'originalLanguage', 'genre']
+         relations: ['authors', 'language', 'originalLanguage', 'genres']
       });
    }
 
    static async getDeletedBooks() {
       return AppDataSource.getRepository(Book).find({
          where: { isDeleted: true },
-         relations: ['authors', 'language', 'originalLanguage', 'genre']
+         relations: ['authors', 'language', 'originalLanguage', 'genres']
       });
    }
 
@@ -95,12 +95,13 @@ export class BooksService {
          }
       }
 
-      let genre = null;
-      if (inputBook.genre) {
-         genre = await GenresService.getGenreById(inputBook.genre);
+      const genres = [];
+      for (const genreId of inputBook.genres ?? []) {
+         const genre = await GenresService.getGenreById(genreId);
          if (!genre) {
-            throw new Error('Genre not found');
+            throw new Error(`Genre with ID ${genreId} not found`);
          }
+         genres.push(genre);
       }
 
       const newBook = new Book();
@@ -117,7 +118,7 @@ export class BooksService {
       newBook.isbn = inputBook.isbn ? inputBook.isbn : null;
       newBook.language = language;
       newBook.originalLanguage = originalLanguage;
-      newBook.genre = genre;
+      newBook.genres = genres;
       newBook.format = inputBook.format ? inputBook.format : null;
       newBook.isDeleted = false;
       newBook.createdAt = new Date();

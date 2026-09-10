@@ -9,7 +9,7 @@ export interface Book {
    yearWritten: number;
    language: Language;
    originalLanguage: Language;
-   genre: Genre;
+   genres: Genre[];
    format: string;
    isbn: number;
    createdAt: Date | null;

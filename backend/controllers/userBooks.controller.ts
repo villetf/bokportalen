@@ -37,7 +37,7 @@ function mapUserBook(userBook: UserBook) {
       yearWritten: book.yearWritten,
       language: book.language,
       originalLanguage: book.originalLanguage,
-      genre: book.genre,
+      genres: book.genres,
       format: book.format,
       isbn: book.isbn,
       createdAt: book.createdAt,
