@@ -29,6 +29,7 @@ export class AddBook {
    formIsSubmitted = false;
 
    displayAuthor = (author: Author) => `${author.lastName ? author.lastName + ', ' : '' }${author.firstName}`;
+   displayGenre = (genre: Genre) => genre.name ?? '';
 
    compareAuthorsByLastName(a: Author, b: Author) {
       const aLast = (a.lastName || '').toLocaleLowerCase();
@@ -54,7 +55,7 @@ export class AddBook {
          title: [null, Validators.required],
          authors: [[{}], this.atLeastOneAuthor()],
          yearWritten: [null, Validators.max(this.getCurrentYear())],
-         genre: [null],
+         genres: [[] as Genre[]],
          language: [null],
          originalLanguage: [null],
          format: [null],
@@ -73,7 +74,7 @@ export class AddBook {
          title: null,
          authors: [[{}]],
          yearWritten: null,
-         genre: null,
+         genres: [],
          language: null,
          originalLanguage: null,
          format: null,
@@ -108,8 +109,10 @@ export class AddBook {
             ? selectedAuthors.filter((a: Author) => a && a.id != null).map((a: Author) => a.id)
             : [];
 
-         const g = fv.genre;
-         newBook.genre = g && typeof g === 'object' && 'id' in g ? (g as Genre).id : g ?? null;
+         const selectedGenres = fv.genres;
+         newBook.genres = Array.isArray(selectedGenres)
+            ? selectedGenres.filter((genre: Genre) => genre && genre.id != null).map((genre: Genre) => genre.id)
+            : [];
 
          const lang = fv.language;
          newBook.language = lang && typeof lang === 'object' && 'id' in lang ? (lang as Language).id : lang ?? null;

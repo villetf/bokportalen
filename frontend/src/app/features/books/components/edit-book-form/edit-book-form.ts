@@ -34,6 +34,7 @@ export class EditBookForm implements OnInit {
 
 
    displayAuthor = (author: Author) => `${author.lastName ? author.lastName + ', ' : '' }${author.firstName}`;
+   displayGenre = (genre: Genre) => genre.name ?? '';
 
    constructor(
       private fb: FormBuilder,
@@ -55,7 +56,7 @@ export class EditBookForm implements OnInit {
          title: [this.book.title, [Validators.required]],
          authors: [this.book.authors, [this.atLeastOneAuthor()]],
          yearWritten: [this.book.yearWritten, [Validators.max(this.getCurrentYear())]],
-         genre: [this.book.genre ? this.book.genre.id : null],
+         genres: [this.book.genres],
          language: [this.book.language ? this.book.language.id : null],
          originalLanguage: [this.book.originalLanguage ? this.book.originalLanguage.id : null],
          format: [this.book.format],
@@ -103,7 +104,7 @@ export class EditBookForm implements OnInit {
          title: [this.book.title],
          authors: [...this.book.authors],
          yearWritten: [this.book.yearWritten],
-         genre: [this.book.genre ? this.book.genre.id : null],
+         genres: [[...this.book.genres]],
          language: [this.book.language ? this.book.language.id : null],
          originalLanguage: [this.book.originalLanguage ? this.book.originalLanguage.id : null],
          format: [this.book.format],

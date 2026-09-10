@@ -41,8 +41,8 @@ export class BookUpdateDTO {
 
    @Expose()
    @IsOptional()
-   @IsNumber()
-      genre?: number;
+   @IsArray()
+      genres?: number[];
 
    @Expose()
    @IsOptional()

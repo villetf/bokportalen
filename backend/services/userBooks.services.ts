@@ -13,7 +13,7 @@ export class UserBooksService {
          .leftJoinAndSelect('author.country', 'country')
          .leftJoinAndSelect('book.language', 'language')
          .leftJoinAndSelect('book.originalLanguage', 'originalLanguage')
-         .leftJoinAndSelect('book.genre', 'genre')
+         .leftJoinAndSelect('book.genres', 'genre')
          .where('userBook.userId = :userId', { userId })
          .andWhere('book.isDeleted = :isDeleted', { isDeleted: false });
 
@@ -32,7 +32,7 @@ export class UserBooksService {
          .leftJoinAndSelect('author.country', 'country')
          .leftJoinAndSelect('book.language', 'language')
          .leftJoinAndSelect('book.originalLanguage', 'originalLanguage')
-         .leftJoinAndSelect('book.genre', 'genre')
+         .leftJoinAndSelect('book.genres', 'genre')
          .where('userBook.userId = :userId', { userId })
          .andWhere('userBook.bookId = :bookId', { bookId })
          .getOne();

@@ -14,7 +14,7 @@
                   }
                </h3>
                <div class="mt-5">
-                  <p><span class="book-properties alumni-font">GENRE:</span><span class="amiri-font text-2xl"> {{ book.genre ? book.genre.name : 'Ej angivet' }}</span></p>
+                  <p><span class="book-properties alumni-font">GENRER:</span><span class="amiri-font text-2xl"> {{ book.genres.length ? book.genres.map(genre => genre.name).join(', ') : 'Ej angivet' }}</span></p>
                   <p><span class="book-properties alumni-font">UTGIVNINGSÅR:</span><span class="amiri-font text-2xl"> {{ book.yearWritten ? book.yearWritten : 'Ej angivet' }}</span></p>
                   <p><span class="book-properties alumni-font">SPRÅK:</span><span class="amiri-font text-2xl"> {{ book.language ? book.language.name : 'Ej angivet' }}</span></p>
                   <p><span class="book-properties alumni-font">ORIGINALSPRÅK:</span><span class="amiri-font text-2xl"> {{ book.originalLanguage ? book.originalLanguage.name : 'Ej angivet' }}</span></p>

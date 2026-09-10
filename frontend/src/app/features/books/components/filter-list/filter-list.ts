@@ -35,7 +35,7 @@ export class FilterList {
       { key: 'language' as keyof UserBook, label: 'Språk' },
       { key: 'originalLanguage' as keyof UserBook, label: 'Originalspråk' },
       { key: 'yearWritten' as keyof UserBook, label: 'Publiceringsår' },
-      { key: 'genre' as keyof UserBook, label: 'Genre' },
+      { key: 'genres' as keyof UserBook, label: 'Genre' },
       { key: 'status' as keyof UserBook, label: 'Status' },
       { key: 'authors' as keyof UserBook, label: 'Författare' },
    ];
@@ -133,12 +133,16 @@ export class FilterList {
       // Filtrera böckerna
       const filteredBooks = originalBooks.filter(book => {
          return Object.entries(groupedFilters).every(([property, allowedValues]) => {
-            if (property == 'language' || property == 'originalLanguage' || property == 'genre') {
+            if (property == 'language' || property == 'originalLanguage') {
                if (!(book as any)[property]) {
                   return allowedValues.includes((book as any)[property] as string | null);
                }
 
                return allowedValues.includes(((book as any)[property] as Language | Genre).name as string | null);
+            }
+
+            if (property == 'genres') {
+               return (book.genres ?? []).some(genre => allowedValues.includes(genre.name));
             }
 
             if (property == 'yearPublished') {
@@ -196,11 +200,18 @@ export class FilterList {
          let value;
 
          // Specialfall för språk, originalspråk och genre
-         if (filterProperty == 'language' || filterProperty == 'originalLanguage' || filterProperty == 'genre') {
+         if (filterProperty == 'language' || filterProperty == 'originalLanguage') {
             if (!(book as any)[filterProperty]) {
                return;
             }
             value = (book as any)[filterProperty].name;
+         } else if (filterProperty == 'genres') {
+            for (const genre of book.genres ?? []) {
+               if (genre.name != null) {
+                  uniqueValues.add(String(genre.name));
+               }
+            }
+            return;
          } else {
             value = (book as any)[filterProperty];
          }
