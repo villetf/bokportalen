@@ -15,7 +15,6 @@ import { Genre } from './Genre.js';
 @Index('idx_title', ['title'], {})
 @Index('idx_language_id', ['languageId'], {})
 @Index('idx_original_language_id', ['originalLanguageId'], {})
-@Index('idx_genre_id', ['genreId'], {})
 @Entity('books', { schema: 'bokdb' })
 export class Book {
    @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
@@ -32,9 +31,6 @@ export class Book {
 
    @Column('int', { name: 'original_language_id', nullable: true })
       originalLanguageId!: number | null;
-
-   @Column('int', { name: 'genre_id', nullable: true })
-      genreId!: number | null;
 
    @Column('varchar', { name: 'format', nullable: true, length: 255 })
       format!: string | null;
@@ -63,6 +59,15 @@ export class Book {
    })
       authors!: Author[];
 
+   @ManyToMany(() => Genre, (genres) => genres.books)
+   @JoinTable({
+      name: 'book_genres',
+      joinColumns: [{ name: 'book_id', referencedColumnName: 'id' }],
+      inverseJoinColumns: [{ name: 'genre_id', referencedColumnName: 'id' }],
+      schema: 'bokdb',
+   })
+      genres!: Genre[];
+
    @ManyToOne(() => Language, (languages) => languages.books, {
       onDelete: 'SET NULL',
       onUpdate: 'RESTRICT',
@@ -77,10 +82,4 @@ export class Book {
    @JoinColumn([{ name: 'original_language_id', referencedColumnName: 'id' }])
       originalLanguage!: Language | null;
 
-   @ManyToOne(() => Genre, (genres) => genres.books, {
-      onDelete: 'SET NULL',
-      onUpdate: 'RESTRICT',
-   })
-   @JoinColumn([{ name: 'genre_id', referencedColumnName: 'id' }])
-      genre!: Genre | null;
 }

@@ -56,6 +56,7 @@ export class ScanPage {
    searchedBooks: Book[] = [];
 
    displayAuthor = (author: Author) => `${author.lastName ? author.lastName + ', ' : ''}${author.firstName}`;
+   displayGenre = (genre: Genre) => genre.name ?? '';
 
    constructor(
       private fb: FormBuilder,
@@ -69,7 +70,7 @@ export class ScanPage {
          title: [null, Validators.required],
          authors: [[] as Author[], this.atLeastOneAuthor()],
          yearWritten: [null, Validators.max(this.getCurrentYear())],
-         genre: [null],
+         genres: [[] as Genre[]],
          language: [null],
          originalLanguage: [null],
          format: [null],
@@ -289,7 +290,7 @@ export class ScanPage {
             title: rawValue.title,
             authors,
             yearWritten: this.toNumberOrNull(rawValue.yearWritten),
-            genre: rawValue.genre,
+            genres: rawValue.genres,
             language: rawValue.language,
             originalLanguage: rawValue.originalLanguage,
             format: rawValue.format,
@@ -327,7 +328,9 @@ export class ScanPage {
          title: rawValue.title,
          authors: authors.map((author: Author) => author.id),
          yearWritten: this.toNumberOrNull(rawValue.yearWritten),
-         genre: rawValue.genre ?? undefined,
+         genres: Array.isArray(rawValue.genres)
+            ? rawValue.genres.filter((genre: Genre) => genre && genre.id != null).map((genre: Genre) => genre.id)
+            : [],
          language: rawValue.language ?? undefined,
          originalLanguage: rawValue.originalLanguage ?? undefined,
          format: rawValue.format ?? undefined,
@@ -470,7 +473,7 @@ export class ScanPage {
          fields.push('språk');
       }
 
-      if (!baseBook.genre && this.matchGenreId(lookup.categories) != null) {
+      if ((!baseBook.genres || baseBook.genres.length === 0) && this.matchGenres(lookup.categories).length > 0) {
          fields.push('genre');
       }
 
@@ -496,7 +499,7 @@ export class ScanPage {
          title: baseBook?.title?.trim() ? baseBook.title : lookup.title ?? '',
          authors: baseBook?.authors?.length ? baseBook.authors : this.matchAuthors(lookup.authors),
          yearWritten: baseBook?.yearWritten ?? lookup.publishedYear ?? null,
-         genre: baseBook?.genre?.id ?? this.matchGenreId(lookup.categories),
+         genres: baseBook?.genres?.length ? baseBook.genres : this.matchGenres(lookup.categories),
          language: baseBook?.language?.id ?? this.matchLanguageId(lookup.language),
          originalLanguage: baseBook?.originalLanguage?.id ?? null,
          format: baseBook?.format ?? null,
@@ -577,9 +580,9 @@ export class ScanPage {
       };
    }
 
-   private matchGenreId(categories: string[]) {
+   private matchGenres(categories: string[]) {
       const normalizedCategories = categories.map(category => this.normalizeString(category));
-      return this.allGenres().find(genre => normalizedCategories.includes(this.normalizeString(genre.name)))?.id ?? null;
+      return this.allGenres().filter(genre => normalizedCategories.includes(this.normalizeString(genre.name)));
    }
 
    private matchLanguageId(language: string | null) {

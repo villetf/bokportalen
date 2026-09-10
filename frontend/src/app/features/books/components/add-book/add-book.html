@@ -29,13 +29,9 @@
             <i class="fa-solid fa-rotate ml-2 cursor-pointer active:rotate-180 active:transition-all" (click)="updateAuthorsList()"></i>
          </div>
 
-         <label for="genre">Genre:</label>
+         <label for="bookGenres">Genrer:</label>
          <div class="flex items-center">
-            <select formControlName="genre" id="genre" class="w-full">
-               @for (genre of allGenres(); track genre.id) {
-                  <option [ngValue]="genre.id">{{ genre.name }}</option>
-               }
-            </select>
+            <app-array-input formControlName="genres" [displayFn]="displayGenre" [selectableItems]="allGenres()" defaultSelectText="Välj genre..." id="bookGenres" class="w-full"></app-array-input>
             <i class="fa-solid fa-rotate ml-2 cursor-pointer active:rotate-180 active:transition-all" (click)="updateGenresList()"></i>
          </div>
          

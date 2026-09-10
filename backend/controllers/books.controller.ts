@@ -20,7 +20,7 @@ export class BooksController {
             yearWritten: book.yearWritten,
             language: book.language,
             originalLanguage: book.originalLanguage,
-            genre: book.genre,
+            genres: book.genres,
             format: book.format,
             isbn: book.isbn,
             createdAt: book.createdAt,
@@ -58,7 +58,7 @@ export class BooksController {
          yearWritten: book.yearWritten,
          language: book.language,
          originalLanguage: book.originalLanguage,
-         genre: book.genre,
+         genres: book.genres,
          format: book.format,
          isbn: book.isbn,
          createdAt: book.createdAt,
@@ -77,7 +77,7 @@ export class BooksController {
          yearWritten: book.yearWritten,
          language: book.language,
          originalLanguage: book.originalLanguage,
-         genre: book.genre,
+         genres: book.genres,
          format: book.format,
          isbn: book.isbn,
          createdAt: book.createdAt,
@@ -144,13 +144,17 @@ export class BooksController {
          req.body.originalLanguage = originalLanguage;
       }
 
-      if (req.body.genre) {
-         const genre = await GenresService.getGenreById(req.body.genre);
-         if (!genre) {
-            res.status(500).json({ error: 'Given genre does not exist' });
-            return;
+      if (req.body.genres) {
+         const genres = [];
+         for (const reqGenre of req.body.genres) {
+            const genre = await GenresService.getGenreById(reqGenre.id);
+            if (!genre) {
+               res.status(400).json({ error: `Given genre ${reqGenre.name} does not exist` });
+               return;
+            }
+            genres.push(genre);
          }
-         req.body.genre = genre;
+         req.body.genres = genres;
       }
 
       await BooksService.updateBook(bookToUpdate, req.body as BookUpdateDTO);
@@ -164,7 +168,7 @@ export class BooksController {
          yearWritten: updatedBook!.yearWritten,
          language: updatedBook!.language,
          originalLanguage: updatedBook!.originalLanguage,
-         genre: updatedBook!.genre,
+         genres: updatedBook!.genres,
          format: updatedBook!.format,
          isbn: updatedBook!.isbn,
          createdAt: updatedBook!.createdAt,

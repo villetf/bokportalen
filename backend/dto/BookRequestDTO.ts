@@ -33,8 +33,9 @@ export class BookRequestDTO {
 
    @Expose()
    @IsOptional()
-   @IsInt()
-      genre?: number;
+   @IsArray()
+   @IsInt({ each: true })
+      genres?: number[];
 
    @Expose()
    @IsOptional()
