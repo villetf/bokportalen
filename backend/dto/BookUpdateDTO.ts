@@ -1,7 +1,6 @@
 import { Exclude, Expose } from 'class-transformer';
 import { IsString, IsInt, IsOptional, IsArray, IsBoolean, IsNumber } from 'class-validator';
 import { Author } from '../entities/Author.js';
-import { Genre } from '../entities/Genre.js';
 
 @Exclude()
 export class BookUpdateDTO {
@@ -43,7 +42,7 @@ export class BookUpdateDTO {
    @Expose()
    @IsOptional()
    @IsArray()
-      genres?: Genre[];
+      genres?: number[];
 
    @Expose()
    @IsOptional()

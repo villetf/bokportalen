@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
 export class SupportMultipleGenres1788805365568 implements MigrationInterface {
-   name = 'SupportMultipleCategories1788805365568';
+   name = 'SupportMultipleGenres1788805365568';
 
    public async up(queryRunner: QueryRunner): Promise<void> {
       await queryRunner.query('CREATE TABLE `book_genres` (`book_id` int NOT NULL, `genre_id` int NOT NULL, INDEX `IDX_dc378b8311ff85f0dd38f16309` (`book_id`), INDEX `IDX_43ff7d87d7506e768ca6491a1d` (`genre_id`), PRIMARY KEY (`book_id`, `genre_id`)) ENGINE=InnoDB');

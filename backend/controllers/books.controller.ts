@@ -146,18 +146,10 @@ export class BooksController {
 
       if (req.body.genres) {
          const genres = [];
-         for (const genreId of req.body.genres) {
-            const genre = await GenresService.getGenreById(genreId);
-            console.log('');
-            console.log('');
-            console.log('');
-            console.log('genreid: ', + req.body.genres);
-            console.log('genre: ' + genre);
-            console.log('');
-            console.log('');
-            console.log('');
+         for (const reqGenre of req.body.genres) {
+            const genre = await GenresService.getGenreById(reqGenre.id);
             if (!genre) {
-               res.status(500).json({ error: `Given genre ${genreId} does not exist` });
+               res.status(400).json({ error: `Given genre ${reqGenre.name} does not exist` });
                return;
             }
             genres.push(genre);
