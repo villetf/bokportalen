@@ -19,6 +19,11 @@ export class AuthInterceptor implements HttpInterceptor {
       }
 
       return from(user.getIdToken()).pipe(
+         catchError(error => {
+            console.error('Failed to retrieve ID token. Redirecting to login.', error);
+            this.router.navigate(['/login']);
+            return EMPTY;
+         }),
          switchMap(token => {
             const authReq = req.clone({
                setHeaders: {
@@ -26,11 +31,6 @@ export class AuthInterceptor implements HttpInterceptor {
                },
             });
             return next.handle(authReq);
-         }),
-         catchError(error => {
-            console.error('Failed to retrieve ID token. Redirecting to login.', error);
-            this.router.navigate(['/login']);
-            return EMPTY;
          })
       );
    }

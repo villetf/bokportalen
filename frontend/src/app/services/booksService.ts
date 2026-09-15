@@ -1,4 +1,4 @@
-import { BehaviorSubject, catchError, combineLatest, filter, map, of, tap, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, combineLatest, filter, map, tap, throwError } from 'rxjs';
 import { Book } from '../types/Book.model';
 import { UserBook } from '../types/UserBook.model';
 import { Injectable } from '@angular/core';
@@ -33,12 +33,9 @@ export class BooksService {
    }
 
    getShelfBook(id: number) {
-      const existing = this.shelfBooks$.value?.find(b => b.id === id);
-      if (existing) {
-         return of(existing);
-      }
-
-      return this.http.get<UserBook>(`${this.apiUrl}/users/me/books/${id}`);
+      return this.getShelfBooks().pipe(
+         map(books => books.find(book => book.id === id) ?? null)
+      );
    }
 
    setShelfBook(updatedBook: UserBook) {
