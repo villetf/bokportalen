@@ -12,9 +12,9 @@
 </div>
 <div class="flex flex-col items-center mt-10">
    <h2 class="text-2xl text-bookolive mb-10">Böcker av {{ author()?.firstName }} {{ author()?.lastName }} ({{ booksByAuthor().length }} st)</h2>
-   <div class="grid grid-cols-4 mx-10 ml-40">
+   <div class="grid grid-cols-4 mx-30">
       @for (book of booksByAuthor(); track book.id) {
-         <div class="w-100">
+         <div>
             <app-book-card [book]="book"></app-book-card>
          </div>
       }
