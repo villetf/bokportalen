@@ -2,23 +2,6 @@
    @if (placement === 'top') {
    <header class="w-full h-23 bg-headerbrown hidden lg:flex justify-between items-center">
       <div class="ml-20 w-2/3 flex">
-         <app-burger-menu backgroundColor="backgroundbeige" class="mr-30">
-            <div class="h-full flex flex-col justify-between">
-               <div class="flex flex-col">
-                  <a routerLink="/" class="text-4xl hover:underline mb-5">Start</a>
-                  <a routerLink="/books" class="text-3xl hover:underline">Alla böcker</a>
-                  <a routerLink="/books/archive" class="text-3xl hover:underline">Bokarkiv</a>
-                  <a routerLink="/books/deleted" class="text-3xl hover:underline">Raderade böcker</a>
-                  <a routerLink="/scan" class="text-3xl hover:underline">Skanna</a>
-                  <a routerLink="/add" [queryParams]="{ resource: 'book' }" class="text-3xl mt-5">Lägg till...</a>
-                  <a routerLink="/add" [queryParams]="{ resource: 'book' }" class="text-2xl hover:underline">Bok</a>
-                  <a routerLink="/add" [queryParams]="{ resource: 'author' }" class="text-2xl hover:underline">Författare</a>
-                  <a routerLink="/add" [queryParams]="{ resource: 'genre' }" class="text-2xl hover:underline">Genre</a>
-                  <a routerLink="/add" [queryParams]="{ resource: 'language' }" class="text-2xl hover:underline">Språk</a>
-               </div>
-            </div>
-   
-         </app-burger-menu>
          <a routerLink="/books" class="text-3xl text-backgroundbeige mr-30">MIN BOKHYLLA</a>
          <a routerLink="/books/archive" class="text-3xl text-backgroundbeige mr-30">BOKARKIV</a>
          <a routerLink="/scan" class="text-3xl text-backgroundbeige mr-30">SKANNA</a>
@@ -37,10 +20,7 @@
       }
    </header>
    <header class="grid min-h-23 grid-cols-[3rem_minmax(0,1fr)_3rem] items-center gap-3 bg-headerbrown px-5 text-backgroundbeige pt-[env(safe-area-inset-top)] lg:hidden">
-      <button type="button" aria-label="Öppna meny" class="flex size-12 items-center justify-center rounded focus-visible:outline-2">
-         <svg class="size-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M3 5h18M3 12h18M3 19h18" /></svg>
-      </button>
-      <span class="text-center text-3xl uppercase alumni-font">{{ pageTitle$ | async }}</span>
+      <span class="col-start-2 text-center text-3xl uppercase alumni-font">{{ pageTitle$ | async }}</span>
       @if (auth.user$ | async; as user) {
          <a routerLink="/settings" aria-label="Inställningar" class="flex size-12 items-center justify-center overflow-hidden rounded-full bg-backgroundbeige font-semibold text-headerbrown focus-visible:outline-2 focus-visible:outline-backgroundbeige">
             @if (user.photoURL) {

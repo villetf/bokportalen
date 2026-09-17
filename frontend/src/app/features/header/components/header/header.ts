@@ -1,5 +1,4 @@
 import { Component, computed, inject, Input } from '@angular/core';
-import { BurgerMenu } from '../burger-menu/burger-menu';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { UserStore } from '../../../../stores/user.store';
 import { AuthService } from '../../../../services/authService';
@@ -8,7 +7,7 @@ import { filter, map, startWith } from 'rxjs';
 
 @Component({
    selector: 'app-header',
-   imports: [BurgerMenu, RouterLink, RouterLinkActive, AsyncPipe],
+   imports: [ RouterLink, RouterLinkActive, AsyncPipe],
    templateUrl: './header.html',
    standalone: true,
 })
