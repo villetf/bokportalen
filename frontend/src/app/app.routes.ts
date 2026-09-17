@@ -11,7 +11,6 @@ import { LogIn } from './features/auth/pages/log-in/log-in';
 import { ResetPassword } from './features/auth/pages/reset-password/reset-password';
 import { VerifyEmail } from './features/auth/pages/verify-email/verify-email';
 import { SettingsPage } from './features/settings/pages/settings-page/settings-page';
-import { ProfilePage } from './features/profile/pages/profile-page/profile-page';
 import { ScanPage } from './features/scan/pages/scan-page/scan-page';
 
 export const routes: Routes = [
@@ -28,6 +27,6 @@ export const routes: Routes = [
    { path: 'reset-password', data: { headerTitle: 'Återställ lösenord' }, component: ResetPassword},
    { path: 'register/verify-email', data: { headerTitle: 'Verifiera e-post' }, component: VerifyEmail },
    { path: 'settings', data: { headerTitle: 'Inställningar' }, component: SettingsPage, canActivate: [AuthGuard] },
-   { path: 'profile', data: { headerTitle: 'Min profil' }, component: ProfilePage, canActivate: [AuthGuard] },
+   { path: 'profile', pathMatch: 'full', redirectTo: 'settings' },
    { path: 'scan', data: { headerTitle: 'Skanna' }, component: ScanPage, canActivate: [AuthGuard] }
 ];

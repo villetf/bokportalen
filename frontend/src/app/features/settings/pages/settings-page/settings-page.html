@@ -2,15 +2,25 @@
    <div class="w-full max-w-2xl space-y-8">
       <div class="space-y-2">
          <p class="text-xs uppercase tracking-[0.22em] text-gray-500">Användarinställningar</p>
-         <h1 class="text-4xl font-semibold text-headerbrown">Inställningar</h1>
+         <h1 class="text-4xl font-semibold text-bookolive">Inställningar</h1>
       </div>
 
       @if (user()) {
          <div class="space-y-8">
-            <!-- Book Cover Display Setting -->
+            <section class="rounded-2xl border border-gray-200 bg-white shadow-sm p-6 space-y-4">
+               <h2 class="text-xl font-semibold text-bookolive">Min profil</h2>
+               <div>
+                  <label for="first-name" class="block text-sm text-gray-700 mb-1">Förnamn</label>
+                  <input id="first-name" autocomplete="given-name" type="text" class="form-text-input w-full" [value]="firstName()" (input)="firstName.set($any($event.target).value)" />
+               </div>
+               <div>
+                  <label for="last-name" class="block text-sm text-gray-700 mb-1">Efternamn</label>
+                  <input id="last-name" autocomplete="family-name" type="text" class="form-text-input w-full" [value]="lastName()" (input)="lastName.set($any($event.target).value)" />
+               </div>
+            </section>
             <div class="rounded-2xl border border-gray-200 bg-white shadow-sm p-6 space-y-4">
                <div class="space-y-2">
-                  <h2 class="text-xl font-semibold text-headerbrown">Bokomslag</h2>
+                  <h2 class="text-xl font-semibold text-bookolive">Bokomslag</h2>
                   <p class="text-sm text-gray-600">
                      Välj hur bokomslagen ska visas i bokgalleriet.
                   </p>
@@ -28,13 +38,13 @@
                   >
                      <div class="flex items-start gap-3">
                         <div
-                           class="mt-1 h-4 w-4 rounded-full border-2 flex-shrink-0"
+                           class="mt-1 h-4 w-4 rounded-full border-2 shrink-0"
                            [class.bg-bookolive]="coverDisplayMode() === 'natural'"
                            [class.border-bookolive]="coverDisplayMode() === 'natural'"
                            [class.border-gray-400]="coverDisplayMode() !== 'natural'"
                         ></div>
                         <div class="space-y-1">
-                           <span class="block font-medium text-headerbrown">Ursprungliga proportioner</span>
+                           <span class="block font-medium text-bookolive">Ursprungliga proportioner</span>
                            <span class="block text-xs text-gray-600">
                               Visar bokomslag i sina verkliga proportioner, olika höjder beroende på originalet
                            </span>
@@ -53,13 +63,13 @@
                   >
                      <div class="flex items-start gap-3">
                         <div
-                           class="mt-1 h-4 w-4 rounded-full border-2 flex-shrink-0"
+                           class="mt-1 h-4 w-4 rounded-full border-2 shrink-0"
                            [class.bg-bookolive]="coverDisplayMode() === 'uniform'"
                            [class.border-bookolive]="coverDisplayMode() === 'uniform'"
                            [class.border-gray-400]="coverDisplayMode() !== 'uniform'"
                         ></div>
                         <div class="space-y-1">
-                           <span class="block font-medium text-headerbrown">Enhetliga storlekar</span>
+                           <span class="block font-medium text-bookolive">Enhetliga storlekar</span>
                            <span class="block text-xs text-gray-600">
                               Visar alla bokomslag med samma höjd, proportioner justeras för enhetlighet
                            </span>
@@ -96,5 +106,13 @@
             <div class="text-sm text-gray-600">Laddar inställningar…</div>
          </div>
       }
+      <div class="border-t border-gray-300 pt-6 space-y-3">
+         <button type="button" class="rounded-lg bg-bookolive px-6 py-2 text-white transition-colors hover:bg-bookolive-dark disabled:cursor-not-allowed disabled:opacity-50" [disabled]="loggingOut() || saving()" (click)="logout()">
+            {{ loggingOut() ? 'Loggar ut…' : 'Logga ut' }}
+         </button>
+         @if (logoutError()) {
+            <p role="alert" class="text-sm text-red-700">{{ logoutError() }}</p>
+         }
+      </div>
    </div>
 </div>

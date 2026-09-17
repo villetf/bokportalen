@@ -26,26 +26,15 @@
          <!-- <a routerLink="/search" class="text-3xl text-backgroundbeige">SÖK</a> -->
       </div>
 
-      <div class="mr-6 relative group select-none pb-2">
-         <div
-            class="w-10 h-10 rounded-full bg-backgroundbeige text-headerbrown flex items-center justify-center font-semibold shadow cursor-pointer"
-            aria-haspopup="true"
-         >
-            U
-         </div>
-   
-         <div
-            class="absolute right-0 top-full w-56 rounded-lg border border-gray-200 bg-white shadow-lg opacity-0 scale-95 origin-top-right transition transform duration-150 ease-out pointer-events-none group-hover:opacity-100 group-hover:scale-100 group-hover:pointer-events-auto"
-            role="menu"
-         >
-            <div class="py-2 text-sm text-gray-700">
-               <a routerLink="/profile" class="block px-4 py-2 hover:bg-backgroundbeige cabin-font">Min profil</a>
-               <a routerLink="/settings" class="block px-4 py-2 hover:bg-backgroundbeige cabin-font">Inställningar</a>
-               <div class="my-2 border-t border-gray-200"></div>
-               <div class="px-4 py-2 cursor-pointer hover:bg-backgroundbeige" (click)="logout()">Logga ut</div>
-            </div>
-         </div>
-      </div>
+      @if (auth.user$ | async; as user) {
+         <a routerLink="/settings" aria-label="Inställningar" class="mr-6 flex size-12 items-center justify-center overflow-hidden rounded-full bg-backgroundbeige font-semibold text-headerbrown shadow focus-visible:outline-2 focus-visible:outline-backgroundbeige">
+            @if (user.photoURL) {
+               <img [src]="user.photoURL" alt="" class="size-full object-cover" />
+            } @else {
+               <span class="cabin-font">{{ userInitials() }}</span>
+            }
+         </a>
+      }
    </header>
    <header class="grid min-h-23 grid-cols-[3rem_minmax(0,1fr)_3rem] items-center gap-3 bg-headerbrown px-5 text-backgroundbeige pt-[env(safe-area-inset-top)] lg:hidden">
       <button type="button" aria-label="Öppna meny" class="flex size-12 items-center justify-center rounded focus-visible:outline-2">
@@ -53,11 +42,11 @@
       </button>
       <span class="text-center text-3xl uppercase alumni-font">{{ pageTitle$ | async }}</span>
       @if (auth.user$ | async; as user) {
-         <a routerLink="/profile" aria-label="Min profil" class="flex size-12 items-center justify-center overflow-hidden rounded-full bg-backgroundbeige font-semibold text-headerbrown focus-visible:outline-2 focus-visible:outline-backgroundbeige">
+         <a routerLink="/settings" aria-label="Inställningar" class="flex size-12 items-center justify-center overflow-hidden rounded-full bg-backgroundbeige font-semibold text-headerbrown focus-visible:outline-2 focus-visible:outline-backgroundbeige">
             @if (user.photoURL) {
                <img [src]="user.photoURL" alt="" class="size-full object-cover" />
             } @else {
-               <span>{{ (user.displayName?.charAt(0) || 'U').toUpperCase() }}</span>
+               <span>{{ userInitials() }}</span>
             }
          </a>
       }

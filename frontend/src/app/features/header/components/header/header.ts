@@ -1,10 +1,10 @@
-import { Component, Input } from '@angular/core';
+import { Component, computed, inject, Input } from '@angular/core';
 import { BurgerMenu } from '../burger-menu/burger-menu';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { UserStore } from '../../../../stores/user.store';
 import { AuthService } from '../../../../services/authService';
 import { AsyncPipe } from '@angular/common';
 import { filter, map, startWith } from 'rxjs';
-import { HotToastService } from '@ngxpert/hot-toast';
 
 @Component({
    selector: 'app-header',
@@ -15,9 +15,17 @@ import { HotToastService } from '@ngxpert/hot-toast';
 export class Header {
    @Input() placement: 'top' | 'bottom' = 'top';
 
+   private readonly userStore = inject(UserStore);
+   protected readonly userInitials = computed(() => {
+      const user = this.userStore.user();
+      const initials = (user?.firstName?.trim().charAt(0) ?? '')
+         + (user?.lastName?.trim().charAt(0) ?? '');
+      return initials.toUpperCase() || 'U';
+   });
+
    readonly pageTitle$;
 
-   constructor(public auth: AuthService, private router: Router, private toast: HotToastService) {
+   constructor(public auth: AuthService, router: Router) {
       this.pageTitle$ = router.events.pipe(
          filter(event => event instanceof NavigationEnd),
          startWith(null),
@@ -36,13 +44,4 @@ export class Header {
       { route: '/add', label: 'Lägg till', queryParams: { resource: 'book' }, icon: 'M12 5v14M5 12h14' },
    ];
 
-   async logout() {
-      try {
-         await this.auth.logout();
-         this.router.navigate(['/login']);
-      } catch (err: any) {
-         this.toast.error('Utloggning misslyckades. Försök igen.');
-         console.error('Logout failed with error:', err);
-      }
-   }
 }
