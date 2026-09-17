@@ -19,7 +19,7 @@
             </a>
          }
       </header>
-      <header class="grid min-h-23 grid-cols-[3rem_minmax(0,1fr)_3rem] items-center gap-3 bg-headerbrown px-5 text-backgroundbeige pt-[env(safe-area-inset-top)] lg:hidden">
+      <header class="grid min-h-20 grid-cols-[3rem_minmax(0,1fr)_3rem] items-center gap-3 bg-headerbrown px-5 text-backgroundbeige pt-[env(safe-area-inset-top)] lg:hidden">
          <span class="col-start-2 text-center text-3xl uppercase alumni-font">{{ pageTitle$ | async }}</span>
          @if (auth.user$ | async; as user) {
             <a routerLink="/settings" aria-label="Inställningar" class="flex size-12 items-center justify-center overflow-hidden rounded-full bg-backgroundbeige font-semibold text-headerbrown focus-visible:outline-2 focus-visible:outline-backgroundbeige">
