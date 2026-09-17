@@ -1,69 +1,69 @@
 @if (auth.emailVerified$ | async) {
    @if (placement === 'top') {
-   <header class="w-full h-23 bg-headerbrown hidden lg:flex justify-between items-center">
-      <div class="ml-20 w-2/3 flex">
-         <a routerLink="/books" class="text-3xl text-backgroundbeige mr-30">MIN BOKHYLLA</a>
-         <a routerLink="/books/archive" class="text-3xl text-backgroundbeige mr-30">BOKARKIV</a>
-         <a routerLink="/scan" class="text-3xl text-backgroundbeige mr-30">SKANNA</a>
-         <a routerLink="/add" [queryParams]="{ resource: 'book' }" class="text-3xl text-backgroundbeige mr-30">LÄGG TILL</a>
-         <!-- <a routerLink="/search" class="text-3xl text-backgroundbeige">SÖK</a> -->
-      </div>
+      <header class="w-full h-23 bg-headerbrown hidden lg:flex justify-between items-center">
+         <div class="ml-20 w-2/3 flex">
+            <a routerLink="/books" class="text-3xl text-backgroundbeige mr-30">MIN BOKHYLLA</a>
+            <a routerLink="/books/archive" class="text-3xl text-backgroundbeige mr-30">BOKARKIV</a>
+            <a routerLink="/scan" class="text-3xl text-backgroundbeige mr-30">SKANNA</a>
+            <a routerLink="/add" [queryParams]="{ resource: 'book' }" class="text-3xl text-backgroundbeige mr-30">LÄGG TILL</a>
+            <!-- <a routerLink="/search" class="text-3xl text-backgroundbeige">SÖK</a> -->
+         </div>
 
-      @if (auth.user$ | async; as user) {
-         <a routerLink="/settings" aria-label="Inställningar" class="mr-6 flex size-12 items-center justify-center overflow-hidden rounded-full bg-backgroundbeige font-semibold text-headerbrown shadow focus-visible:outline-2 focus-visible:outline-backgroundbeige">
-            @if (user.photoURL) {
-               <img [src]="user.photoURL" alt="" class="size-full object-cover" />
-            } @else {
-               <span class="cabin-font">{{ userInitials() }}</span>
-            }
-         </a>
-      }
-   </header>
-   <header class="grid min-h-23 grid-cols-[3rem_minmax(0,1fr)_3rem] items-center gap-3 bg-headerbrown px-5 text-backgroundbeige pt-[env(safe-area-inset-top)] lg:hidden">
-      <span class="col-start-2 text-center text-3xl uppercase alumni-font">{{ pageTitle$ | async }}</span>
-      @if (auth.user$ | async; as user) {
-         <a routerLink="/settings" aria-label="Inställningar" class="flex size-12 items-center justify-center overflow-hidden rounded-full bg-backgroundbeige font-semibold text-headerbrown focus-visible:outline-2 focus-visible:outline-backgroundbeige">
-            @if (user.photoURL) {
-               <img [src]="user.photoURL" alt="" class="size-full object-cover" />
-            } @else {
-               <span>{{ userInitials() }}</span>
-            }
-         </a>
-      }
-   </header>
+         @if (auth.user$ | async; as user) {
+            <a routerLink="/settings" aria-label="Inställningar" class="mr-6 flex size-12 items-center justify-center overflow-hidden rounded-full bg-backgroundbeige font-semibold text-headerbrown shadow focus-visible:outline-2 focus-visible:outline-backgroundbeige">
+               @if (user.photoURL) {
+                  <img [src]="user.photoURL" alt="" class="size-full object-cover" />
+               } @else {
+                  <span class="cabin-font">{{ userInitials() }}</span>
+               }
+            </a>
+         }
+      </header>
+      <header class="grid min-h-23 grid-cols-[3rem_minmax(0,1fr)_3rem] items-center gap-3 bg-headerbrown px-5 text-backgroundbeige pt-[env(safe-area-inset-top)] lg:hidden">
+         <span class="col-start-2 text-center text-3xl uppercase alumni-font">{{ pageTitle$ | async }}</span>
+         @if (auth.user$ | async; as user) {
+            <a routerLink="/settings" aria-label="Inställningar" class="flex size-12 items-center justify-center overflow-hidden rounded-full bg-backgroundbeige font-semibold text-headerbrown focus-visible:outline-2 focus-visible:outline-backgroundbeige">
+               @if (user.photoURL) {
+                  <img [src]="user.photoURL" alt="" class="size-full object-cover" />
+               } @else {
+                  <span>{{ userInitials() }}</span>
+               }
+            </a>
+         }
+      </header>
    }
    @if (placement === 'bottom') {
-   <nav aria-label="Huvudmeny" class="relative grid grid-cols-4 bg-headerbrown text-backgroundbeige pb-[env(safe-area-inset-bottom)] lg:hidden">
-      @for (item of mobileItems; track item.route) {
-         <a [routerLink]="item.route" [queryParams]="item.queryParams" routerLinkActive="bg-white/20" [routerLinkActiveOptions]="{ exact: true }" ariaCurrentWhenActive="page" class="flex min-h-16 flex-col items-center justify-center gap-1 px-1 text-base focus-visible:outline-2 focus-visible:-outline-offset-4 rounded-2xl">
-            <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path [attr.d]="item.icon" /></svg>
-            <span>{{ item.label }}</span>
-         </a>
-      }
-   </nav>
+      <nav aria-label="Huvudmeny" class="relative grid grid-cols-4 bg-headerbrown text-backgroundbeige pb-[env(safe-area-inset-bottom)] lg:hidden">
+         @for (item of mobileItems; track item.route) {
+            <a [routerLink]="item.route" [queryParams]="item.queryParams" routerLinkActive="bg-white/20" [routerLinkActiveOptions]="{ exact: true }" ariaCurrentWhenActive="page" class="flex min-h-16 flex-col items-center justify-center gap-1 px-1 text-base focus-visible:outline-2 focus-visible:-outline-offset-4 rounded-2xl">
+               <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path [attr.d]="item.icon" /></svg>
+               <span>{{ item.label }}</span>
+            </a>
+         }
+      </nav>
    }
 } @else {
    @if (placement === 'top') {
-   <header class="w-full h-23 bg-headerbrown hidden lg:flex justify-between items-center">
-      <div class="ml-20 w-1/2 flex">
-         <a routerLink="/login" class="text-3xl text-backgroundbeige mr-30">LOGGA IN</a>
-         <a routerLink="/register" class="text-3xl text-backgroundbeige mr-30">SKAPA KONTO</a>
-      </div>
-   </header>
-   <header class="flex min-h-23 items-center justify-center bg-headerbrown px-5 text-backgroundbeige pt-[env(safe-area-inset-top)] lg:hidden">
-      <span class="text-3xl uppercase alumni-font">{{ pageTitle$ | async }}</span>
-   </header>
+      <header class="w-full h-23 bg-headerbrown hidden lg:flex justify-between items-center">
+         <div class="ml-20 w-1/2 flex">
+            <a routerLink="/login" class="text-3xl text-backgroundbeige mr-30">LOGGA IN</a>
+            <a routerLink="/register" class="text-3xl text-backgroundbeige mr-30">SKAPA KONTO</a>
+         </div>
+      </header>
+      <header class="flex min-h-23 items-center justify-center bg-headerbrown px-5 text-backgroundbeige pt-[env(safe-area-inset-top)] lg:hidden">
+         <span class="text-3xl uppercase alumni-font">{{ pageTitle$ | async }}</span>
+      </header>
    }
    @if (placement === 'bottom') {
-   <nav aria-label="Huvudmeny" class="grid grid-cols-2 bg-headerbrown text-backgroundbeige pb-[env(safe-area-inset-bottom)] lg:hidden">
-      <a routerLink="/login" class="flex min-h-16 flex-col items-center justify-center gap-1 text-lg rounded-2xl">
-         <svg class="size-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 17l5-5-5-5M3 12h12M15 3h6v18h-6" /></svg>
-         Logga in
-      </a>
-      <a routerLink="/register" class="flex min-h-16 flex-col items-center justify-center gap-1 text-lg rounded-2xl">
-         <svg class="size-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3a4 4 0 1 0 0 8 4 4 0 0 0 0-8M2 21v-2a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v2M20 8v6M17 11h6" /></svg>
-         Skapa konto
-      </a>
-   </nav>
+      <nav aria-label="Huvudmeny" class="grid grid-cols-2 bg-headerbrown text-backgroundbeige pb-[env(safe-area-inset-bottom)] lg:hidden">
+         <a routerLink="/login" class="flex min-h-16 flex-col items-center justify-center gap-1 text-lg rounded-2xl">
+            <svg class="size-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 17l5-5-5-5M3 12h12M15 3h6v18h-6" /></svg>
+            Logga in
+         </a>
+         <a routerLink="/register" class="flex min-h-16 flex-col items-center justify-center gap-1 text-lg rounded-2xl">
+            <svg class="size-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3a4 4 0 1 0 0 8 4 4 0 0 0 0-8M2 21v-2a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v2M20 8v6M17 11h6" /></svg>
+            Skapa konto
+         </a>
+      </nav>
    }
 }
