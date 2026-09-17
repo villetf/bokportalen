@@ -1,50 +1,33 @@
-<div class="flex items-center h-full">
-   <div class="flex flex-col gap-10 w-50 bg-[#fefcf5] h-full justify-center">
-      <a 
-         [routerLink]="['/add']" 
-         [queryParams]="{ resource: 'book' }" 
-         class="p-5 hover:bg-backgroundbeige block cabin-font"
-      >
-         <p>Bok</p>
-      </a>
-      <a 
-         [routerLink]="['/add']" 
-         [queryParams]="{ resource: 'author' }" 
-         class="p-5 hover:bg-backgroundbeige block cabin-font"
-      >
-         <p>Författare</p>
-      </a>
-      <a 
-         [routerLink]="['/add']" 
-         [queryParams]="{ resource: 'genre' }" 
-         class="p-5 hover:bg-backgroundbeige block cabin-font"
-      >
-         <p>Genre</p>
-      </a>
-      <a 
-         [routerLink]="['/add']" 
-         [queryParams]="{ resource: 'language' }" 
-         class="p-5 hover:bg-backgroundbeige block cabin-font"
-      >
-         <p>Språk</p>
-      </a>
+<div class="mx-auto flex min-h-full w-full max-w-4xl flex-col gap-10 px-5 py-8 sm:px-8 lg:py-12">
+   <nav aria-label="Välj resurs att lägga till" class="w-full sm:max-w-xl sm:self-center">
+      <div class="grid grid-cols-4 gap-2">
+         @for (resource of resources; track resource.value) {
+            <a
+               routerLink="/add"
+               [queryParams]="{ resource: resource.value }"
+               [attr.aria-current]="selectedView() === resource.value ? 'page' : null"
+               class="cabin-font flex min-h-11 items-center justify-center border-b-2 border-transparent px-1 py-2.5 text-sm font-medium text-bookolive/70 transition-colors duration-150 hover:text-bookolive focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bookolive aria-[current=page]:border-bookolive/50 aria-[current=page]:font-semibold aria-[current=page]:text-bookolive"
+            >
+               {{ resource.label }}
+            </a>
+         }
+      </div>
+   </nav>
+
+   <div class="min-w-0 flex-1">
+      @switch (selectedView()) {
+         @case ('book') {
+            <app-add-book class="flex w-full justify-center [&>div]:w-full [&>div]:mr-0" />
+         }
+         @case ('author') {
+            <app-add-author class="flex w-full justify-center [&>div]:w-full [&>div]:mr-0" />
+         }
+         @case ('genre') {
+            <app-add-genre class="flex w-full justify-center [&>div]:w-full [&>div]:mr-0" />
+         }
+         @case ('language') {
+            <app-add-language class="flex w-full justify-center [&>div]:w-full [&>div]:mr-0" />
+         }
+      }
    </div>
-   
-   @switch (selectedView()) {
-      @case ('book') {
-         <app-add-book class="w-8/10 flex justify-center" />
-      }
-   
-      @case ('author') {
-         <app-add-author class="w-8/10 flex justify-center" />
-      }
-   
-      @case ('genre') {
-         <app-add-genre class="w-8/10 flex justify-center" />
-      }
-   
-      @case ('language') {
-         <app-add-language class="w-8/10 flex justify-center" />
-      }
-   }
 </div>
