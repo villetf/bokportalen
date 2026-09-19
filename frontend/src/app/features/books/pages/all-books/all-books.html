@@ -1,9 +1,9 @@
-<div class="flex flex-col flex-1 ml-25 mr-15 pt-17 h-full">
-   <div class="flex flex-wrap items-baseline gap-x-6 gap-y-2">
-      <h1 class="text-5xl font-bold text-bookolive">{{ title }}</h1>
+<div class="flex flex-col flex-1 min-w-0 mx-4 pt-6 sm:ml-25 sm:mr-15 sm:pt-17 h-full">
+   <div class="flex items-center justify-between gap-3 w-full sm:justify-start sm:items-baseline sm:gap-x-6">
+      <h1 class="text-3xl sm:text-5xl font-bold text-bookolive leading-tight wrap-break-word">{{ title }}</h1>
    </div>
-   <div class="flex justify-between mt-5">
-      <div class="flex">
+   <div class="flex flex-col sm:flex-row sm:justify-between gap-4 mt-5">
+      <div class="flex flex-wrap items-start gap-y-2 order-2 sm:order-1">
          <div class="flex items-center justify-center">
             <app-sort-list [booksOriginal$]="booksOriginal$" />
          </div>
@@ -11,23 +11,25 @@
          <div class="flex items-center justify-center">
             <app-filter-list [booksOriginal$]="booksOriginal$" [booksFiltered$]="booksFiltered$"></app-filter-list>
          </div>
+         <p class="ml-auto self-center text-sm text-headerbrown whitespace-nowrap sm:hidden">Antal böcker: {{ numberOfBooks() }}</p>
       </div>
-      <div>
-         <div class="flex items-center">
+      <div class="min-w-0 order-1 sm:order-2">
+         <div class="flex items-center gap-3">
             <ng-content select="[page-actions]" />
-            <app-search-bar [booksFiltered$]="booksFiltered$" [booksSearched$]="booksSearched$" />
-            <i class="fa-solid fa-dice text-5xl -mt-10 ml-5 cursor-pointer text-bookolive" (click)="getRandomBook()"></i>
+            <app-search-bar class="block flex-1 sm:flex-none" [booksFiltered$]="booksFiltered$" [booksSearched$]="booksSearched$" />
+            <i class="fa-solid fa-dice text-3xl sm:text-5xl sm:-mt-10 cursor-pointer text-bookolive shrink-0" (click)="getRandomBook()"></i>
          </div>
-         <div class="w-full mt-5 text-right text-xl">
+         <div class="hidden sm:block w-full mt-5 text-right text-xl">
             <p class="text-headerbrown">Antal böcker: {{ numberOfBooks() }}</p>
          </div>
       </div>
    </div>
 
-   <div #scrollContainer class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mt-8 overflow-y-auto overflow-x-hidden">
+   <div #scrollContainer class="grid grid-cols-3 lg:grid-cols-5 gap-x-2 gap-y-6 sm:gap-4 mt-5 sm:mt-8 overflow-y-auto overflow-x-hidden">
       @if (booksSearched$ | async; as books ) {
          @for (book of books; track book.id) {
             <app-book-card 
+               class="min-w-0"
                [book]="book" 
                [showRealCovers]="user()!.showRealCovers"
                [inShelf]="mode === 'archive' ? book.inShelf : undefined"

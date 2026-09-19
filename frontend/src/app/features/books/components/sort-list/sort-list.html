@@ -2,14 +2,14 @@
    <h5 
       [cdkMenuTriggerFor]="sortMenu"
       cdkMenuItem 
-      class="text-3xl text-headerbrown font-medium cursor-pointer"
+      class="text-lg sm:text-3xl text-headerbrown font-medium cursor-pointer"
    >
       sortering: {{ sortBy().clearText.toLocaleLowerCase() }}
    </h5>
    @if (sortAscending()) {
-      <i class="fa-solid fa-arrow-down text-headerbrown text-xl ml-2 mt-2 cursor-pointer" (click)="sortAscending.set(false)"></i>
+      <i class="fa-solid fa-arrow-down text-headerbrown text-base sm:text-xl ml-2 sm:mt-2 cursor-pointer" (click)="sortAscending.set(false)"></i>
    } @else {
-      <i class="fa-solid fa-arrow-up text-headerbrown text-xl ml-2 mt-2 cursor-pointer" (click)="sortAscending.set(true)"></i>
+      <i class="fa-solid fa-arrow-up text-headerbrown text-base sm:text-xl ml-2 sm:mt-2 cursor-pointer" (click)="sortAscending.set(true)"></i>
    }
 </div>
 
