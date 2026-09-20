@@ -1,27 +1,56 @@
-<div class="flex mr-5">
-   <h5 
-      [cdkMenuTriggerFor]="sortMenu"
-      cdkMenuItem 
-      class="text-lg sm:text-3xl text-headerbrown font-medium cursor-pointer"
-   >
+<div class="flex mr-5 lg:hidden">
+   <button type="button" class="flex items-center text-lg text-headerbrown font-medium cursor-pointer" (click)="mobileMenuOpen.set(true)">
+      sortering: {{ sortBy().clearText.toLocaleLowerCase() }}
+      <i class="fa-solid ml-2" [class.fa-arrow-down]="sortAscending()" [class.fa-arrow-up]="!sortAscending()"></i>
+   </button>
+</div>
+
+<div class="hidden lg:flex mr-5">
+   <h5 [cdkMenuTriggerFor]="sortMenu" cdkMenuItem class="text-3xl text-headerbrown font-medium cursor-pointer">
       sortering: {{ sortBy().clearText.toLocaleLowerCase() }}
    </h5>
    @if (sortAscending()) {
-      <i class="fa-solid fa-arrow-down text-headerbrown text-base sm:text-xl ml-2 sm:mt-2 cursor-pointer" (click)="sortAscending.set(false)"></i>
+      <i class="fa-solid fa-arrow-down text-headerbrown text-xl ml-2 mt-2 cursor-pointer" (click)="sortAscending.set(false)"></i>
    } @else {
-      <i class="fa-solid fa-arrow-up text-headerbrown text-base sm:text-xl ml-2 sm:mt-2 cursor-pointer" (click)="sortAscending.set(true)"></i>
+      <i class="fa-solid fa-arrow-up text-headerbrown text-xl ml-2 mt-2 cursor-pointer" (click)="sortAscending.set(true)"></i>
    }
 </div>
 
+@if (mobileMenuOpen()) {
+   <div class="fixed inset-0 z-50 flex items-end bg-black/45 lg:hidden" (click)="mobileMenuOpen.set(false)">
+      <section role="dialog" aria-modal="true" aria-labelledby="mobile-sort-title" class="w-full max-h-[92dvh] overflow-y-auto rounded-t-4xl bg-backgroundbeige px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-3 shadow-2xl sm:max-h-[85dvh] sm:px-6 sm:pb-[max(1.5rem,env(safe-area-inset-bottom))]" (click)="$event.stopPropagation()">
+         <div class="flex items-center justify-between border-b border-headerbrown/15 pb-2 pt-1 lg:pt-2 sm:pb-4">
+            <h2 id="mobile-sort-title" class="text-2xl font-bold text-headerbrown sm:text-3xl">Sortering</h2>
+            <button type="button" aria-label="Stäng sortering" class="flex size-9 items-center justify-center text-xl text-headerbrown sm:size-10 sm:text-2xl" (click)="mobileMenuOpen.set(false)">
+               <i class="fa-solid fa-xmark"></i>
+            </button>
+         </div>
+
+         <div class="divide-y divide-headerbrown/10">
+            @for (option of sortOptions; track option.property) {
+               <button type="button" class="flex min-h-11 w-full items-center justify-between gap-4 py-2 text-left text-base text-headerbrown sm:min-h-15 sm:py-3 sm:text-lg" (click)="setSortOrder(option.property, option.label)">
+                  <span>{{ option.label }}</span>
+                  @if (sortBy().bookProperty === option.property) {
+                     <i class="fa-solid fa-check text-bookolive"></i>
+                  }
+               </button>
+            }
+         </div>
+
+         <div class="mt-3 grid grid-cols-2 gap-3 sm:mt-4">
+            <button type="button" class="rounded-full border border-bookolive px-4 py-2 sm:py-3" [class.bg-bookolive]="sortAscending()" [class.text-backgroundbeige]="sortAscending()" (click)="sortAscending.set(true)">Stigande</button>
+            <button type="button" class="rounded-full border border-bookolive px-4 py-2 sm:py-3" [class.bg-bookolive]="!sortAscending()" [class.text-backgroundbeige]="!sortAscending()" (click)="sortAscending.set(false)">Fallande</button>
+         </div>
+
+         <button type="button" class="mt-3 w-full rounded-full bg-bookolive px-5 py-2.5 text-base text-backgroundbeige sm:mt-5 sm:py-3 sm:text-lg" (click)="mobileMenuOpen.set(false)">Klar</button>
+      </section>
+   </div>
+}
+
 <ng-template #sortMenu>
    <div class="inline-flex gap-1 flex-col min-w-45 max-w-70 bg-white" cdkMenu>
-      <button class="example-menu-item" cdkMenuItem (click)="setSortOrder('title', 'Titel')">Titel</button>
-      <button class="example-menu-item" cdkMenuItem (click)="setSortOrder('authors.0.lastName', 'Författare, efternamn')">Författare, efternamn</button>
-      <button class="example-menu-item" cdkMenuItem (click)="setSortOrder('authors.0.firstName', 'Författare, förnamn')">Författare, förnamn</button>
-      <button class="example-menu-item" cdkMenuItem (click)="setSortOrder('yearWritten', 'Utgivningsår')">Utgivningsår</button>
-      <button class="example-menu-item" cdkMenuItem (click)="setSortOrder('createdAt', 'Tillagd')">Tillagd</button>
-      <button class="example-menu-item" cdkMenuItem (click)="setSortOrder('isbn', 'ISBN')">ISBN</button>
-      <button class="example-menu-item" cdkMenuItem (click)="setSortOrder('copies', 'Antal')">Antal exemplar</button>
-      <button class="example-menu-item" cdkMenuItem (click)="setSortOrder('rating', 'Betyg')">Betyg</button>
+      @for (option of sortOptions; track option.property) {
+         <button class="example-menu-item" cdkMenuItem (click)="setSortOrder(option.property, option.label)">{{ option.label }}</button>
+      }
    </div>
 </ng-template>

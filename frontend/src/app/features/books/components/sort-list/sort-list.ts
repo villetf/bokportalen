@@ -17,6 +17,17 @@ export class SortList {
    @Input() booksOriginal$!: BehaviorSubject<(UserBook | Book)[]>;
    sortBy = signal<{ clearText: string, bookProperty: string }>({ clearText: 'Titel', bookProperty: 'title' });
    sortAscending = signal<boolean>(true);
+   mobileMenuOpen = signal(false);
+   readonly sortOptions = [
+      { property: 'title', label: 'Titel' },
+      { property: 'authors.0.lastName', label: 'Författare, efternamn' },
+      { property: 'authors.0.firstName', label: 'Författare, förnamn' },
+      { property: 'yearWritten', label: 'Utgivningsår' },
+      { property: 'createdAt', label: 'Tillagd' },
+      { property: 'isbn', label: 'ISBN' },
+      { property: 'copies', label: 'Antal exemplar' },
+      { property: 'rating', label: 'Betyg' }
+   ];
 
    private suppressEffect = false;
    private suppressOwnEmission = false;

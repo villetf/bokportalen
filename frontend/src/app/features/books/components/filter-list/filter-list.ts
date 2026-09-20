@@ -25,6 +25,7 @@ export class FilterList {
 
    // Den lista av filter som ska appliceras på böckerna
    filterBy = signal<Filter[]>([]);
+   mobileMenuOpen = signal(false);
 
    // Den bok-egenskap som är vald i filtreringslistan
    filterAlts = signal<{key: string, label: string}>({key: '', label: ''});
