@@ -43,11 +43,21 @@ export class AllBooks {
    private readonly controlsCollapseDistance = 120;
    private hasRestoredScroll = false;
    private lastScrollTop = 0;
+   private lastScrollDirection: 'up' | 'down' = 'down';
+   private useNaturalToolbarScroll = true;
+   private scrollEndTimer?: ReturnType<typeof setTimeout>;
+   private toolbarResizeObserver?: ResizeObserver;
    @ViewChild('scrollContainer') private scrollContainer?: ElementRef<HTMLElement>;
+   @ViewChild('toolbar') private toolbar?: ElementRef<HTMLElement>;
    booksOriginal$ = new BehaviorSubject<(UserBook | Book)[]>([]);
    booksFiltered$ = new BehaviorSubject<(UserBook | Book)[]>([]);
    booksSearched$ = new BehaviorSubject<(UserBook | Book)[]>([]);
    numberOfBooks = signal<number>(0);
+   toolbarSpacerHeight = signal(0);
+   toolbarPinned = signal(false);
+   toolbarPinnedTop = signal(0);
+   toolbarPinnedLeft = signal(0);
+   toolbarPinnedWidth = signal(0);
    titleVisibility = signal(1);
    controlsVisibility = signal(1);
 
@@ -77,6 +87,10 @@ export class AllBooks {
 
    ngOnDestroy() {
       this.booksSourceSubscription?.unsubscribe();
+      this.toolbarResizeObserver?.disconnect();
+      if (this.scrollEndTimer) {
+         clearTimeout(this.scrollEndTimer);
+      }
    }
 
    private bindBooksSource() {
@@ -88,6 +102,18 @@ export class AllBooks {
    }
 
    ngAfterViewInit() {
+      const toolbarElement = this.toolbar?.nativeElement;
+      if (toolbarElement) {
+         const updateToolbarHeight = () => {
+            const expandedHeight = toolbarElement.scrollHeight;
+            this.toolbarSpacerHeight.update(currentHeight => Math.max(currentHeight, expandedHeight));
+         };
+
+         requestAnimationFrame(updateToolbarHeight);
+         this.toolbarResizeObserver = new ResizeObserver(updateToolbarHeight);
+         this.toolbarResizeObserver.observe(toolbarElement);
+      }
+
       this.restoreScrollPosition();
    }
 
@@ -101,6 +127,35 @@ export class AllBooks {
       const currentScrollTop = Math.max(0, element.scrollTop);
       const scrollDelta = currentScrollTop - this.lastScrollTop;
       const isDesktop = element.ownerDocument.defaultView?.matchMedia('(min-width: 64rem)').matches ?? false;
+      const naturalScrollHeight = this.toolbarSpacerHeight();
+
+      if (currentScrollTop <= 1) {
+         this.useNaturalToolbarScroll = true;
+         this.toolbarPinned.set(false);
+      }
+
+      if (this.useNaturalToolbarScroll && naturalScrollHeight > 0 && currentScrollTop <= naturalScrollHeight) {
+         if (this.scrollEndTimer) {
+            clearTimeout(this.scrollEndTimer);
+         }
+         this.titleVisibility.set(1);
+         this.controlsVisibility.set(1);
+         this.lastScrollTop = currentScrollTop;
+         return;
+      }
+
+      if (this.useNaturalToolbarScroll && naturalScrollHeight > 0 && this.lastScrollTop <= naturalScrollHeight && currentScrollTop > naturalScrollHeight) {
+         this.useNaturalToolbarScroll = false;
+         this.titleVisibility.set(0);
+         this.controlsVisibility.set(0);
+      } else if (scrollDelta < 0) {
+         this.pinToolbar(element);
+      }
+
+      if (scrollDelta !== 0) {
+         this.lastScrollDirection = scrollDelta < 0 ? 'up' : 'down';
+         this.schedulePanelSnap(currentScrollTop, isDesktop);
+      }
 
       if (currentScrollTop <= 1) {
          this.titleVisibility.set(1);
@@ -121,6 +176,41 @@ export class AllBooks {
       }
 
       this.lastScrollTop = currentScrollTop;
+   }
+
+   private pinToolbar(scrollElement: HTMLElement) {
+      if (this.toolbarPinned()) {
+         return;
+      }
+
+      const bounds = scrollElement.getBoundingClientRect();
+      this.toolbarPinnedTop.set(bounds.top);
+      this.toolbarPinnedLeft.set(bounds.left);
+      this.toolbarPinnedWidth.set(bounds.width);
+      this.toolbarPinned.set(true);
+   }
+
+   private schedulePanelSnap(scrollTop: number, isDesktop: boolean) {
+      if (this.scrollEndTimer) {
+         clearTimeout(this.scrollEndTimer);
+      }
+
+      this.scrollEndTimer = setTimeout(() => {
+         if (scrollTop <= 1) {
+            this.titleVisibility.set(1);
+            this.controlsVisibility.set(1);
+            return;
+         }
+
+         if (this.lastScrollDirection === 'down') {
+            this.titleVisibility.set(0);
+            this.controlsVisibility.set(0);
+            return;
+         }
+
+         this.controlsVisibility.set(1);
+         this.titleVisibility.set(isDesktop ? 1 : 0);
+      }, 140);
    }
 
    panelRows(visibility: number) {
