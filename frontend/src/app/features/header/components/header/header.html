@@ -1,16 +1,16 @@
 @if (auth.emailVerified$ | async) {
    @if (placement === 'top') {
-      <header class="w-full h-23 bg-headerbrown hidden lg:flex justify-between items-center">
-         <div class="ml-20 w-2/3 flex">
-            <a routerLink="/books" class="text-3xl text-backgroundbeige mr-30">MIN BOKHYLLA</a>
-            <a routerLink="/books/archive" class="text-3xl text-backgroundbeige mr-30">BOKARKIV</a>
-            <a routerLink="/scan" class="text-3xl text-backgroundbeige mr-30">SKANNA</a>
-            <a routerLink="/add" [queryParams]="{ resource: 'book' }" class="text-3xl text-backgroundbeige mr-30">LÄGG TILL</a>
+      <header class="w-full h-23 bg-headerbrown hidden lg:flex items-center px-6">
+         <div class="flex min-w-0 flex-1 items-center gap-[clamp(1.5rem,6vw,7.5rem)] pl-[clamp(1rem,4vw,3.5rem)]">
+            <a routerLink="/books" class="shrink-0 whitespace-nowrap text-3xl text-backgroundbeige">MIN BOKHYLLA</a>
+            <a routerLink="/books/archive" class="shrink-0 whitespace-nowrap text-3xl text-backgroundbeige">BOKARKIV</a>
+            <a routerLink="/scan" class="shrink-0 whitespace-nowrap text-3xl text-backgroundbeige">SKANNA</a>
+            <a routerLink="/add" [queryParams]="{ resource: 'book' }" class="shrink-0 whitespace-nowrap text-3xl text-backgroundbeige">LÄGG TILL</a>
             <!-- <a routerLink="/search" class="text-3xl text-backgroundbeige">SÖK</a> -->
          </div>
 
          @if (auth.user$ | async; as user) {
-            <a routerLink="/settings" aria-label="Inställningar" class="mr-6 flex size-12 items-center justify-center overflow-hidden rounded-full bg-backgroundbeige font-semibold text-headerbrown shadow focus-visible:outline-2 focus-visible:outline-backgroundbeige">
+            <a routerLink="/settings" aria-label="Inställningar" class="ml-6 flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-full bg-backgroundbeige font-semibold text-headerbrown shadow focus-visible:outline-2 focus-visible:outline-backgroundbeige">
                @if (user.photoURL) {
                   <img [src]="user.photoURL" alt="" class="size-full object-cover" />
                } @else {
@@ -44,10 +44,10 @@
    }
 } @else {
    @if (placement === 'top') {
-      <header class="w-full h-23 bg-headerbrown hidden lg:flex justify-between items-center">
-         <div class="ml-20 w-1/2 flex">
-            <a routerLink="/login" class="text-3xl text-backgroundbeige mr-30">LOGGA IN</a>
-            <a routerLink="/register" class="text-3xl text-backgroundbeige mr-30">SKAPA KONTO</a>
+      <header class="w-full h-23 bg-headerbrown hidden lg:flex items-center px-6">
+         <div class="flex min-w-0 flex-1 items-center gap-[clamp(1.5rem,6vw,7.5rem)] pl-[clamp(1rem,4vw,3.5rem)]">
+            <a routerLink="/login" class="shrink-0 whitespace-nowrap text-3xl text-backgroundbeige">LOGGA IN</a>
+            <a routerLink="/register" class="shrink-0 whitespace-nowrap text-3xl text-backgroundbeige">SKAPA KONTO</a>
          </div>
       </header>
       <header class="flex min-h-23 items-center justify-center bg-headerbrown px-5 text-backgroundbeige pt-[env(safe-area-inset-top)] lg:hidden">
