@@ -7,7 +7,7 @@ import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { CdkMenuModule } from '@angular/cdk/menu';
 import { FilterList } from '../../components/filter-list/filter-list';
 import { SearchBar } from '../../components/search-bar/search-bar';
-import { AsyncPipe } from '@angular/common';
+import { AsyncPipe, NgClass } from '@angular/common';
 import { SortList } from '../../components/sort-list/sort-list';
 import { Router, NavigationStart } from '@angular/router';
 import { HotToastService } from '@ngxpert/hot-toast';
@@ -17,9 +17,8 @@ import { UserStore } from '../../../../stores/user.store';
 @Component({
    selector: 'app-all-books',
    standalone: true,
-   imports: [BookCard, CdkMenuModule, FilterList, SearchBar, AsyncPipe, SortList],
-   templateUrl: './all-books.html',
-   styles: ''
+   imports: [BookCard, CdkMenuModule, FilterList, SearchBar, AsyncPipe, NgClass, SortList],
+   templateUrl: './all-books.html'
 })
 export class AllBooks {
    private booksSourceSubscription?: Subscription;
@@ -40,12 +39,17 @@ export class AllBooks {
    @Output() addBookToShelf = new EventEmitter<number>();
 
    private readonly scrollStorageKey = 'all-books-scrollTop';
+   private readonly titleCollapseDistance = 90;
+   private readonly controlsCollapseDistance = 120;
    private hasRestoredScroll = false;
+   private lastScrollTop = 0;
    @ViewChild('scrollContainer') private scrollContainer?: ElementRef<HTMLElement>;
    booksOriginal$ = new BehaviorSubject<(UserBook | Book)[]>([]);
    booksFiltered$ = new BehaviorSubject<(UserBook | Book)[]>([]);
    booksSearched$ = new BehaviorSubject<(UserBook | Book)[]>([]);
    numberOfBooks = signal<number>(0);
+   titleVisibility = signal(1);
+   controlsVisibility = signal(1);
 
    private destroyRef = inject(DestroyRef);
    private userStore = inject(UserStore);
@@ -92,6 +96,41 @@ export class AllBooks {
       this.saveScrollPosition();
    }
 
+   onBooksScroll(event: Event) {
+      const element = event.currentTarget as HTMLElement;
+      const currentScrollTop = Math.max(0, element.scrollTop);
+      const scrollDelta = currentScrollTop - this.lastScrollTop;
+      const isDesktop = element.ownerDocument.defaultView?.matchMedia('(min-width: 64rem)').matches ?? false;
+
+      if (currentScrollTop <= 1) {
+         this.titleVisibility.set(1);
+      } else if (isDesktop && scrollDelta < 0) {
+         this.titleVisibility.update(value => this.clamp(value + Math.abs(scrollDelta) / this.titleCollapseDistance));
+      } else if (isDesktop && scrollDelta > 0) {
+         this.titleVisibility.update(value => this.clamp(value - scrollDelta / this.titleCollapseDistance));
+      } else if (!isDesktop) {
+         this.titleVisibility.set(this.clamp(1 - currentScrollTop / this.titleCollapseDistance));
+      }
+
+      if (currentScrollTop <= 1) {
+         this.controlsVisibility.set(1);
+      } else if (scrollDelta > 0) {
+         this.controlsVisibility.update(value => this.clamp(value - scrollDelta / this.controlsCollapseDistance));
+      } else if (scrollDelta < 0) {
+         this.controlsVisibility.update(value => this.clamp(value + Math.abs(scrollDelta) / this.controlsCollapseDistance));
+      }
+
+      this.lastScrollTop = currentScrollTop;
+   }
+
+   panelRows(visibility: number) {
+      return `${visibility}fr`;
+   }
+
+   private clamp(value: number) {
+      return Math.min(1, Math.max(0, value));
+   }
+
    private saveScrollPosition() {
       try {
          const el = this.scrollContainer?.nativeElement;
@@ -115,6 +154,11 @@ export class AllBooks {
             if (!Number.isNaN(y) && y >= 0) {
                requestAnimationFrame(() => {
                   el.scrollTop = y;
+                  this.lastScrollTop = y;
+                  if (y > 0) {
+                     this.titleVisibility.set(this.clamp(1 - y / this.titleCollapseDistance));
+                     this.controlsVisibility.set(0);
+                  }
                });
             }
             this.hasRestoredScroll = true;
