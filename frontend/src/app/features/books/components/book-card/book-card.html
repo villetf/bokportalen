@@ -3,6 +3,8 @@
       <img 
          [src]="book.coverLink ? book.coverLink : 'book-cover-placeholder.png'" 
          alt="Omslagsbild för {{ book.title }}" 
+         loading="lazy"
+         decoding="async"
          class="block h-full w-auto max-w-full max-h-full object-top" [routerLink]="enableLinks ? ['/books', book.id] : null"
          [ngClass]="{
             'aspect-2/3': !showRealCovers,

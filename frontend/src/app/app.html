@@ -1,8 +1,13 @@
 
 <main class="min-h-dvh w-full flex flex-col lg:h-dvh lg:min-h-0">
-   <app-header class="shrink-0" />
-   <app-main-content class="flex-1 lg:min-h-0 lg:overflow-hidden" />
-   <app-header placement="bottom" class="shrink-0 lg:hidden" />
+   <app-header
+      class="fixed inset-x-0 top-0 z-40 block shrink-0 transform-gpu [backface-visibility:hidden] [will-change:transform] transition-transform duration-500 ease-out lg:static lg:translate-y-0 lg:transform-none lg:[will-change:auto]"
+      [class.-translate-y-full]="!mobileNavigationVisible()" />
+   <app-main-content class="flex-1 pt-20 pb-[calc(4rem+env(safe-area-inset-bottom))] lg:min-h-0 lg:overflow-hidden lg:pt-0 lg:pb-0" />
+   <app-header
+      placement="bottom"
+      class="fixed inset-x-0 bottom-0 z-40 transform-gpu [backface-visibility:hidden] [will-change:transform] transition-transform duration-500 ease-out lg:hidden"
+      [class.translate-y-full]="!mobileNavigationVisible()" />
       <!-- <app-home-page class="h-full" /> -->
    <!-- </app-main-content> -->
 </main>
