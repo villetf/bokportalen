@@ -184,7 +184,9 @@ export class AllBooks {
       }
 
       const bounds = scrollElement.getBoundingClientRect();
-      this.toolbarPinnedTop.set(bounds.top);
+      const view = scrollElement.ownerDocument.defaultView;
+      const desktopHeaderHeight = view?.matchMedia('(min-width: 64rem)').matches ? 92 : 0;
+      this.toolbarPinnedTop.set(Math.max(bounds.top, desktopHeaderHeight));
       this.toolbarPinnedLeft.set(bounds.left);
       this.toolbarPinnedWidth.set(bounds.width);
       this.toolbarPinned.set(true);

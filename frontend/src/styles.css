@@ -23,8 +23,6 @@ h6 {
 }
 
 html, body {
-  height: 100%;
-  overflow: hidden;
   color: black;
 }
 
@@ -43,7 +41,6 @@ html, body {
 .book-properties {
    @apply text-headerbrown text-2xl font-semibold;
 }
-html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 .cdk-drop-list-dragging .cdk-drag {

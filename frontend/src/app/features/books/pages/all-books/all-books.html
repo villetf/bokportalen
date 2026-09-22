@@ -1,6 +1,6 @@
-<div class="relative flex flex-col flex-1 min-w-0 mx-4 sm:ml-25 sm:mr-15 h-full overflow-hidden">
+<div class="relative flex flex-col flex-1 min-w-0 mx-4 sm:ml-25 sm:mr-15 lg:h-full lg:overflow-hidden">
    <div #scrollContainer
-      class="relative grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 gap-x-2 gap-y-6 sm:gap-4 overflow-y-auto overflow-x-hidden overscroll-contain scroll-pt-0 flex-1 min-h-0"
+      class="relative grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 gap-x-2 gap-y-6 sm:gap-4 overflow-visible lg:flex-1 lg:min-h-0 lg:overflow-y-auto lg:overflow-x-hidden lg:overscroll-contain lg:scroll-pt-0"
       [style.padding-top.px]="toolbarSpacerHeight()"
       (scroll)="onBooksScroll($event)">
       <div
