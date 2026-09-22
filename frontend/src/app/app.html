@@ -3,6 +3,7 @@
    <app-header
       class="fixed inset-x-0 top-0 z-40 block shrink-0 transform-gpu backface-hidden will-change-transform transition-transform duration-400 ease-out lg:static lg:translate-y-0 lg:transform-none lg:will-change-auto"
       [class.invisible]="!mobileNavigationPainted()"
+      [class.delay-350]="!mobileNavigationVisible()"
       [class.-translate-y-full]="!mobileNavigationVisible()" />
    <app-main-content class="flex-1 pt-20 pb-[calc(4rem+env(safe-area-inset-bottom))] lg:min-h-0 lg:overflow-hidden lg:pt-0 lg:pb-0" />
    <app-header

@@ -46,7 +46,12 @@ export class AllBooks {
    private lastScrollDirection: 'up' | 'down' = 'down';
    private useNaturalToolbarScroll = true;
    private scrollEndTimer?: ReturnType<typeof setTimeout>;
+   private mobileToolbarTimer?: ReturnType<typeof setTimeout>;
    private toolbarResizeObserver?: ResizeObserver;
+   private toolbarNaturalBottom = 0;
+   private readonly mobileNavigationListener = (event: Event) => {
+      this.handleMobileNavigationVisibility((event as CustomEvent<boolean>).detail);
+   };
    @ViewChild('scrollContainer') private scrollContainer?: ElementRef<HTMLElement>;
    @ViewChild('toolbar') private toolbar?: ElementRef<HTMLElement>;
    booksOriginal$ = new BehaviorSubject<(UserBook | Book)[]>([]);
@@ -91,6 +96,10 @@ export class AllBooks {
       if (this.scrollEndTimer) {
          clearTimeout(this.scrollEndTimer);
       }
+      if (this.mobileToolbarTimer) {
+         clearTimeout(this.mobileToolbarTimer);
+      }
+      window.removeEventListener('mobile-navigation-visibility', this.mobileNavigationListener);
    }
 
    private bindBooksSource() {
@@ -112,9 +121,54 @@ export class AllBooks {
          requestAnimationFrame(updateToolbarHeight);
          this.toolbarResizeObserver = new ResizeObserver(updateToolbarHeight);
          this.toolbarResizeObserver.observe(toolbarElement);
+
+         requestAnimationFrame(() => {
+            const bounds = toolbarElement.getBoundingClientRect();
+            this.toolbarNaturalBottom = bounds.bottom + window.scrollY;
+         });
       }
 
+      window.addEventListener('mobile-navigation-visibility', this.mobileNavigationListener);
+
       this.restoreScrollPosition();
+   }
+
+   private handleMobileNavigationVisibility(visible: boolean) {
+      if (window.matchMedia('(min-width: 64rem)').matches) return;
+
+      if (this.mobileToolbarTimer) {
+         clearTimeout(this.mobileToolbarTimer);
+         this.mobileToolbarTimer = undefined;
+      }
+
+      const toolbarElement = this.toolbar?.nativeElement;
+      const scrollElement = this.scrollContainer?.nativeElement;
+      if (!toolbarElement || !scrollElement) return;
+
+      const toolbarHasScrolledAway = window.scrollY > this.toolbarNaturalBottom;
+      if (visible && toolbarHasScrolledAway) {
+         this.mobileToolbarTimer = setTimeout(() => {
+            const bounds = scrollElement.getBoundingClientRect();
+            const topHeader = document.querySelector<HTMLElement>('app-root > main > app-header');
+
+            this.toolbarPinnedTop.set(topHeader?.getBoundingClientRect().height ?? 80);
+            this.toolbarPinnedLeft.set(bounds.left);
+            this.toolbarPinnedWidth.set(bounds.width);
+            this.titleVisibility.set(0);
+            this.controlsVisibility.set(1);
+            this.toolbarPinned.set(true);
+            this.mobileToolbarTimer = undefined;
+         }, 200);
+         return;
+      }
+
+      if (!visible && this.toolbarPinned()) {
+         this.controlsVisibility.set(0);
+         this.mobileToolbarTimer = setTimeout(() => {
+            this.toolbarPinned.set(false);
+            this.mobileToolbarTimer = undefined;
+         }, 350);
+      }
    }
 
    @HostListener('window:beforeunload')

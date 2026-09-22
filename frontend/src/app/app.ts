@@ -90,11 +90,15 @@ export class App {
          this.mobileNavigationVisible.set(visible);
       });
 
+      window.dispatchEvent(new CustomEvent<boolean>('mobile-navigation-visibility', {
+         detail: visible
+      }));
+
       if (!visible) {
          this.navigationPaintTimer = window.setTimeout(() => {
             this.navigationPaintTimer = null;
             this.ngZone.run(() => this.mobileNavigationPainted.set(false));
-         }, 200);
+         }, 750);
       }
    }
 }

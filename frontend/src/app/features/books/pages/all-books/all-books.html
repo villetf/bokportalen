@@ -12,7 +12,7 @@
          [style.left.px]="toolbarPinned() ? toolbarPinnedLeft() : 0"
          [style.width.px]="toolbarPinned() ? toolbarPinnedWidth() : null">
          <div
-            class="grid grid-rows-[1fr] bg-backgroundbeige transition-[grid-template-rows] duration-200 ease-out"
+            class="grid grid-rows-[1fr] bg-backgroundbeige transition-[grid-template-rows] duration-350 ease-out"
             [style.grid-template-rows]="panelRows(titleVisibility())">
             <div class="min-h-0 overflow-hidden">
                <div class="flex items-center justify-between gap-3 w-full pt-6 sm:pt-17 sm:justify-start sm:items-baseline sm:gap-x-6">
@@ -21,7 +21,7 @@
             </div>
          </div>
          <div
-            class="grid grid-rows-[1fr] bg-backgroundbeige transition-[grid-template-rows] duration-200 ease-out"
+            class="grid grid-rows-[1fr] bg-backgroundbeige transition-[grid-template-rows] duration-350 ease-out"
             [style.grid-template-rows]="panelRows(controlsVisibility())">
             <div class="min-h-0 overflow-hidden" [class.overflow-visible]="titleVisibility() > 0.5">
                <div
