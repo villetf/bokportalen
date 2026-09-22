@@ -13,10 +13,12 @@ import { AuthSyncService } from './services/authSyncService';
 export class App {
    protected readonly title = signal('bokportalen');
    protected readonly mobileNavigationVisible = signal(true);
+   protected readonly mobileNavigationPainted = signal(true);
    private readonly destroyRef = inject(DestroyRef);
    private readonly ngZone = inject(NgZone);
    private lastScrollTop = 0;
    private scrollFrame: number | null = null;
+   private navigationPaintTimer: number | null = null;
 
    constructor(private authSync: AuthSyncService) {
       afterNextRender(() => this.initializeScrollListener());
@@ -45,6 +47,9 @@ export class App {
          if (this.scrollFrame !== null) {
             window.cancelAnimationFrame(this.scrollFrame);
          }
+         if (this.navigationPaintTimer !== null) {
+            window.clearTimeout(this.navigationPaintTimer);
+         }
       });
    }
 
@@ -67,8 +72,29 @@ export class App {
          this.lastScrollTop = currentScrollTop;
       }
 
-      if (shouldShowNavigation !== null && shouldShowNavigation !== this.mobileNavigationVisible()) {
-         this.ngZone.run(() => this.mobileNavigationVisible.set(shouldShowNavigation));
+      if (shouldShowNavigation !== null) {
+         this.setMobileNavigationVisible(shouldShowNavigation);
+      }
+   }
+
+   private setMobileNavigationVisible(visible: boolean) {
+      if (visible === this.mobileNavigationVisible()) return;
+
+      if (this.navigationPaintTimer !== null) {
+         window.clearTimeout(this.navigationPaintTimer);
+         this.navigationPaintTimer = null;
+      }
+
+      this.ngZone.run(() => {
+         if (visible) this.mobileNavigationPainted.set(true);
+         this.mobileNavigationVisible.set(visible);
+      });
+
+      if (!visible) {
+         this.navigationPaintTimer = window.setTimeout(() => {
+            this.navigationPaintTimer = null;
+            this.ngZone.run(() => this.mobileNavigationPainted.set(false));
+         }, 200);
       }
    }
 }
