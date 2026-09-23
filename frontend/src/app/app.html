@@ -1,11 +1,13 @@
 
 <main class="min-h-dvh w-full flex flex-col lg:h-dvh lg:min-h-0">
    <app-header
-      class="fixed inset-x-0 top-0 z-60 block shrink-0 transform-gpu backface-hidden will-change-transform transition-transform duration-400 ease-out lg:static lg:translate-y-0 lg:transform-none lg:will-change-auto"
+      class="fixed inset-x-0 top-0 z-60 block shrink-0 transform-gpu backface-hidden will-change-transform transition-transform duration-400 ease-out lg:static lg:block! lg:visible lg:translate-y-0 lg:transform-none lg:will-change-auto"
+      [class.hidden]="bookPageActive()"
       [class.invisible]="!mobileNavigationPainted()"
       [class.delay-350]="!mobileNavigationVisible()"
       [class.-translate-y-full]="!mobileNavigationVisible()" />
-   <app-main-content class="flex-1 pt-20 pb-[calc(4rem+env(safe-area-inset-bottom))] lg:min-h-0 lg:overflow-hidden lg:pt-0 lg:pb-0" />
+   <app-main-content
+      class="flex-1 pb-[calc(4rem+env(safe-area-inset-bottom))] lg:min-h-0 lg:overflow-hidden lg:pt-0 lg:pb-0" />
    <app-header
       placement="bottom"
       class="fixed inset-x-0 bottom-0 z-40 transform-gpu backface-hidden will-change-transform transition-transform duration-400 ease-out lg:hidden"

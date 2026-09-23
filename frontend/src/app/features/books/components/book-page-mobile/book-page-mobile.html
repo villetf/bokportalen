@@ -1,0 +1,39 @@
+<div class="min-h-full w-full px-4 py-6 pb-28 sm:px-8 sm:py-10">
+   <div class="mx-auto grid w-full max-w-7xl grid-cols-[minmax(0,42%)_minmax(0,1fr)] gap-x-5 gap-y-6 sm:grid-cols-[minmax(0,36%)_minmax(0,1fr)] sm:gap-x-8">
+      <div class="flex min-w-0 items-start justify-end">
+         <img [src]="book.coverLink ? book.coverLink : 'book-cover-placeholder.png'" alt="Omslagsbild för {{ book.title }}" class="block max-h-76 w-full object-contain object-top sm:max-h-112">
+      </div>
+      <section class="min-w-0 self-start">
+         <h1 class="wrap-break-word text-xl font-bold leading-tight text-bookolive sm:text-3xl">{{ book.title }}</h1>
+         <div class="mt-3 text-base leading-tight sm:text-xl">
+            @for (author of book.authors; track author.id) { <a routerLink="/authors/{{ author.id }}" class="cabin-font cursor-pointer hover:underline">{{ author.firstName }} {{ author.lastName }}</a>@if (!$last) {<span>, </span>} }
+         </div>
+         <div class="mt-5 sm:mt-7">
+            @if (book.isDeleted) { <app-button (click)="resetRequested.emit()">Återställ</app-button> }
+            @else { <app-button class="[&>button]:flex [&>button]:items-center [&>button]:gap-2 [&>button]:px-5 [&>button]:py-2 sm:[&>button]:px-8" (click)="editRequested.emit()"><i class="fa-solid fa-pen text-sm" aria-hidden="true"></i> Redigera</app-button> }
+         </div>
+      </section>
+
+      <section class="col-span-2 py-5">
+         <div class="grid grid-cols-2 divide-x divide-headerbrown/15">
+            <div class="space-y-4 pr-4 sm:space-y-5 sm:pr-8">
+               <div><p class="alumni-font text-sm font-semibold tracking-[0.16em] text-bookolive sm:text-lg">GENRER</p><p class="amiri-font text-lg leading-tight sm:text-2xl">{{ book.genres.length ? book.genres.map(genre => genre.name).join(', ') : 'Ej angivet' }}</p></div>
+               <div><p class="alumni-font text-sm font-semibold tracking-[0.16em] text-bookolive sm:text-lg">UTGIVNINGSÅR</p><p class="amiri-font text-lg leading-tight sm:text-2xl">{{ book.yearWritten || 'Ej angivet' }}</p></div>
+               <div><p class="alumni-font text-sm font-semibold tracking-[0.16em] text-bookolive sm:text-lg">SPRÅK</p><p class="amiri-font text-lg leading-tight sm:text-2xl">{{ book.language ? book.language.name : 'Ej angivet' }}</p></div>
+               <div><p class="alumni-font text-sm font-semibold tracking-[0.16em] text-bookolive sm:text-lg">ORIGINALSPRÅK</p><p class="amiri-font text-lg leading-tight sm:text-2xl">{{ book.originalLanguage ? book.originalLanguage.name : 'Ej angivet' }}</p></div>
+               <div><p class="alumni-font text-sm font-semibold tracking-[0.16em] text-bookolive sm:text-lg">FORMAT</p><p class="amiri-font text-lg leading-tight sm:text-2xl">{{ book.format || 'Ej angivet' }}</p></div>
+            </div>
+            <div class="space-y-4 pl-4 sm:space-y-5 sm:pl-8">
+               <div><p class="alumni-font text-sm font-semibold tracking-[0.16em] text-bookolive sm:text-lg">TILLAGD</p><p class="amiri-font text-lg leading-tight sm:text-2xl">{{ book.createdAt ? (book.createdAt | date: 'yyyy-MM-dd HH:mm') : 'Ej angivet' }}</p></div>
+               <div><p class="alumni-font text-sm font-semibold tracking-[0.16em] text-bookolive sm:text-lg">ISBN</p><p class="amiri-font break-all text-lg leading-tight sm:text-2xl">{{ book.isbn || 'Ej angivet' }}</p></div>
+               <div><p class="alumni-font text-sm font-semibold tracking-[0.16em] text-bookolive sm:text-lg">STATUS</p><p class="amiri-font text-lg leading-tight sm:text-2xl">{{ shelfBook ? (shelfBook.status || 'Ej angivet') : 'Ej i bokhyllan' }}</p></div>
+               <div><p class="alumni-font text-sm font-semibold tracking-[0.16em] text-bookolive sm:text-lg">ANTAL EXEMPLAR</p><p class="amiri-font text-lg leading-tight sm:text-2xl">{{ shelfBook ? shelfBook.copies : 'Ej i bokhyllan' }}</p></div>
+               <div><p class="alumni-font text-sm font-semibold tracking-[0.16em] text-bookolive sm:text-lg">BETYG</p><p class="amiri-font text-lg leading-tight sm:text-2xl">{{ shelfBook ? (shelfBook.rating != null ? shelfBook.rating : 'Inget betyg satt') : 'Ej i bokhyllan' }}</p></div>
+            </div>
+         </div>
+      </section>
+
+      <app-shelf-details-form class="col-span-2" variant="mobile" [status]="shelfStatus" [rating]="shelfRating" [copies]="shelfCopies" [inShelf]="!!shelfBook" (statusChange)="shelfStatusChange.emit($event)" (ratingChange)="shelfRatingChange.emit($event)" (copiesChange)="shelfCopiesChange.emit($event)" (saveRequested)="saveShelfRequested.emit()" (removeRequested)="removeShelfRequested.emit()" />
+   </div>
+   @if (book.isDeleted) { <div class="pointer-events-none fixed inset-0 z-40 flex items-center justify-center text-6xl font-bold text-red-600/50 sm:text-8xl"><span class="rotate-12">RADERAD</span></div> }
+</div>

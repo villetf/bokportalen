@@ -1,0 +1,40 @@
+@if (variant === 'mobile') {
+   <section class="rounded-2xl border border-headerbrown/20 p-4 shadow-sm sm:p-6">
+      <h4 class="mb-4 text-xl font-semibold text-headerbrown sm:text-2xl">MIN BOKHYLLA</h4>
+      <div class="grid grid-cols-[minmax(0,auto)_minmax(0,1fr)] items-center gap-x-4 gap-y-4 sm:gap-x-8">
+         <label for="shelfStatusMobile" class="text-sm sm:text-base">Status</label>
+         <select id="shelfStatusMobile" class="min-w-0 rounded-lg border border-headerbrown/20 bg-white px-3 py-2 text-sm outline-none focus:border-bookolive focus:ring-2 focus:ring-bookolive/20 sm:text-base" [value]="status ?? ''" (change)="statusChange.emit($any($event.target).value || null)">
+            <option value="">Ej angivet</option><option value="Läst">Läst</option><option value="Ej läst">Ej läst</option><option value="Läser">Läser</option><option value="Utlånad">Utlånad</option>
+         </select>
+         <label for="shelfCopiesMobile" class="text-sm sm:text-base">Antal exemplar</label>
+         <input id="shelfCopiesMobile" type="number" min="0" class="form-text-input min-w-0 w-full py-2 text-sm sm:text-base" [value]="copies" (input)="copiesChange.emit($any($event.target).valueAsNumber || 0)">
+         <label for="shelfRatingMobile" class="text-sm sm:text-base">Betyg</label>
+         <div class="flex min-w-0 items-center gap-3">
+            <input id="shelfRatingMobile" class="min-w-0 flex-1 accent-bookolive" type="range" min="0" max="10" step="0.1" [value]="rating ?? 0" (input)="ratingChange.emit($any($event.target).valueAsNumber)">
+            <span class="shrink-0 text-sm sm:text-base">{{ rating ?? 'Ej betygsatt' }}</span>
+         </div>
+      </div>
+      <div class="mt-5 grid gap-3 sm:grid-cols-2">
+         <app-button class="[&>button]:w-full [&>button]:py-2.5" (click)="saveRequested.emit()">Spara i bokhylla</app-button>
+         @if (inShelf) { <app-button class="[&>button]:w-full [&>button]:py-2.5" color="bg-red-700" hoverColor="hover:bg-red-900" (click)="removeRequested.emit()">Ta bort</app-button> }
+      </div>
+   </section>
+} @else {
+   <div class="mt-6 rounded-lg border border-headerbrown/30 p-4">
+      <h4 class="mb-3 text-xl font-semibold text-headerbrown">MIN BOKHYLLA</h4>
+      <div class="grid grid-cols-[auto_1fr] items-center gap-x-4 gap-y-2">
+         <label for="shelfStatus" class="self-center">Status:</label>
+         <select id="shelfStatus" [value]="status ?? ''" (change)="statusChange.emit($any($event.target).value || null)">
+            <option value="">Ej angivet</option><option value="Läst">Läst</option><option value="Ej läst">Ej läst</option><option value="Läser">Läser</option><option value="Utlånad">Utlånad</option>
+         </select>
+         <label for="shelfCopies" class="self-center">Antal exemplar:</label>
+         <input id="shelfCopies" type="number" min="0" class="form-text-input" [value]="copies" (input)="copiesChange.emit($any($event.target).valueAsNumber || 0)">
+         <label for="shelfRating" class="self-center">Betyg:</label>
+         <div><input id="shelfRating" type="range" min="0" max="10" step="0.1" [value]="rating ?? 0" (input)="ratingChange.emit($any($event.target).valueAsNumber)"> <span>{{ rating ?? 'Ej betygsatt' }}</span></div>
+      </div>
+      <div class="mt-4 flex gap-4">
+         <app-button (click)="saveRequested.emit()">Spara i bokhylla</app-button>
+         @if (inShelf) { <app-button color="bg-red-700" hoverColor="hover:bg-red-900" (click)="removeRequested.emit()">Ta bort</app-button> }
+      </div>
+   </div>
+}

@@ -1,0 +1,51 @@
+<div class="flex h-full w-full items-center">
+   <div class="grid h-full w-full grid-cols-[33%_1fr_20%] place-items-center">
+      <img [src]="book.coverLink ? book.coverLink : 'book-cover-placeholder.png'" alt="Omslagsbild för {{ book.title }}" class="h-120 justify-self-end">
+      <div class="flex w-full items-start justify-between justify-self-start">
+         <div class="ml-10">
+            <h1 [ngClass]="getTitleClass(book.title)" class="font-bold text-bookolive">{{ book.title }}</h1>
+            <h3 class="mt-1 text-2xl">
+               @for (author of book.authors; track author.id) { <a routerLink="/authors/{{ author.id }}" class="cabin-font cursor-pointer hover:underline">{{ author.firstName }} {{ author.lastName }}</a>@if (!$last) { <span>, </span> } }
+            </h3>
+            <div class="mt-5">
+               <p><span class="book-properties alumni-font">GENRER:</span><span class="amiri-font text-2xl"> {{ book.genres.length ? book.genres.map(genre => genre.name).join(', ') : 'Ej angivet' }}</span></p>
+               <p><span class="book-properties alumni-font">UTGIVNINGSÅR:</span><span class="amiri-font text-2xl"> {{ book.yearWritten ? book.yearWritten : 'Ej angivet' }}</span></p>
+               <p><span class="book-properties alumni-font">SPRÅK:</span><span class="amiri-font text-2xl"> {{ book.language ? book.language.name : 'Ej angivet' }}</span></p>
+               <p><span class="book-properties alumni-font">ORIGINALSPRÅK:</span><span class="amiri-font text-2xl"> {{ book.originalLanguage ? book.originalLanguage.name : 'Ej angivet' }}</span></p>
+               <p><span class="book-properties alumni-font">FORMAT:</span><span class="amiri-font text-2xl"> {{ book.format ? book.format : 'Ej angivet' }}</span></p>
+               <p><span class="book-properties alumni-font">TILLAGD:</span><span class="amiri-font text-2xl"> {{ book.createdAt ? (book.createdAt | date: 'yyyy-MM-dd HH:mm') : 'Ej angivet' }}</span></p>
+               <p><span class="book-properties alumni-font">ISBN:</span><span class="amiri-font text-2xl"> {{ book.isbn ? book.isbn : 'Ej angivet' }}</span></p>
+               @if (shelfBook) {
+                  <p><span class="book-properties alumni-font">STATUS:</span><span class="amiri-font text-2xl"> {{ shelfBook.status ? shelfBook.status : 'Ej angivet' }}</span></p>
+                  <p><span class="book-properties alumni-font">ANTAL EXEMPLAR:</span><span class="amiri-font text-2xl"> {{ shelfBook.copies }}</span></p>
+                  <p><span class="book-properties alumni-font">BETYG:</span><span class="amiri-font text-2xl"> {{ shelfBook.rating != null ? shelfBook.rating : 'Inget betyg satt' }}</span></p>
+               } @else {
+                  <p><span class="book-properties alumni-font">STATUS:</span><span class="amiri-font text-2xl"> Ej i bokhyllan</span></p>
+                  <p><span class="book-properties alumni-font">ANTAL EXEMPLAR:</span><span class="amiri-font text-2xl"> Ej i bokhyllan</span></p>
+                  <p><span class="book-properties alumni-font">BETYG:</span><span class="amiri-font text-2xl"> Ej i bokhyllan</span></p>
+               }
+            </div>
+
+            <app-shelf-details-form variant="desktop" [status]="shelfStatus" [rating]="shelfRating" [copies]="shelfCopies" [inShelf]="!!shelfBook" (statusChange)="shelfStatusChange.emit($event)" (ratingChange)="shelfRatingChange.emit($event)" (copiesChange)="shelfCopiesChange.emit($event)" (saveRequested)="saveShelfRequested.emit()" (removeRequested)="removeShelfRequested.emit()" />
+         </div>
+
+         @if (book.isDeleted) {
+            <h1 class="absolute bottom-100 left-1/10 z-40 rotate-25 text-[200px] text-red-500">RADERAD</h1>
+            <app-button (click)="resetRequested.emit()">Återställ</app-button>
+         } @else {
+            <app-button (click)="editRequested.emit()" class="min-h-0">Redigera</app-button>
+            <div class="h-full max-w-40"></div>
+         }
+      </div>
+
+      <div class="flex h-full min-h-0 flex-col overflow-hidden">
+         @if (booksByAuthor.length) {
+            <div class="h-45"></div>
+            <h5 class="mb-2 text-2xl uppercase">@if (book.authors.length == 1) { Mer av {{ book.authors[0].firstName }} {{ book.authors[0].lastName }}: } @else { Mer av dessa författare: }</h5>
+            <div class="relative flex min-h-0 w-full flex-1 flex-col overflow-auto pt-3 mask-[linear-gradient(to_bottom,transparent_0px,black_3px)]">
+               @for (bookInList of booksByAuthor; track bookInList.id) { <div class="w-90"><app-book-card [book]="bookInList"></app-book-card></div> }
+            </div>
+         }
+      </div>
+   </div>
+</div>

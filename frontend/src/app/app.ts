@@ -2,6 +2,8 @@ import { afterNextRender, ChangeDetectionStrategy, Component, DestroyRef, inject
 import { Header } from './features/header/components/header/header';
 import { MainContent } from './shared/components/main-content/main-content';
 import { AuthSyncService } from './services/authSyncService';
+import { NavigationEnd, Router } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
    selector: 'app-root',
@@ -14,6 +16,7 @@ export class App {
    protected readonly title = signal('bokportalen');
    protected readonly mobileNavigationVisible = signal(true);
    protected readonly mobileNavigationPainted = signal(true);
+   protected readonly bookPageActive = signal(false);
    private readonly destroyRef = inject(DestroyRef);
    private readonly ngZone = inject(NgZone);
    private lastScrollTop = 0;
@@ -21,7 +24,15 @@ export class App {
    private scrollFrame: number | null = null;
    private navigationPaintTimer: number | null = null;
 
-   constructor(private authSync: AuthSyncService) {
+   constructor(private authSync: AuthSyncService, private router: Router) {
+      this.router.events
+         .pipe(takeUntilDestroyed(this.destroyRef))
+         .subscribe(event => {
+            if (event instanceof NavigationEnd) {
+               this.bookPageActive.set(/^\/books\/\d+(?:[/?#]|$)/.test(event.urlAfterRedirects));
+            }
+         });
+
       afterNextRender(() => this.initializeScrollListener());
    }
 
