@@ -17,6 +17,7 @@ export class App {
    private readonly destroyRef = inject(DestroyRef);
    private readonly ngZone = inject(NgZone);
    private lastScrollTop = 0;
+   private wasAtPageTop = true;
    private scrollFrame: number | null = null;
    private navigationPaintTimer: number | null = null;
 
@@ -26,6 +27,7 @@ export class App {
 
    private initializeScrollListener() {
       this.lastScrollTop = Math.max(0, window.scrollY);
+      this.wasAtPageTop = this.lastScrollTop <= 1;
 
       const onScroll = () => {
          if (this.scrollFrame !== null) {
@@ -62,9 +64,10 @@ export class App {
       }
 
       const scrollDelta = currentScrollTop - this.lastScrollTop;
+      const isAtPageTop = currentScrollTop <= 1;
       let shouldShowNavigation: boolean | null = null;
 
-      if (currentScrollTop <= 1) {
+      if (isAtPageTop) {
          shouldShowNavigation = true;
          this.lastScrollTop = currentScrollTop;
       } else if (Math.abs(scrollDelta) >= 4) {
@@ -75,6 +78,11 @@ export class App {
       if (shouldShowNavigation !== null) {
          this.setMobileNavigationVisible(shouldShowNavigation);
       }
+
+      if (isAtPageTop && !this.wasAtPageTop) {
+         window.dispatchEvent(new Event('mobile-page-top'));
+      }
+      this.wasAtPageTop = isAtPageTop;
    }
 
    private setMobileNavigationVisible(visible: boolean) {

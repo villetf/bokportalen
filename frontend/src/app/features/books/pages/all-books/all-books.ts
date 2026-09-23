@@ -1,4 +1,4 @@
-import { Component, DestroyRef, HostListener, ViewChild, ElementRef, inject, signal, computed, Input, Output, EventEmitter } from '@angular/core';
+import { Component, DestroyRef, HostListener, ViewChild, ElementRef, inject, NgZone, signal, computed, Input, Output, EventEmitter } from '@angular/core';
 import { UserBook } from '../../../../types/UserBook.model';
 import { Book } from '../../../../types/Book.model';
 import { BookCard } from '../../components/book-card/book-card';
@@ -49,8 +49,18 @@ export class AllBooks {
    private mobileToolbarTimer?: ReturnType<typeof setTimeout>;
    private toolbarResizeObserver?: ResizeObserver;
    private toolbarNaturalBottom = 0;
+   private mobileBoundaryFrame: number | null = null;
    private readonly mobileNavigationListener = (event: Event) => {
       this.handleMobileNavigationVisibility((event as CustomEvent<boolean>).detail);
+   };
+   private readonly mobilePageTopListener = () => this.restoreNaturalMobileToolbar();
+   private readonly mobileToolbarBoundaryListener = () => {
+      if (this.mobileBoundaryFrame !== null) return;
+
+      this.mobileBoundaryFrame = requestAnimationFrame(() => {
+         this.mobileBoundaryFrame = null;
+         this.releaseToolbarAtNaturalBoundary();
+      });
    };
    @ViewChild('scrollContainer') private scrollContainer?: ElementRef<HTMLElement>;
    @ViewChild('toolbar') private toolbar?: ElementRef<HTMLElement>;
@@ -63,10 +73,13 @@ export class AllBooks {
    toolbarPinnedTop = signal(0);
    toolbarPinnedLeft = signal(0);
    toolbarPinnedWidth = signal(0);
+   instantMobileTitleCollapse = signal(false);
+   instantMobileControlsCollapse = signal(false);
    titleVisibility = signal(1);
    controlsVisibility = signal(1);
 
    private destroyRef = inject(DestroyRef);
+   private ngZone = inject(NgZone);
    private userStore = inject(UserStore);
    protected user = computed(() => this.userStore.user());
 
@@ -100,6 +113,11 @@ export class AllBooks {
          clearTimeout(this.mobileToolbarTimer);
       }
       window.removeEventListener('mobile-navigation-visibility', this.mobileNavigationListener);
+      window.removeEventListener('mobile-page-top', this.mobilePageTopListener);
+      window.removeEventListener('scroll', this.mobileToolbarBoundaryListener);
+      if (this.mobileBoundaryFrame !== null) {
+         cancelAnimationFrame(this.mobileBoundaryFrame);
+      }
    }
 
    private bindBooksSource() {
@@ -129,8 +147,38 @@ export class AllBooks {
       }
 
       window.addEventListener('mobile-navigation-visibility', this.mobileNavigationListener);
+      window.addEventListener('mobile-page-top', this.mobilePageTopListener);
+      this.ngZone.runOutsideAngular(() => {
+         window.addEventListener('scroll', this.mobileToolbarBoundaryListener, { passive: true });
+      });
 
       this.restoreScrollPosition();
+   }
+
+   private releaseToolbarAtNaturalBoundary() {
+      if (!this.toolbarPinned() || window.matchMedia('(min-width: 64rem)').matches) return;
+
+      const topHeader = document.querySelector<HTMLElement>('app-root > main > app-header');
+      const headerHeight = topHeader?.getBoundingClientRect().height ?? 80;
+      const naturalToolbarReachedHeader = window.scrollY <= Math.max(0, this.toolbarNaturalBottom - headerHeight);
+
+      if (naturalToolbarReachedHeader) {
+         this.ngZone.run(() => this.restoreNaturalMobileToolbar());
+      }
+   }
+
+   private restoreNaturalMobileToolbar() {
+      if (window.matchMedia('(min-width: 64rem)').matches) return;
+
+      if (this.mobileToolbarTimer) {
+         clearTimeout(this.mobileToolbarTimer);
+         this.mobileToolbarTimer = undefined;
+      }
+
+      this.useNaturalToolbarScroll = true;
+      this.toolbarPinned.set(false);
+      this.titleVisibility.set(1);
+      this.controlsVisibility.set(1);
    }
 
    private handleMobileNavigationVisibility(visible: boolean) {
@@ -151,12 +199,25 @@ export class AllBooks {
             const bounds = scrollElement.getBoundingClientRect();
             const topHeader = document.querySelector<HTMLElement>('app-root > main > app-header');
 
+            // Titeln är redan utanför viewporten här. Ta bort dess höjd utan
+            // animation innan toolbaren fästs, annars scrollankrar iOS Safari.
+            this.instantMobileTitleCollapse.set(true);
+            this.instantMobileControlsCollapse.set(true);
+            this.titleVisibility.set(0);
             this.toolbarPinnedTop.set(topHeader?.getBoundingClientRect().height ?? 80);
             this.toolbarPinnedLeft.set(bounds.left);
             this.toolbarPinnedWidth.set(bounds.width);
-            this.titleVisibility.set(0);
-            this.controlsVisibility.set(1);
+            this.controlsVisibility.set(0);
             this.toolbarPinned.set(true);
+            requestAnimationFrame(() => {
+               this.instantMobileTitleCollapse.set(false);
+               this.instantMobileControlsCollapse.set(false);
+               requestAnimationFrame(() => {
+                  if (this.toolbarPinned() && !this.mobileToolbarTimer) {
+                     this.controlsVisibility.set(1);
+                  }
+               });
+            });
             this.mobileToolbarTimer = undefined;
          }, 200);
          return;
