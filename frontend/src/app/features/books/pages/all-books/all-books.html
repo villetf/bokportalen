@@ -5,7 +5,7 @@
       (scroll)="onBooksScroll($event)">
       <div
          #toolbar
-         class="top-0 z-10 w-full"
+         class="top-0 z-50 w-full"
          [class.absolute]="!toolbarPinned()"
          [class.fixed]="toolbarPinned()"
          [style.top.px]="toolbarPinned() ? toolbarPinnedTop() : 0"
