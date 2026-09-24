@@ -1,7 +1,7 @@
-<div (click)="closePanel()" class="fixed inset-0 bg-black opacity-50 z-40"></div>
+<div (click)="closePanel()" class="fixed inset-0 z-70 bg-black opacity-50"></div>
 
-<div class="size-full fixed z-40 top-0 left-0 pointer-events-none flex justify-center items-center">
-   <div class="bg-backgroundbeige pointer-events-auto size-3/4 xl:size-2/3 rounded-4xl flex flex-col justify-center">
+<div class="fixed inset-0 z-70 flex items-center justify-center p-3 pt-[max(0.75rem,env(safe-area-inset-top))] pb-[max(0.75rem,env(safe-area-inset-bottom))] pointer-events-none lg:p-0">
+   <div class="flex max-h-full w-full flex-col overflow-hidden rounded-2xl bg-backgroundbeige pointer-events-auto lg:size-3/4 lg:justify-center lg:rounded-4xl xl:size-2/3">
       <ng-content></ng-content>
    </div>
 </div>

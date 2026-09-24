@@ -1,43 +1,43 @@
-<div class="flex justify-center">
-   <form [formGroup]="form" class="w-2/3">
-      <div class="grid grid-cols-[auto_75%] gap-y-2 gap-x-5 [&>label]:justify-self-end">
+<div class="flex h-full min-h-0 justify-center overflow-y-auto overscroll-contain">
+   <form [formGroup]="form" class="w-full p-6 sm:p-8 lg:w-2/3 lg:p-0">
+      <div class="grid grid-cols-1 gap-y-2 lg:grid-cols-[auto_75%] lg:gap-x-5 lg:[&>label]:justify-self-end">
          <label for="bookTitle" class="self-center">Titel:</label>
-         <input type="text" name="bookTitle" formControlName="title" class="form-text-input" autocorrect="off" autocapitalize="off" spellcheck="false">
+         <input id="bookTitle" type="text" name="bookTitle" formControlName="title" class="form-text-input w-full" autocorrect="off" autocapitalize="off" spellcheck="false">
          @if (form.get('title')?.invalid && formIsSubmitted) {
             @if (form.get('title')?.errors?.['required']) {
-               <div></div>
+               <div class="hidden lg:block"></div>
                <span class="text-red-500">Titel är obligatorisk.</span>
             }
          }
          
          <label for="bookAuthors">Författare:</label>
-         <div class="flex items-center">
-            <app-array-input formControlName="authors" [displayFn]="displayAuthor" [selectableItems]="allAuthors()" class="w-full" defaultSelectText="Välj författare..."></app-array-input>
+         <div class="flex min-w-0 items-center">
+            <app-array-input formControlName="authors" [displayFn]="displayAuthor" [selectableItems]="allAuthors()" class="min-w-0 w-full [&_select]:max-w-full" defaultSelectText="Välj författare..."></app-array-input>
             <i class="fa-solid fa-rotate ml-2 cursor-pointer active:rotate-180 active:transition-all" (click)="updateAuthorsList()"></i>
          </div>
          @if (form.get('authors')?.invalid && formIsSubmitted) {
-            <div></div>
+            <div class="hidden lg:block"></div>
             <span class="text-red-500">Du måste välja minst en författare.</span>
          }
       
          <label for="bookGenres">Genrer:</label>
-         <div class="flex items-center">
-            <app-array-input formControlName="genres" [displayFn]="displayGenre" [selectableItems]="allGenres()" defaultSelectText="Välj genre..." id="bookGenres" class="w-full"></app-array-input>
+         <div class="flex min-w-0 items-center">
+            <app-array-input formControlName="genres" [displayFn]="displayGenre" [selectableItems]="allGenres()" defaultSelectText="Välj genre..." id="bookGenres" class="min-w-0 w-full [&_select]:max-w-full"></app-array-input>
             <i class="fa-solid fa-rotate ml-2 cursor-pointer active:rotate-180 active:transition-all" (click)="updateGenresList()"></i>
          </div>
          
          <label for="yearWritten" class="self-center">Utgivningsår:</label>
-         <input type="number" formControlName="yearWritten" [max]="this.getCurrentYear()" class="form-text-input" autocorrect="off" autocapitalize="off" spellcheck="false">
+         <input id="yearWritten" type="number" formControlName="yearWritten" [max]="this.getCurrentYear()" class="form-text-input w-full" autocorrect="off" autocapitalize="off" spellcheck="false">
          @if (form.get('yearWritten')?.invalid) {
             @if (form.get('yearWritten')?.errors?.['max']) {
-               <div></div>
+               <div class="hidden lg:block"></div>
                <span class="text-red-500">Året kan inte vara i framtiden.</span>
             }
          }
       
          <label for="language">Språk:</label>
-         <div class="flex items-center">
-            <select formControlName="language" id="language" class="w-full">
+         <div class="flex min-w-0 items-center">
+            <select formControlName="language" id="language" class="min-w-0 w-full rounded-lg border border-gray-300 bg-white px-3 py-2">
                @for (language of allLanguages(); track language.id) {
                   <option [ngValue]="language.id">{{ language.name }}</option>
                }
@@ -47,8 +47,8 @@
       
       
          <label for="originalLanguage">Originalspråk:</label>
-         <div class="flex items-center">
-            <select formControlName="originalLanguage" id="originalLanguage" class="w-full">
+         <div class="flex min-w-0 items-center">
+            <select formControlName="originalLanguage" id="originalLanguage" class="min-w-0 w-full rounded-lg border border-gray-300 bg-white px-3 py-2">
                @for (language of allLanguages(); track language.id) {
                   <option [ngValue]="language.id">{{ language.name }}</option>
                }
@@ -58,7 +58,7 @@
       
          
          <label for="format">Format:</label>
-         <select formControlName="format">
+         <select formControlName="format" id="format" class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2">
             <option value="Danskt band">Danskt band</option>
             <option value="Flexband">Flexband</option>
             <option value="Häftad">Häftad</option>
@@ -68,23 +68,23 @@
          </select>
       
          <label for="isbn" class="self-center">ISBN:</label>
-         <input formControlName="isbn" class="form-text-input"  autocorrect="off" autocapitalize="off" spellcheck="false">
+         <input id="isbn" formControlName="isbn" class="form-text-input w-full" autocorrect="off" autocapitalize="off" spellcheck="false">
          @if (form.get('isbn')?.invalid && formIsSubmitted) {
             @if (form.get('isbn')?.errors?.['pattern']) {
-               <div></div>
+               <div class="hidden lg:block"></div>
                <span class="text-red-500">ISBN får inte innehålla bokstäver.</span>
             }
          }
       
          <label for="coverLink" class="self-center">Länk till omslag:</label>
-         <input type="text" formControlName="coverLink" class="form-text-input" autocorrect="off" autocapitalize="off" spellcheck="false">
+         <input id="coverLink" type="text" formControlName="coverLink" class="form-text-input w-full" autocorrect="off" autocapitalize="off" spellcheck="false">
       </div>
 
-      <div class="flex justify-around mt-10">
-         <app-button color="bg-red-700" hoverColor="hover:bg-red-900" (click)="openDeleteConfirmation()">Radera</app-button>
-         <app-button (click)="closeEditView()">Avbryt</app-button>
-         <app-button type="reset" (click)="resetForm()">Återställ</app-button>
-         <app-button type="submit" (click)="save()">Spara</app-button>
+      <div class="mt-6 grid grid-cols-2 gap-3 pb-1 lg:mt-10 lg:flex lg:justify-around lg:pb-0">
+         <app-button class="[&>button]:w-full [&>button]:px-3" color="bg-red-700" hoverColor="hover:bg-red-900" (click)="openDeleteConfirmation()">Radera</app-button>
+         <app-button class="[&>button]:w-full [&>button]:px-3" (click)="closeEditView()">Avbryt</app-button>
+         <app-button class="[&>button]:w-full [&>button]:px-3" type="reset" (click)="resetForm()">Återställ</app-button>
+         <app-button class="[&>button]:w-full [&>button]:px-3" type="submit" (click)="save()">Spara</app-button>
       </div>
    </form>
 
