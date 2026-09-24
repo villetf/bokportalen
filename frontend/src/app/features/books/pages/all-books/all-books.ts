@@ -300,7 +300,9 @@ export class AllBooks {
 
       const bounds = scrollElement.getBoundingClientRect();
       const view = scrollElement.ownerDocument.defaultView;
-      const desktopHeaderHeight = view?.matchMedia('(min-width: 64rem)').matches ? 92 : 0;
+      const desktopHeaderHeight = view?.matchMedia('(min-width: 64rem)').matches
+         ? scrollElement.ownerDocument.querySelector<HTMLElement>('app-root > main > app-header')?.getBoundingClientRect().height ?? 0
+         : 0;
       this.toolbarPinnedTop.set(Math.max(bounds.top, desktopHeaderHeight));
       this.toolbarPinnedLeft.set(bounds.left);
       this.toolbarPinnedWidth.set(bounds.width);

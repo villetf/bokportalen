@@ -30,6 +30,6 @@ export class BookPageDesktop {
    @Output() removeShelfRequested = new EventEmitter<void>();
 
    getTitleClass(title: string) {
-      return title.length > 25 ? 'text-4xl' : 'text-6xl';
+      return title.length > 25 ? 'text-2xl xl:text-4xl' : 'text-4xl xl:text-6xl';
    }
 }
