@@ -10,7 +10,7 @@
          </div>
          <div class="mt-5 sm:mt-7">
             @if (book.isDeleted) { <app-button (click)="resetRequested.emit()">Återställ</app-button> }
-            @else { <app-button class="[&>button]:flex [&>button]:items-center [&>button]:gap-2 [&>button]:px-5 [&>button]:py-2 sm:[&>button]:px-8" (click)="editRequested.emit()"><i class="fa-solid fa-pen text-sm" aria-hidden="true"></i> Redigera</app-button> }
+            @else { <app-button class="[&>button]:flex [&>button]:items-center [&>button]:gap-2 [&>button]:px-5 [&>button]:py-2 sm:[&>button]:px-8" (click)="editRequested.emit()">Redigera</app-button> }
          </div>
       </section>
 
