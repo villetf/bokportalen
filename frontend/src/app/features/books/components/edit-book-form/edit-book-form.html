@@ -1,5 +1,6 @@
-<div class="flex h-full min-h-0 justify-center overflow-y-auto overscroll-contain">
-   <form [formGroup]="form" class="w-full p-6 sm:p-8 lg:w-2/3 lg:p-0">
+<div class="flex min-h-full justify-center max-lg:h-full max-lg:max-h-full max-lg:overflow-hidden">
+   <form [formGroup]="form" class="w-full p-6 sm:p-8 max-lg:flex max-lg:h-full max-lg:min-h-0 max-lg:max-h-full max-lg:flex-col max-lg:overflow-hidden lg:w-2/3 lg:py-10">
+      <div class="min-h-0 flex-1 overflow-y-auto overscroll-contain pr-1 lg:overflow-visible lg:pr-0">
       <div class="grid grid-cols-1 gap-y-2 lg:grid-cols-[auto_75%] lg:gap-x-5 lg:[&>label]:justify-self-end">
          <label for="bookTitle" class="self-center">Titel:</label>
          <input id="bookTitle" type="text" name="bookTitle" formControlName="title" class="form-text-input w-full" autocorrect="off" autocapitalize="off" spellcheck="false">
@@ -79,12 +80,13 @@
          <label for="coverLink" class="self-center">Länk till omslag:</label>
          <input id="coverLink" type="text" formControlName="coverLink" class="form-text-input w-full" autocorrect="off" autocapitalize="off" spellcheck="false">
       </div>
+      </div>
 
-      <div class="mt-6 grid grid-cols-2 gap-3 pb-1 lg:mt-10 lg:flex lg:justify-around lg:pb-0">
-         <app-button class="[&>button]:w-full [&>button]:px-3" color="bg-red-700" hoverColor="hover:bg-red-900" (click)="openDeleteConfirmation()">Radera</app-button>
-         <app-button class="[&>button]:w-full [&>button]:px-3" (click)="closeEditView()">Avbryt</app-button>
-         <app-button class="[&>button]:w-full [&>button]:px-3" type="reset" (click)="resetForm()">Återställ</app-button>
-         <app-button class="[&>button]:w-full [&>button]:px-3" type="submit" (click)="save()">Spara</app-button>
+      <div class="mt-4 grid shrink-0 grid-cols-2 gap-3 border-t border-headerbrown/15 bg-backgroundbeige pt-4 pb-1 lg:mt-10 lg:flex lg:justify-around lg:border-0 lg:bg-transparent lg:pt-0 lg:pb-0">
+         <app-button class="max-lg:[&>button]:w-full max-lg:[&>button]:px-3" color="bg-red-700" hoverColor="hover:bg-red-900" (click)="openDeleteConfirmation()">Radera</app-button>
+         <app-button class="max-lg:[&>button]:w-full max-lg:[&>button]:px-3" (click)="closeEditView()">Avbryt</app-button>
+         <app-button class="max-lg:[&>button]:w-full max-lg:[&>button]:px-3" type="reset" (click)="resetForm()">Återställ</app-button>
+         <app-button class="max-lg:[&>button]:w-full max-lg:[&>button]:px-3" type="submit" (click)="save()">Spara</app-button>
       </div>
    </form>
 
