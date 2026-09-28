@@ -13,9 +13,9 @@
 <div class="flex flex-col items-center mt-10">
    <h2 class="text-2xl text-bookolive mb-10">Böcker i din bokhylla av {{ author()?.firstName }} {{ author()?.lastName }} ({{ shelfBooksByAuthor().length }} st)</h2>
    @if (shelfBooksByAuthor().length) {
-      <div class="grid grid-cols-4 mx-30">
+      <div class="grid w-full grid-cols-4 px-30">
          @for (book of shelfBooksByAuthor(); track book.id) {
-            <div>
+            <div class="min-w-0">
                <app-book-card [book]="book"></app-book-card>
             </div>
          }
@@ -26,10 +26,10 @@
 </div>
 
 <div class="flex flex-col items-center mt-10">
-   <h2 class="text-2xl text-bookolive mb-10">Böcker i bokarkivet av {{ author()?.firstName }} {{ author()?.lastName }} ({{ archiveBooksByAuthor().length }} st)</h2>
-   <div class="grid grid-cols-4 mx-30">
+   <h2 class="text-2xl text-bookolive mb-10">Alla böcker i bokarkivet av {{ author()?.firstName }} {{ author()?.lastName }} ({{ archiveBooksByAuthor().length }} st)</h2>
+   <div class="grid w-full grid-cols-4 px-30">
       @for (book of archiveBooksByAuthor(); track book.id) {
-         <div>
+         <div class="min-w-0">
             <app-book-card [book]="book"></app-book-card>
          </div>
       }
