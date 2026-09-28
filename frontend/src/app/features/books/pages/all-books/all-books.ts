@@ -39,8 +39,8 @@ export class AllBooks {
    @Output() addBookToShelf = new EventEmitter<number>();
 
    private readonly scrollStorageKey = 'all-books-scrollTop';
-   private readonly titleCollapseDistance = 90;
-   private readonly controlsCollapseDistance = 120;
+   private readonly titleCollapseDistance = 200;
+   private readonly controlsCollapseDistance = 420;
    private hasRestoredScroll = false;
    private lastScrollTop = 0;
    private lastScrollDirection: 'up' | 'down' = 'down';
@@ -199,8 +199,6 @@ export class AllBooks {
             const bounds = scrollElement.getBoundingClientRect();
             const topHeader = document.querySelector<HTMLElement>('app-root > main > app-header');
 
-            // Titeln är redan utanför viewporten här. Ta bort dess höjd utan
-            // animation innan toolbaren fästs, annars scrollankrar iOS Safari.
             this.instantMobileTitleCollapse.set(true);
             this.instantMobileControlsCollapse.set(true);
             this.titleVisibility.set(0);
