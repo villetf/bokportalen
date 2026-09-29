@@ -34,6 +34,23 @@
       </section>
 
       <app-shelf-details-form class="col-span-2" variant="mobile" [status]="shelfStatus" [rating]="shelfRating" [copies]="shelfCopies" [inShelf]="!!shelfBook" (statusChange)="shelfStatusChange.emit($event)" (ratingChange)="shelfRatingChange.emit($event)" (copiesChange)="shelfCopiesChange.emit($event)" (saveRequested)="saveShelfRequested.emit()" (removeRequested)="removeShelfRequested.emit()" />
+
+      @if (booksByAuthor.length) {
+         <section class="col-span-2 border-headerbrown/15 pt-5">
+            <h2 class="text-xl font-semibold leading-tight text-bookolive sm:text-2xl">
+               @if (book.authors.length === 1) {
+                  Mer av {{ book.authors[0].firstName }} {{ book.authors[0].lastName }} i din bokhylla
+               } @else {
+                  Mer av dessa författare i din bokhylla
+               }
+            </h2>
+            <div class="mt-5 grid snap-x snap-mandatory grid-flow-col auto-cols-[36%] gap-4 overflow-x-auto overscroll-x-contain pb-3 sm:auto-cols-[26%] sm:gap-6">
+               @for (bookInList of booksByAuthor; track bookInList.id) {
+                  <app-book-card class="min-w-0 snap-start" [book]="bookInList"></app-book-card>
+               }
+            </div>
+         </section>
+      }
    </div>
    @if (book.isDeleted) { <div class="pointer-events-none fixed inset-0 z-40 flex items-center justify-center text-6xl font-bold text-red-600/50 sm:text-8xl"><span class="rotate-12">RADERAD</span></div> }
 </div>

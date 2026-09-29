@@ -5,16 +5,18 @@ import { Book } from '../../../../types/Book.model';
 import { UserBook } from '../../../../types/UserBook.model';
 import { Button } from '../../../../shared/components/button/button';
 import { ShelfDetailsForm } from '../shelf-details-form/shelf-details-form';
+import { BookCard } from '../book-card/book-card';
 
 @Component({
    selector: 'app-book-page-mobile',
    standalone: true,
-   imports: [DatePipe, RouterLink, Button, ShelfDetailsForm],
+   imports: [DatePipe, RouterLink, Button, ShelfDetailsForm, BookCard],
    templateUrl: './book-page-mobile.html'
 })
 export class BookPageMobile {
    @Input({ required: true }) book!: Book;
    @Input() shelfBook: UserBook | null = null;
+   @Input() booksByAuthor: UserBook[] = [];
    @Input() shelfStatus: string | null = null;
    @Input() shelfRating: number | null = null;
    @Input() shelfCopies = 1;
