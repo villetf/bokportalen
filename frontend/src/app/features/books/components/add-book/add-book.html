@@ -3,13 +3,13 @@
       <div class="grid grid-cols-1 gap-y-1">
          <h1 class="mb-6 text-3xl font-bold text-bookolive sm:text-4xl lg:mb-5 lg:text-5xl">LÄGG TILL BOK</h1>
 
-         <label for="bookTitle" class="font-semibold text-bookolive lg:self-center lg:font-normal lg:text-inherit">Titel:</label>
+         <label for="bookTitle">Titel:</label>
          <input type="text" name="bookTitle" formControlName="title" class="form-text-input w-full py-2.5 lg:py-1" id="bookTitle" #titleInput autocorrect="off" autocapitalize="off" spellcheck="false">
          @if (form.get('title')?.invalid && formIsSubmitted && form.get('title')?.errors?.['required']) {
             <span class="mb-3 text-sm text-red-500 lg:mb-0 lg:text-base">Titel är obligatorisk.</span>
          }
 
-         <label for="bookAuthors" class="mt-3 font-semibold text-bookolive lg:mt-0 lg:font-normal lg:text-inherit">Författare:</label>
+         <label for="bookAuthors" class="mt-3">Författare:</label>
          <div class="flex min-w-0 items-center">
             <div class="min-w-0 w-full">
                <app-array-input formControlName="authors" [displayFn]="displayAuthor" [selectableItems]="allAuthors().slice().sort(compareAuthorsByLastName)" defaultSelectText="Välj författare..." id="bookAuthors" class="block min-w-0 w-full [&_select]:max-w-full"></app-array-input>
@@ -20,19 +20,19 @@
             <i class="fa-solid fa-rotate ml-2 shrink-0 cursor-pointer p-2 active:rotate-180 active:transition-all" (click)="updateAuthorsList()"></i>
          </div>
 
-         <label for="bookGenres" class="mt-3 font-semibold text-bookolive lg:mt-0 lg:font-normal lg:text-inherit">Genrer:</label>
+         <label for="bookGenres" class="mt-3">Genrer:</label>
          <div class="flex min-w-0 items-center">
             <app-array-input formControlName="genres" [displayFn]="displayGenre" [selectableItems]="allGenres()" defaultSelectText="Välj genre..." id="bookGenres" class="block min-w-0 w-full [&_select]:max-w-full"></app-array-input>
             <i class="fa-solid fa-rotate ml-2 shrink-0 cursor-pointer p-2 active:rotate-180 active:transition-all" (click)="updateGenresList()"></i>
          </div>
 
-         <label for="yearWritten" class="mt-3 font-semibold text-bookolive lg:mt-0 lg:self-center lg:font-normal lg:text-inherit">Utgivningsår:</label>
+         <label for="yearWritten" class="mt-3">Utgivningsår:</label>
          <input type="number" formControlName="yearWritten" [max]="this.getCurrentYear()" class="form-text-input w-full py-2.5 lg:py-1" id="yearWritten" autocorrect="off" autocapitalize="off" spellcheck="false">
          @if (form.get('yearWritten')?.invalid && form.get('yearWritten')?.errors?.['max']) {
             <span class="mb-3 text-sm text-red-500 lg:mb-0 lg:text-base">Året kan inte vara i framtiden.</span>
          }
 
-         <label for="language" class="mt-3 font-semibold text-bookolive lg:mt-0 lg:font-normal lg:text-inherit">Språk:</label>
+         <label for="language" class="mt-3">Språk:</label>
          <div class="flex min-w-0 items-center">
             <select formControlName="language" id="language" class="min-w-0 w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 lg:py-1">
                @for (language of allLanguages(); track language.id) {
@@ -42,7 +42,7 @@
             <i class="fa-solid fa-rotate ml-2 shrink-0 cursor-pointer p-2 active:rotate-180 active:transition-all" (click)="updateLanguagesList()"></i>
          </div>
 
-         <label for="originalLanguage" class="mt-3 font-semibold text-bookolive lg:mt-0 lg:font-normal lg:text-inherit">Originalspråk:</label>
+         <label for="originalLanguage" class="mt-3">Originalspråk:</label>
          <div class="flex min-w-0 items-center">
             <select formControlName="originalLanguage" id="originalLanguage" class="min-w-0 w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 lg:py-1">
                @for (language of allLanguages(); track language.id) {
@@ -52,7 +52,7 @@
             <i class="fa-solid fa-rotate ml-2 shrink-0 cursor-pointer p-2 active:rotate-180 active:transition-all" (click)="updateLanguagesList()"></i>
          </div>
 
-         <label for="format" class="mt-3 font-semibold text-bookolive lg:mt-0 lg:font-normal lg:text-inherit">Format:</label>
+         <label for="format" class="mt-3">Format:</label>
          <select formControlName="format" id="format" class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 lg:py-1">
             <option value="Danskt band">Danskt band</option>
             <option value="Flexband">Flexband</option>
@@ -62,13 +62,13 @@
             <option value="Storpocket">Storpocket</option>
          </select>
 
-         <label for="isbn" class="mt-3 font-semibold text-bookolive lg:mt-0 lg:self-center lg:font-normal lg:text-inherit">ISBN:</label>
+         <label for="isbn" class="mt-3">ISBN:</label>
          <input formControlName="isbn" class="form-text-input w-full py-2.5 lg:py-1" id="isbn" autocorrect="off" autocapitalize="off" spellcheck="false">
          @if (form.get('isbn')?.invalid && formIsSubmitted && form.get('isbn')?.errors?.['pattern']) {
             <span class="mb-3 text-sm text-red-500 lg:mb-0 lg:text-base">ISBN får inte innehålla bokstäver.</span>
          }
 
-         <label for="coverLink" class="mt-3 font-semibold text-bookolive lg:mt-0 lg:self-center lg:font-normal lg:text-inherit">Länk till omslag:</label>
+         <label for="coverLink" class="mt-3">Länk till omslag:</label>
          <input type="text" formControlName="coverLink" class="form-text-input w-full py-2.5 lg:py-1" id="coverLink" autocorrect="off" autocapitalize="off" spellcheck="false">
 
          <label class="mt-4 inline-flex min-h-11 items-center rounded-lg lg:mt-0">

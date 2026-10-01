@@ -25,7 +25,8 @@ type ScanMode = 'idle' | 'choose-title' | 'editing' | 'new';
    selector: 'app-scan-page',
    standalone: true,
    imports: [ReactiveFormsModule, ArrayInput, NgClass, BookCard, EditPanel],
-   templateUrl: './scan-page.html'
+   templateUrl: './scan-page.html',
+   host: { class: 'block min-h-full bg-backgroundbeige' }
 })
 export class ScanPage {
    @ViewChild('searchIsbnInput') searchIsbnInput?: ElementRef<HTMLInputElement>;
@@ -634,7 +635,7 @@ export class ScanPage {
 
    private focusSearchInput() {
       const input = this.searchIsbnInput?.nativeElement;
-      if (!input) {
+      if (!input || !window.matchMedia('(min-width: 64rem)').matches) {
          return;
       }
 

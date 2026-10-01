@@ -3,7 +3,7 @@
       <div class="grid grid-cols-1 gap-y-1">
          <h1 class="mb-6 text-3xl font-bold text-bookolive sm:text-4xl lg:mb-5 lg:text-5xl">LÄGG TILL SPRÅK</h1>
 
-         <label for="name" class="font-semibold text-bookolive lg:self-center lg:font-normal lg:text-inherit">Namn på språk:</label>
+         <label for="name">Namn på språk:</label>
          <input type="text" formControlName="name" class="form-text-input w-full py-2.5 lg:py-1" id="name" #languageInput autocorrect="off" autocapitalize="off" spellcheck="false">
          @if (form.get('name')?.invalid && formIsSubmitted && form.get('name')?.errors?.['required']) {
             <span class="text-sm text-red-500 lg:text-base">Språknamn är obligatoriskt.</span>

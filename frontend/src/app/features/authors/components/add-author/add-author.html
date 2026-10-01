@@ -3,36 +3,36 @@
       <div class="grid grid-cols-1 gap-y-1">
          <h1 class="mb-6 text-3xl font-bold text-bookolive sm:text-4xl lg:mb-5 lg:text-5xl">LÄGG TILL FÖRFATTARE</h1>
 
-         <label for="firstName" class="font-semibold text-bookolive lg:self-center lg:font-normal lg:text-inherit">Förnamn:</label>
+         <label for="firstName">Förnamn:</label>
          <input type="text" formControlName="firstName" class="form-text-input w-full py-2.5 lg:py-1" id="firstName" #nameInput autocorrect="off" autocapitalize="off" spellcheck="false">
          @if (form.get('firstName')?.invalid && formIsSubmitted && form.get('firstName')?.errors?.['required']) {
             <span class="mb-3 text-sm text-red-500 lg:mb-0 lg:text-base">Förnamn är obligatoriskt. Om bara ett namn finns, sätt det som förnamn.</span>
          }
 
-         <label for="lastName" class="mt-3 font-semibold text-bookolive lg:mt-0 lg:font-normal lg:text-inherit">Efternamn:</label>
+         <label for="lastName" class="mt-3">Efternamn:</label>
          <input type="text" formControlName="lastName" class="form-text-input w-full py-2.5 lg:py-1" id="lastName" autocorrect="off" autocapitalize="off" spellcheck="false">
 
-         <label for="gender" class="mt-3 font-semibold text-bookolive lg:mt-0 lg:font-normal lg:text-inherit">Kön:</label>
+         <label for="gender" class="mt-3">Kön:</label>
          <select formControlName="gender" id="gender" class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 lg:py-1">
             <option value="Kvinna">Kvinna</option>
             <option value="Man">Man</option>
             <option value="Annat">Annat</option>
          </select>
 
-         <label for="birthYear" class="mt-3 font-semibold text-bookolive lg:mt-0 lg:self-center lg:font-normal lg:text-inherit">Födelseår:</label>
+         <label for="birthYear" class="mt-3">Födelseår:</label>
          <input type="number" formControlName="birthYear" [max]="this.getCurrentYear()" class="form-text-input w-full py-2.5 lg:py-1" id="birthYear" autocorrect="off" autocapitalize="off" spellcheck="false">
          @if (form.get('birthYear')?.invalid && form.get('birthYear')?.errors?.['max']) {
             <span class="mb-3 text-sm text-red-500 lg:mb-0 lg:text-base">Året kan inte vara i framtiden.</span>
          }
 
-         <label for="country" class="mt-3 font-semibold text-bookolive lg:mt-0 lg:font-normal lg:text-inherit">Land:</label>
+         <label for="country" class="mt-3">Land:</label>
          <select formControlName="country" id="country" class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 lg:py-1">
             @for (country of allCountries(); track country.id) {
                <option [ngValue]="country">{{ country.name }}</option>
             }
          </select>
 
-         <label for="imageLink" class="mt-3 font-semibold text-bookolive lg:mt-0 lg:font-normal lg:text-inherit">Bildlänk:</label>
+         <label for="imageLink" class="mt-3">Bildlänk:</label>
          <input type="text" formControlName="imageLink" class="form-text-input w-full py-2.5 lg:py-1" id="imageLink" autocorrect="off" autocapitalize="off" spellcheck="false">
 
          <div class="mt-6 grid grid-cols-2 gap-3 lg:mt-5 lg:flex lg:justify-start lg:gap-10">
