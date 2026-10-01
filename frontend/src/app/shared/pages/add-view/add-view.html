@@ -1,4 +1,4 @@
-<div class="mx-auto flex min-h-full w-full max-w-4xl flex-col gap-10 px-5 py-8 sm:px-8 lg:py-12">
+<div class="mx-auto flex min-h-[calc(100dvh-4rem-env(safe-area-inset-bottom))] w-full max-w-4xl flex-col gap-8 bg-backgroundbeige px-5 pb-10 pt-26 sm:gap-10 sm:px-8 sm:pt-30 lg:min-h-full lg:py-12">
    <nav aria-label="Välj resurs att lägga till" class="w-full sm:max-w-xl sm:self-center">
       <div class="grid grid-cols-4 gap-2">
          @for (resource of resources; track resource.value) {
@@ -14,7 +14,7 @@
       </div>
    </nav>
 
-   <div class="min-w-0 flex-1">
+   <div class="min-w-0 flex-1 bg-backgroundbeige">
       @switch (selectedView()) {
          @case ('book') {
             <app-add-book class="flex w-full justify-center [&>div]:w-full [&>div]:mr-0" />

@@ -10,6 +10,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
    selector: 'app-add-view',
    imports: [AddBook, AddAuthor, AddGenre, AddLanguage, RouterLink],
    templateUrl: './add-view.html',
+   host: { class: 'block min-h-full bg-backgroundbeige' }
 })
 export class AddView {
    readonly resources = [
