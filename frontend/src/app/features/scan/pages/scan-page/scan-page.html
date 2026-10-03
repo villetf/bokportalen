@@ -77,7 +77,7 @@
                   }
                } @else if (this.scanMode() === 'new') {
                   <h2 class="text-2xl font-bold text-bookolive">Boken finns inte i arkivet eller i din bokhylla.</h2>
-                  <button class="rounded-lg bg-bookolive px-5 py-2 mt-5 text-white transition-colors hover:bg-bookolive-dark" (click)="showBookChoices.set(true)">
+                  <button class="mt-5 rounded-full bg-bookolive px-5 py-2 text-white transition-colors hover:bg-bookolive-dark" (click)="showBookChoices.set(true)">
                      Jo, den finns visst
                   </button>
                }
@@ -130,10 +130,10 @@
             </div>
 
             <div class="mt-5 flex flex-wrap gap-3">
-               <button type="button" class="rounded-lg bg-bookolive px-5 py-2 text-white transition-colors hover:bg-bookolive-dark disabled:cursor-not-allowed disabled:opacity-50" [disabled]="savingAuthor()" (click)="saveMissingAuthor(missingAuthorFirstName, missingAuthorLastName)">
+               <button type="button" class="rounded-full bg-bookolive px-5 py-2 text-white transition-colors hover:bg-bookolive-dark disabled:cursor-not-allowed disabled:opacity-50" [disabled]="savingAuthor()" (click)="saveMissingAuthor(missingAuthorFirstName, missingAuthorLastName)">
                   Spara och lägg till på boken
                </button>
-               <button type="button" class="rounded-lg border border-[#d8cfbd] bg-[#fefcf5] px-5 py-2 text-headerbrown transition-colors hover:bg-[#f6f0dd]" (click)="closeAuthorForm()">
+               <button type="button" class="rounded-full border border-[#d8cfbd] bg-[#fefcf5] px-5 py-2 text-headerbrown transition-colors hover:bg-[#f6f0dd]" (click)="closeAuthorForm()">
                   Inte nu
                </button>
             </div>
@@ -158,10 +158,10 @@
             </div>
 
             <div class="flex flex-wrap gap-3 mt-4">
-               <button type="button" class="rounded-lg bg-bookolive px-5 py-2 text-white transition-colors hover:bg-bookolive-dark" (click)="useSelectedTitleBook()">
+               <button type="button" class="rounded-full bg-bookolive px-5 py-2 text-white transition-colors hover:bg-bookolive-dark" (click)="useSelectedTitleBook()">
                   Använd vald bok
                </button>
-               <button type="button" class="rounded-lg border border-[#d8cfbd] bg-[#fefcf5] px-5 py-2 text-headerbrown transition-colors hover:bg-[#f6f0dd]" (click)="createNewBookAnyway()">
+               <button type="button" class="rounded-full border border-[#d8cfbd] bg-[#fefcf5] px-5 py-2 text-headerbrown transition-colors hover:bg-[#f6f0dd]" (click)="createNewBookAnyway()">
                   Nej, skapa som ny bok
                </button>
             </div>
@@ -201,7 +201,7 @@
                         @if (fieldWasAutofilled('författare')) {
                            <p class="mt-1 text-xs text-green-500"><i class="fa-solid fa-circle-plus mr-1"></i>Ny info tillagd</p>
                         }
-                        <button type="button" (click)="authorFormIsOpen.set(true)" class="mt-2 rounded-lg bg-bookolive px-3 py-2 text-white transition-colors hover:bg-bookolive-dark">Lägg till ny</button>
+                        <button type="button" (click)="authorFormIsOpen.set(true)" class="mt-2 rounded-full bg-bookolive px-5 py-2 text-white transition-colors hover:bg-bookolive-dark">Lägg till ny</button>
                      </div>
 
                      @if (form.get('authors')?.invalid && formIsSubmitted) {
@@ -298,12 +298,12 @@
                      }
 
                      <div class="flex flex-wrap items-center gap-3 mt-5">
-                        <button type="submit" class="rounded-lg bg-bookolive px-5 py-2 text-white transition-colors hover:bg-bookolive-dark disabled:cursor-not-allowed disabled:opacity-50" [disabled]="saving()">
+                        <button type="submit" class="rounded-full bg-bookolive px-5 py-2 text-white transition-colors hover:bg-bookolive-dark disabled:cursor-not-allowed disabled:opacity-50" [disabled]="saving()">
                            Spara
                         </button>
 
                         @if (selectedBook() && !currentBookInShelf()) {
-                           <button type="button" class="rounded-lg border border-bookolive px-5 py-2 text-headerbrown transition-colors hover:bg-[#f6f0dd]" (click)="addCurrentBookToShelf()">
+                           <button type="button" class="rounded-full border border-bookolive px-5 py-2 text-headerbrown transition-colors hover:bg-[#f6f0dd]" (click)="addCurrentBookToShelf()">
                               Lägg till i bokhyllan
                            </button>
                         }
