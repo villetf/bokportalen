@@ -14,8 +14,8 @@
    </div>
    <div class="w-full min-w-0 lg:ml-2 flex-1 flex flex-col text-xs sm:text-sm lg:text-base">
       <div class="flex-1">
-         <a [routerLink]="enableLinks ? ['/books', book.id] : null" [class]="enableLinks ? 'cursor-pointer hover:underline' : 'cursor-default'">
-            <p class="font-bold amiri-font leading-tight">{{ book.title }}</p>
+         <a [routerLink]="enableLinks ? ['/books', book.id] : null" [class]="enableLinks ? 'cursor-pointer hover:underline' : 'cursor-default'" class="block min-w-0">
+            <p class="break-words font-bold amiri-font leading-tight">{{ book.title }}</p>
          </a>
          <p>
             @for (author of book.authors; track author.id) {
