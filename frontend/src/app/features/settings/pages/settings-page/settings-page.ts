@@ -7,7 +7,8 @@ import { UsersService } from '../../../../services/usersService';
 @Component({
    selector: 'app-settings-page',
    standalone: true,
-   templateUrl: './settings-page.html'
+   templateUrl: './settings-page.html',
+   host: { class: 'block min-h-full bg-backgroundbeige' }
 })
 export class SettingsPage {
    protected user = computed(() => this.userStore.user());
