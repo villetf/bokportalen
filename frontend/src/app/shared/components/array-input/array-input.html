@@ -1,9 +1,11 @@
-<div class="bg-white rounded border border-gray-400">
-   <div cdkDropList (cdkDropListDropped)="drop($event)">
+<div class="overflow-hidden rounded-lg border border-gray-400 bg-white">
+   <div cdkDropList [cdkDropListDisabled]="disabled" (cdkDropListDropped)="drop($event)" class="divide-y divide-gray-200">
       @for (item of items; track $index) {
-         <div cdkDrag cdkDragLockAxis="y" class="m-1" (click)="setSelectedItem(item)" [class.selectedItem]="item === selectedItem()">
-            <span class="cursor-move mr-1" cdkDragHandle>☰</span>
-            <select name="" id="selectAuthorList" (change)="addItemToList($event, item)">
+         <div cdkDrag cdkDragLockAxis="y" class="flex min-w-0 items-center gap-1 p-1">
+            <button type="button" cdkDragHandle [disabled]="disabled" aria-label="Flytta rad" class="flex size-8 shrink-0 touch-none items-center justify-center rounded-full text-lg text-headerbrown/70 cursor-grab active:cursor-grabbing disabled:cursor-not-allowed disabled:opacity-50">
+               <span aria-hidden="true">☰</span>
+            </button>
+            <select class="min-h-8 min-w-0 flex-1 rounded-md border border-gray-300 bg-white px-2 py-0.5" [disabled]="disabled" (change)="addItemToList($event, item)">
                <option [value]="" disabled [selected]="item.id == null">{{ defaultSelectText }}</option>
                @for (selectableItem of selectableItems; track $index) {
                   <option 
@@ -14,11 +16,16 @@
                   </option>
                }
             </select>
+            <button type="button" [disabled]="disabled" (click)="removeItem($index)" [attr.aria-label]="'Ta bort ' + (item.id == null ? 'rad' : displayFn(item))" class="flex size-8 shrink-0 cursor-pointer items-center justify-center rounded-full text-xl text-headerbrown disabled:cursor-not-allowed disabled:opacity-50">
+               <span aria-hidden="true">&minus;</span>
+            </button>
          </div>
       }
    </div>
-   <div class="bg-gray-200">
-      <button type="button" (click)="addItem()" class="px-1 text-2xl -my-3 cursor-pointer">+</button>
-      <button type="button" (click)="removeItem(selectedItem()!)" class="px-1 text-2xl -my-3 cursor-pointer" [disabled]="selectedItem() === null">-</button>
+   <div class="border-t border-gray-300 bg-gray-100 p-1">
+      <button type="button" (click)="addItem()" [disabled]="disabled" class="flex min-h-8 cursor-pointer items-center gap-1.5 rounded-full px-2 text-headerbrown disabled:cursor-not-allowed disabled:opacity-50">
+         <span class="text-xl leading-none" aria-hidden="true">+</span>
+         <span>Lägg till rad</span>
+      </button>
    </div>
 </div>
