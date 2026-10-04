@@ -86,28 +86,17 @@ export class FilterList {
          const { key, label } = this.filterAlts();
          const filterBy = this.filterBy();
 
-         const queryParams = this.route.snapshot.queryParams;
-         if (filterBy.length > 0) {
+         // Behåll den öppna egenskapen även när sista filtret avmarkeras.
+         const queryParams = {
+            filterPropKey: key || null,
+            filterPropLabel: label || null,
+            filterBy: filterBy.length > 0 ? JSON.stringify(filterBy) : null
+         };
+         const currentParams = this.route.snapshot.queryParams;
+         if (Object.entries(queryParams).some(([name, value]) => (currentParams[name] ?? null) !== value)) {
             this.router.navigate([], {
                relativeTo: this.route,
-               queryParams: {
-                  ...queryParams,
-                  ...(key && { filterPropKey: key }),
-                  ...(label && { filterPropLabel: label }),
-                  filterBy: JSON.stringify(filterBy)
-               },
-               queryParamsHandling: 'merge',
-               replaceUrl: true
-            });
-         } else if (queryParams['filterPropKey'] || queryParams['filterPropLabel'] || queryParams['filterBy']) {
-            this.router.navigate([], {
-               relativeTo: this.route,
-               queryParams: {
-                  ...queryParams,
-                  filterPropKey: null,
-                  filterPropLabel: null,
-                  filterBy: null
-               },
+               queryParams,
                queryParamsHandling: 'merge',
                replaceUrl: true
             });
