@@ -4,7 +4,7 @@
          <h1 class="mb-6 text-3xl font-bold text-bookolive sm:text-4xl lg:mb-5 lg:text-5xl">LÄGG TILL BOK</h1>
 
          <label for="bookTitle">Titel:</label>
-         <input type="text" name="bookTitle" formControlName="title" class="form-text-input w-full py-2.5 lg:py-1" id="bookTitle" #titleInput autocorrect="off" autocapitalize="off" spellcheck="false">
+         <input type="text" name="bookTitle" formControlName="title" class="form-text-input w-full py-2.5 lg:py-1" id="bookTitle" #titleInput autocorrect="off" autocapitalize="sentences" spellcheck="false">
          @if (form.get('title')?.invalid && formIsSubmitted && form.get('title')?.errors?.['required']) {
             <span class="mb-3 text-sm text-red-500 lg:mb-0 lg:text-base">Titel är obligatorisk.</span>
          }
@@ -27,7 +27,7 @@
          </div>
 
          <label for="yearWritten" class="mt-3">Utgivningsår:</label>
-         <input type="number" formControlName="yearWritten" [max]="this.getCurrentYear()" class="form-text-input w-full py-2.5 lg:py-1" id="yearWritten" autocorrect="off" autocapitalize="off" spellcheck="false">
+         <input type="number" inputmode="numeric" formControlName="yearWritten" [max]="this.getCurrentYear()" class="form-text-input w-full py-2.5 lg:py-1" id="yearWritten">
          @if (form.get('yearWritten')?.invalid && form.get('yearWritten')?.errors?.['max']) {
             <span class="mb-3 text-sm text-red-500 lg:mb-0 lg:text-base">Året kan inte vara i framtiden.</span>
          }
@@ -63,13 +63,13 @@
          </select>
 
          <label for="isbn" class="mt-3">ISBN:</label>
-         <input formControlName="isbn" class="form-text-input w-full py-2.5 lg:py-1" id="isbn" autocorrect="off" autocapitalize="off" spellcheck="false">
+         <input type="text" inputmode="numeric" formControlName="isbn" class="form-text-input w-full py-2.5 lg:py-1" id="isbn" autocorrect="off" autocapitalize="off" spellcheck="false">
          @if (form.get('isbn')?.invalid && formIsSubmitted && form.get('isbn')?.errors?.['pattern']) {
             <span class="mb-3 text-sm text-red-500 lg:mb-0 lg:text-base">ISBN får inte innehålla bokstäver.</span>
          }
 
          <label for="coverLink" class="mt-3">Länk till omslag:</label>
-         <input type="text" formControlName="coverLink" class="form-text-input w-full py-2.5 lg:py-1" id="coverLink" autocorrect="off" autocapitalize="off" spellcheck="false">
+         <input type="url" inputmode="url" formControlName="coverLink" class="form-text-input w-full py-2.5 lg:py-1" id="coverLink" autocorrect="off" autocapitalize="off" autocomplete="url" spellcheck="false">
 
          <label class="mt-4 inline-flex min-h-11 items-center rounded-lg lg:mt-0">
             <input type="checkbox" formControlName="addToShelf" class="size-5" />

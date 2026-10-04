@@ -5,10 +5,10 @@
 
          <div class="grid grid-cols-1 gap-y-1 lg:grid-cols-[auto_75%] lg:gap-x-5 lg:gap-y-2 lg:[&>label]:justify-self-end">
             <label for="firstName" class="lg:self-center">Förnamn:</label>
-            <input type="text" formControlName="firstName" class="form-text-input mb-4 w-full py-2.5 lg:mb-0 lg:py-1" id="firstName" autocorrect="off" autocapitalize="off" spellcheck="false">
+            <input type="text" formControlName="firstName" class="form-text-input mb-4 w-full py-2.5 lg:mb-0 lg:py-1" id="firstName" autocorrect="off" autocapitalize="words" spellcheck="false">
 
             <label for="lastName">Efternamn:</label>
-            <input type="text" formControlName="lastName" class="form-text-input mb-4 w-full py-2.5 lg:mb-0 lg:py-1" id="lastName" autocorrect="off" autocapitalize="off" spellcheck="false">
+            <input type="text" formControlName="lastName" class="form-text-input mb-4 w-full py-2.5 lg:mb-0 lg:py-1" id="lastName" autocorrect="off" autocapitalize="words" spellcheck="false">
 
             <label for="gender">Kön:</label>
             <select formControlName="gender" id="gender" class="mb-4 w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 lg:mb-0 lg:py-1">
@@ -18,7 +18,7 @@
             </select>
 
             <label for="birthYear" class="lg:self-center">Födelseår:</label>
-            <input type="number" formControlName="birthYear" [max]="this.getCurrentYear()" class="form-text-input mb-4 w-full py-2.5 lg:mb-0 lg:py-1" id="birthYear" autocorrect="off" autocapitalize="off" spellcheck="false">
+            <input type="number" inputmode="numeric" formControlName="birthYear" [max]="this.getCurrentYear()" class="form-text-input mb-4 w-full py-2.5 lg:mb-0 lg:py-1" id="birthYear">
 
             <label for="country">Land:</label>
             <select formControlName="countryId" id="country" class="mb-4 w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 lg:mb-0 lg:py-1">
@@ -28,7 +28,7 @@
             </select>
 
             <label for="imageLink" class="lg:self-center">Bildlänk:</label>
-            <input formControlName="imageLink" class="form-text-input w-full py-2.5 lg:py-1" id="imageLink" autocorrect="off" autocapitalize="off" spellcheck="false">
+            <input type="url" inputmode="url" formControlName="imageLink" class="form-text-input w-full py-2.5 lg:py-1" id="imageLink" autocorrect="off" autocapitalize="off" autocomplete="url" spellcheck="false">
          </div>
       </div>
 
