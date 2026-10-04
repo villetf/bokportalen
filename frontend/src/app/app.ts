@@ -1,4 +1,4 @@
-import { afterNextRender, ChangeDetectionStrategy, Component, DestroyRef, inject, NgZone, signal } from '@angular/core';
+import { afterNextRender, ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
 import { Header } from './features/header/components/header/header';
 import { MainContent } from './shared/components/main-content/main-content';
 import { AuthSyncService } from './services/authSyncService';
@@ -18,7 +18,6 @@ export class App {
    protected readonly mobileNavigationPainted = signal(true);
    protected readonly bookPageActive = signal(false);
    private readonly destroyRef = inject(DestroyRef);
-   private readonly ngZone = inject(NgZone);
    private lastScrollTop = 0;
    private wasAtPageTop = true;
    private scrollFrame: number | null = null;
@@ -51,9 +50,7 @@ export class App {
          });
       };
 
-      this.ngZone.runOutsideAngular(() => {
-         window.addEventListener('scroll', onScroll, { passive: true });
-      });
+      window.addEventListener('scroll', onScroll, { passive: true });
 
       this.destroyRef.onDestroy(() => {
          window.removeEventListener('scroll', onScroll);
@@ -76,18 +73,11 @@ export class App {
 
       const scrollDelta = currentScrollTop - this.lastScrollTop;
       const isAtPageTop = currentScrollTop <= 1;
-      let shouldShowNavigation: boolean | null = null;
 
-      if (isAtPageTop) {
-         shouldShowNavigation = true;
+      // Ignore small scroll movements to avoid flickering navigation.
+      if (isAtPageTop || Math.abs(scrollDelta) >= 4) {
          this.lastScrollTop = currentScrollTop;
-      } else if (Math.abs(scrollDelta) >= 4) {
-         shouldShowNavigation = scrollDelta < 0;
-         this.lastScrollTop = currentScrollTop;
-      }
-
-      if (shouldShowNavigation !== null) {
-         this.setMobileNavigationVisible(shouldShowNavigation);
+         this.setMobileNavigationVisible(isAtPageTop || scrollDelta < 0);
       }
 
       if (isAtPageTop && !this.wasAtPageTop) {
@@ -104,19 +94,18 @@ export class App {
          this.navigationPaintTimer = null;
       }
 
-      this.ngZone.run(() => {
-         if (visible) this.mobileNavigationPainted.set(true);
-         this.mobileNavigationVisible.set(visible);
-      });
+      if (visible) this.mobileNavigationPainted.set(true);
+      this.mobileNavigationVisible.set(visible);
 
       window.dispatchEvent(new CustomEvent<boolean>('mobile-navigation-visibility', {
          detail: visible
       }));
 
       if (!visible) {
+         // Hide only after the header's 350 ms delay and 400 ms slide have finished.
          this.navigationPaintTimer = window.setTimeout(() => {
             this.navigationPaintTimer = null;
-            this.ngZone.run(() => this.mobileNavigationPainted.set(false));
+            this.mobileNavigationPainted.set(false);
          }, 750);
       }
    }

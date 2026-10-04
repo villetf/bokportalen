@@ -41,6 +41,12 @@ export class FilterList {
       { key: 'authors' as keyof UserBook, label: 'Författare' },
    ];
 
+   readonly authorFilterOptions = [
+      { key: 'authorName', label: 'Författarnamn', menuLabel: 'Namn' },
+      { key: 'authorGender', label: 'Författarkön', menuLabel: 'Kön' },
+      { key: 'authorCountry', label: 'Författarland', menuLabel: 'Land' },
+   ];
+
    private suppressEffect = false;
    private destroyRef = inject(DestroyRef);
 
@@ -313,16 +319,7 @@ export class FilterList {
 
    // Hittar rätt label för en nyckel
    convertKeyToLabel(key: string) {
-      switch (key) {
-      case 'authorName':
-         return 'Författarnamn';
-      case 'authorGender':
-         return 'Författarkön';
-      case 'authorCountry':
-         return 'Författarland';
-      default:
-         break;
-      }
-      return this.filterOptions.find(f => f.key == key)?.label;
+      return this.authorFilterOptions.find(option => option.key === key)?.label
+         ?? this.filterOptions.find(option => option.key === key)?.label;
    }
 }

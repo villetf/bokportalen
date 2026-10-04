@@ -1,6 +1,6 @@
 <div class="relative flex flex-col flex-1 min-w-0 mx-4 sm:ml-25 sm:mr-15 lg:h-full lg:overflow-hidden">
    <div #scrollContainer
-      class="relative grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 gap-x-2 gap-y-6 sm:gap-4 overflow-visible lg:flex-1 lg:min-h-0 lg:overflow-y-auto lg:overflow-x-hidden lg:overscroll-contain lg:scroll-pt-0"
+      class="relative grid grid-cols-3 sm:grid-cols-4 xl:grid-cols-5 gap-x-2 gap-y-6 sm:gap-4 overflow-visible lg:flex-1 lg:min-h-0 lg:overflow-y-auto lg:overflow-x-hidden lg:overscroll-contain lg:scroll-pt-0"
       [style.padding-top.px]="toolbarSpacerHeight()"
       (scroll)="onBooksScroll($event)">
       <div
@@ -13,8 +13,8 @@
          [style.width.px]="toolbarPinned() ? toolbarPinnedWidth() : null">
          <div
             class="grid grid-rows-[1fr] bg-backgroundbeige transition-[grid-template-rows] duration-350 ease-out"
-            [style.transition-duration]="instantMobileTitleCollapse() ? '0ms' : null"
-            [style.grid-template-rows]="panelRows(titleVisibility())">
+            [style.transition-duration]="skipToolbarTransition() ? '0ms' : null"
+            [style.grid-template-rows]="titleVisibility() + 'fr'">
             <div class="min-h-0 overflow-hidden">
                <div class="flex items-center justify-between gap-3 w-full pt-6 sm:pt-17 sm:justify-start sm:items-baseline sm:gap-x-6">
                   <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold mt-20 md:mt-13 lg:mt-0 text-bookolive leading-tight wrap-break-word">{{ title }}</h1>
@@ -23,8 +23,8 @@
          </div>
          <div
             class="grid grid-rows-[1fr] bg-backgroundbeige transition-[grid-template-rows] duration-350 ease-out"
-            [style.transition-duration]="instantMobileControlsCollapse() ? '0ms' : null"
-            [style.grid-template-rows]="panelRows(controlsVisibility())">
+            [style.transition-duration]="skipToolbarTransition() ? '0ms' : null"
+            [style.grid-template-rows]="controlsVisibility() + 'fr'">
             <div class="min-h-0 overflow-hidden" [class.overflow-visible]="titleVisibility() > 0.5">
                <div
                   class="flex flex-col lg:flex-row lg:justify-between gap-4 pb-5 lg:pb-8"
@@ -41,13 +41,12 @@
                      <p class="ml-auto self-center text-sm text-headerbrown whitespace-nowrap lg:hidden">Antal böcker: {{ numberOfBooks() }}</p>
                   </div>
                   <div class="min-w-0 order-1 lg:order-2">
-                     <div class="flex items-center gap-3" [ngClass]="{ 'lg:-mt-10': titleVisibility() > 0.5 }">
+                     <div class="flex items-center gap-3" [class.lg:-mt-10]="titleVisibility() > 0.5">
                         <ng-content select="[page-actions]" />
                         <app-search-bar
                            class="block flex-1 lg:flex-none"
                            [booksFiltered$]="booksFiltered$"
-                           [booksSearched$]="booksSearched$"
-                           [desktopRaised]="false" />
+                           [booksSearched$]="booksSearched$" />
                         <i class="fa-solid fa-dice text-3xl sm:text-5xl cursor-pointer text-bookolive shrink-0" (click)="getRandomBook()"></i>
                      </div>
                      <div class="hidden lg:block w-full mt-5 text-right text-xl">

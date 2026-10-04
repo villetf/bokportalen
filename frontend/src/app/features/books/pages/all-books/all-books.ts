@@ -1,13 +1,12 @@
-import { Component, DestroyRef, HostListener, ViewChild, ElementRef, inject, NgZone, signal, computed, Input, Output, EventEmitter } from '@angular/core';
+import { Component, DestroyRef, HostListener, ViewChild, ElementRef, inject, signal, computed, Input, Output, EventEmitter } from '@angular/core';
 import { UserBook } from '../../../../types/UserBook.model';
 import { Book } from '../../../../types/Book.model';
 import { BookCard } from '../../components/book-card/book-card';
 import { BooksService } from '../../../../services/booksService';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
-import { CdkMenuModule } from '@angular/cdk/menu';
 import { FilterList } from '../../components/filter-list/filter-list';
 import { SearchBar } from '../../components/search-bar/search-bar';
-import { AsyncPipe, NgClass } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { SortList } from '../../components/sort-list/sort-list';
 import { Router, NavigationStart } from '@angular/router';
 import { HotToastService } from '@ngxpert/hot-toast';
@@ -17,7 +16,7 @@ import { UserStore } from '../../../../stores/user.store';
 @Component({
    selector: 'app-all-books',
    standalone: true,
-   imports: [BookCard, CdkMenuModule, FilterList, SearchBar, AsyncPipe, NgClass, SortList],
+   imports: [BookCard, FilterList, SearchBar, AsyncPipe, SortList],
    templateUrl: './all-books.html'
 })
 export class AllBooks {
@@ -73,13 +72,11 @@ export class AllBooks {
    toolbarPinnedTop = signal(0);
    toolbarPinnedLeft = signal(0);
    toolbarPinnedWidth = signal(0);
-   instantMobileTitleCollapse = signal(false);
-   instantMobileControlsCollapse = signal(false);
+   skipToolbarTransition = signal(false);
    titleVisibility = signal(1);
    controlsVisibility = signal(1);
 
    private destroyRef = inject(DestroyRef);
-   private ngZone = inject(NgZone);
    private userStore = inject(UserStore);
    protected user = computed(() => this.userStore.user());
 
@@ -109,9 +106,7 @@ export class AllBooks {
       if (this.scrollEndTimer) {
          clearTimeout(this.scrollEndTimer);
       }
-      if (this.mobileToolbarTimer) {
-         clearTimeout(this.mobileToolbarTimer);
-      }
+      clearTimeout(this.mobileToolbarTimer);
       window.removeEventListener('mobile-navigation-visibility', this.mobileNavigationListener);
       window.removeEventListener('mobile-page-top', this.mobilePageTopListener);
       window.removeEventListener('scroll', this.mobileToolbarBoundaryListener);
@@ -148,9 +143,7 @@ export class AllBooks {
 
       window.addEventListener('mobile-navigation-visibility', this.mobileNavigationListener);
       window.addEventListener('mobile-page-top', this.mobilePageTopListener);
-      this.ngZone.runOutsideAngular(() => {
-         window.addEventListener('scroll', this.mobileToolbarBoundaryListener, { passive: true });
-      });
+      window.addEventListener('scroll', this.mobileToolbarBoundaryListener, { passive: true });
 
       this.restoreScrollPosition();
    }
@@ -163,17 +156,14 @@ export class AllBooks {
       const naturalToolbarReachedHeader = window.scrollY <= Math.max(0, this.toolbarNaturalBottom - headerHeight);
 
       if (naturalToolbarReachedHeader) {
-         this.ngZone.run(() => this.restoreNaturalMobileToolbar());
+         this.restoreNaturalMobileToolbar();
       }
    }
 
    private restoreNaturalMobileToolbar() {
       if (window.matchMedia('(min-width: 64rem)').matches) return;
 
-      if (this.mobileToolbarTimer) {
-         clearTimeout(this.mobileToolbarTimer);
-         this.mobileToolbarTimer = undefined;
-      }
+      this.cancelMobileToolbarTimer();
 
       this.useNaturalToolbarScroll = true;
       this.toolbarPinned.set(false);
@@ -184,10 +174,7 @@ export class AllBooks {
    private handleMobileNavigationVisibility(visible: boolean) {
       if (window.matchMedia('(min-width: 64rem)').matches) return;
 
-      if (this.mobileToolbarTimer) {
-         clearTimeout(this.mobileToolbarTimer);
-         this.mobileToolbarTimer = undefined;
-      }
+      this.cancelMobileToolbarTimer();
 
       const toolbarElement = this.toolbar?.nativeElement;
       const scrollElement = this.scrollContainer?.nativeElement;
@@ -199,8 +186,7 @@ export class AllBooks {
             const bounds = scrollElement.getBoundingClientRect();
             const topHeader = document.querySelector<HTMLElement>('app-root > main > app-header');
 
-            this.instantMobileTitleCollapse.set(true);
-            this.instantMobileControlsCollapse.set(true);
+            this.skipToolbarTransition.set(true);
             this.titleVisibility.set(0);
             this.toolbarPinnedTop.set(topHeader?.getBoundingClientRect().height ?? 80);
             this.toolbarPinnedLeft.set(bounds.left);
@@ -208,8 +194,7 @@ export class AllBooks {
             this.controlsVisibility.set(0);
             this.toolbarPinned.set(true);
             requestAnimationFrame(() => {
-               this.instantMobileTitleCollapse.set(false);
-               this.instantMobileControlsCollapse.set(false);
+               this.skipToolbarTransition.set(false);
                requestAnimationFrame(() => {
                   if (this.toolbarPinned() && !this.mobileToolbarTimer) {
                      this.controlsVisibility.set(1);
@@ -228,6 +213,11 @@ export class AllBooks {
             this.mobileToolbarTimer = undefined;
          }, 350);
       }
+   }
+
+   private cancelMobileToolbarTimer() {
+      clearTimeout(this.mobileToolbarTimer);
+      this.mobileToolbarTimer = undefined;
    }
 
    @HostListener('window:beforeunload')
@@ -272,9 +262,7 @@ export class AllBooks {
 
       if (currentScrollTop <= 1) {
          this.titleVisibility.set(1);
-      } else if (isDesktop && scrollDelta < 0) {
-         this.titleVisibility.update(value => this.clamp(value + Math.abs(scrollDelta) / this.titleCollapseDistance));
-      } else if (isDesktop && scrollDelta > 0) {
+      } else if (isDesktop && scrollDelta !== 0) {
          this.titleVisibility.update(value => this.clamp(value - scrollDelta / this.titleCollapseDistance));
       } else if (!isDesktop) {
          this.titleVisibility.set(this.clamp(1 - currentScrollTop / this.titleCollapseDistance));
@@ -282,10 +270,8 @@ export class AllBooks {
 
       if (currentScrollTop <= 1) {
          this.controlsVisibility.set(1);
-      } else if (scrollDelta > 0) {
+      } else if (scrollDelta !== 0) {
          this.controlsVisibility.update(value => this.clamp(value - scrollDelta / this.controlsCollapseDistance));
-      } else if (scrollDelta < 0) {
-         this.controlsVisibility.update(value => this.clamp(value + Math.abs(scrollDelta) / this.controlsCollapseDistance));
       }
 
       this.lastScrollTop = currentScrollTop;
@@ -328,10 +314,6 @@ export class AllBooks {
          this.controlsVisibility.set(1);
          this.titleVisibility.set(isDesktop ? 1 : 0);
       }, 140);
-   }
-
-   panelRows(visibility: number) {
-      return `${visibility}fr`;
    }
 
    private clamp(value: number) {
