@@ -18,13 +18,14 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { BookCard } from '../../../books/components/book-card/book-card';
 import { AddAuthorDTO } from '../../../../dtos/AddAuthorDTO';
 import { EditPanel } from '../../../../shared/components/edit-panel/edit-panel';
+import { Button } from '../../../../shared/components/button/button';
 
 type ScanMode = 'idle' | 'choose-title' | 'editing' | 'new';
 
 @Component({
    selector: 'app-scan-page',
    standalone: true,
-   imports: [ReactiveFormsModule, ArrayInput, NgClass, BookCard, EditPanel],
+   imports: [ReactiveFormsModule, ArrayInput, NgClass, BookCard, EditPanel, Button],
    templateUrl: './scan-page.html',
    host: { class: 'block min-h-full bg-backgroundbeige' }
 })

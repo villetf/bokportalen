@@ -6,10 +6,11 @@ import { Book } from '../../../../types/Book.model';
 import { BooksService } from '../../../../services/booksService';
 import { ActivatedRoute, Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Button } from '../../../../shared/components/button/button';
 
 @Component({
    selector: 'app-sort-list',
-   imports: [CdkMenuModule],
+   imports: [CdkMenuModule, Button],
    templateUrl: './sort-list.html',
    styles: ''
 })

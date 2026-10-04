@@ -10,25 +10,25 @@
          </div>
          <div class="mt-5 sm:mt-7">
             @if (book.isDeleted) { <app-button (click)="resetRequested.emit()">Återställ</app-button> }
-            @else { <app-button class="[&>button]:flex [&>button]:items-center [&>button]:gap-2 [&>button]:px-5 [&>button]:py-2 sm:[&>button]:px-8" (click)="editRequested.emit()">Redigera</app-button> }
+            @else { <app-button (click)="editRequested.emit()">Redigera</app-button> }
          </div>
       </section>
 
       <section class="col-span-2 py-5">
          <div class="grid grid-cols-2 divide-x divide-headerbrown/15">
             <div class="space-y-4 pr-4 sm:space-y-5 sm:pr-8">
-               <div><p class="alumni-font text-sm font-semibold tracking-[0.16em] text-bookolive sm:text-lg">GENRER</p><p class="amiri-font text-lg leading-tight sm:text-2xl">{{ book.genres.length ? book.genres.map(genre => genre.name).join(', ') : 'Ej angivet' }}</p></div>
-               <div><p class="alumni-font text-sm font-semibold tracking-[0.16em] text-bookolive sm:text-lg">UTGIVNINGSÅR</p><p class="amiri-font text-lg leading-tight sm:text-2xl">{{ book.yearWritten || 'Ej angivet' }}</p></div>
-               <div><p class="alumni-font text-sm font-semibold tracking-[0.16em] text-bookolive sm:text-lg">SPRÅK</p><p class="amiri-font text-lg leading-tight sm:text-2xl">{{ book.language ? book.language.name : 'Ej angivet' }}</p></div>
-               <div><p class="alumni-font text-sm font-semibold tracking-[0.16em] text-bookolive sm:text-lg">ORIGINALSPRÅK</p><p class="amiri-font text-lg leading-tight sm:text-2xl">{{ book.originalLanguage ? book.originalLanguage.name : 'Ej angivet' }}</p></div>
-               <div><p class="alumni-font text-sm font-semibold tracking-[0.16em] text-bookolive sm:text-lg">FORMAT</p><p class="amiri-font text-lg leading-tight sm:text-2xl">{{ book.format || 'Ej angivet' }}</p></div>
+               <div><p class="alumni-font text-sm font-semibold text-headerbrown sm:text-lg">GENRER</p><p class="amiri-font text-lg leading-tight sm:text-2xl">{{ book.genres.length ? book.genres.map(genre => genre.name).join(', ') : 'Ej angivet' }}</p></div>
+               <div><p class="alumni-font text-sm font-semibold text-headerbrown sm:text-lg">UTGIVNINGSÅR</p><p class="amiri-font text-lg leading-tight sm:text-2xl">{{ book.yearWritten || 'Ej angivet' }}</p></div>
+               <div><p class="alumni-font text-sm font-semibold text-headerbrown sm:text-lg">SPRÅK</p><p class="amiri-font text-lg leading-tight sm:text-2xl">{{ book.language ? book.language.name : 'Ej angivet' }}</p></div>
+               <div><p class="alumni-font text-sm font-semibold text-headerbrown sm:text-lg">ORIGINALSPRÅK</p><p class="amiri-font text-lg leading-tight sm:text-2xl">{{ book.originalLanguage ? book.originalLanguage.name : 'Ej angivet' }}</p></div>
+               <div><p class="alumni-font text-sm font-semibold text-headerbrown sm:text-lg">FORMAT</p><p class="amiri-font text-lg leading-tight sm:text-2xl">{{ book.format || 'Ej angivet' }}</p></div>
             </div>
             <div class="space-y-4 pl-4 sm:space-y-5 sm:pl-8">
-               <div><p class="alumni-font text-sm font-semibold tracking-[0.16em] text-bookolive sm:text-lg">TILLAGD</p><p class="amiri-font text-lg leading-tight sm:text-2xl">{{ book.createdAt ? (book.createdAt | date: 'yyyy-MM-dd HH:mm') : 'Ej angivet' }}</p></div>
-               <div><p class="alumni-font text-sm font-semibold tracking-[0.16em] text-bookolive sm:text-lg">ISBN</p><p class="amiri-font break-all text-lg leading-tight sm:text-2xl">{{ book.isbn || 'Ej angivet' }}</p></div>
-               <div><p class="alumni-font text-sm font-semibold tracking-[0.16em] text-bookolive sm:text-lg">STATUS</p><p class="amiri-font text-lg leading-tight sm:text-2xl">{{ shelfBook ? (shelfBook.status || 'Ej angivet') : 'Ej i bokhyllan' }}</p></div>
-               <div><p class="alumni-font text-sm font-semibold tracking-[0.16em] text-bookolive sm:text-lg">ANTAL EXEMPLAR</p><p class="amiri-font text-lg leading-tight sm:text-2xl">{{ shelfBook ? shelfBook.copies : 'Ej i bokhyllan' }}</p></div>
-               <div><p class="alumni-font text-sm font-semibold tracking-[0.16em] text-bookolive sm:text-lg">BETYG</p><p class="amiri-font text-lg leading-tight sm:text-2xl">{{ shelfBook ? (shelfBook.rating != null ? shelfBook.rating : 'Inget betyg satt') : 'Ej i bokhyllan' }}</p></div>
+               <div><p class="alumni-font text-sm font-semibold text-headerbrown sm:text-lg">TILLAGD</p><p class="amiri-font text-lg leading-tight sm:text-2xl">{{ book.createdAt ? (book.createdAt | date: 'yyyy-MM-dd HH:mm') : 'Ej angivet' }}</p></div>
+               <div><p class="alumni-font text-sm font-semibold text-headerbrown sm:text-lg">ISBN</p><p class="amiri-font break-all text-lg leading-tight sm:text-2xl">{{ book.isbn || 'Ej angivet' }}</p></div>
+               <div><p class="alumni-font text-sm font-semibold text-headerbrown sm:text-lg">STATUS</p><p class="amiri-font text-lg leading-tight sm:text-2xl">{{ shelfBook ? (shelfBook.status || 'Ej angivet') : 'Ej i bokhyllan' }}</p></div>
+               <div><p class="alumni-font text-sm font-semibold text-headerbrown sm:text-lg">ANTAL EXEMPLAR</p><p class="amiri-font text-lg leading-tight sm:text-2xl">{{ shelfBook ? shelfBook.copies : 'Ej i bokhyllan' }}</p></div>
+               <div><p class="alumni-font text-sm font-semibold text-headerbrown sm:text-lg">BETYG</p><p class="amiri-font text-lg leading-tight sm:text-2xl">{{ shelfBook ? (shelfBook.rating != null ? shelfBook.rating : 'Inget betyg satt') : 'Ej i bokhyllan' }}</p></div>
             </div>
          </div>
       </section>
@@ -37,7 +37,7 @@
 
       @if (booksByAuthor.length) {
          <section class="col-span-2 border-headerbrown/15 pt-5">
-            <h2 class="text-xl font-semibold leading-tight text-bookolive sm:text-2xl">
+            <h2 class="alumni-font text-xl font-medium uppercase leading-tight text-headerbrown sm:text-2xl">
                @if (book.authors.length === 1) {
                   Mer av {{ book.authors[0].firstName }} {{ book.authors[0].lastName }} i din bokhylla
                } @else {
@@ -52,5 +52,5 @@
          </section>
       }
    </div>
-   @if (book.isDeleted) { <div class="pointer-events-none fixed inset-0 z-40 flex items-center justify-center text-6xl font-bold text-red-600/50 sm:text-8xl"><span class="rotate-12">RADERAD</span></div> }
+   @if (book.isDeleted) { <div class="pointer-events-none fixed inset-0 z-40 flex items-center justify-center text-6xl font-bold text-red-500/50 sm:text-8xl"><span class="rotate-12">RADERAD</span></div> }
 </div>

@@ -9,12 +9,13 @@ import { Language } from '../../../../types/Language.model';
 import { KeyValuePipe } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Button } from '../../../../shared/components/button/button';
 
 
 @Component({
    selector: 'app-filter-list',
    standalone: true,
-   imports: [CdkMenuModule, KeyValuePipe],
+   imports: [CdkMenuModule, KeyValuePipe, Button],
    templateUrl: './filter-list.html',
    styles: ''
 })

@@ -20,7 +20,7 @@
    <div class="fixed inset-0 z-50 flex items-end bg-black/45 lg:hidden" (click)="mobileMenuOpen.set(false)">
       <section role="dialog" aria-modal="true" aria-labelledby="mobile-sort-title" class="w-full max-h-[92dvh] overflow-y-auto rounded-t-4xl bg-backgroundbeige px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-3 shadow-2xl sm:max-h-[85dvh] sm:px-6 sm:pb-[max(1.5rem,env(safe-area-inset-bottom))]" (click)="$event.stopPropagation()">
          <div class="flex items-center justify-between border-b border-headerbrown/15 pb-2 pt-1 sm:pb-4">
-            <h2 id="mobile-sort-title" class="text-2xl font-bold text-headerbrown sm:text-3xl">Sortering</h2>
+            <h2 id="mobile-sort-title" class="text-2xl font-bold text-bookolive sm:text-3xl">Sortering</h2>
             <button type="button" aria-label="Stäng sortering" class="flex size-9 items-center justify-center text-xl text-headerbrown sm:size-10 sm:text-2xl" (click)="mobileMenuOpen.set(false)">
                <i class="fa-solid fa-xmark"></i>
             </button>
@@ -38,11 +38,11 @@
          </div>
 
          <div class="mt-3 grid grid-cols-2 gap-3 sm:mt-4">
-            <button type="button" class="rounded-full border border-bookolive px-4 py-2 sm:py-3" [class.bg-bookolive]="sortAscending()" [class.text-backgroundbeige]="sortAscending()" (click)="sortAscending.set(true)">Stigande</button>
-            <button type="button" class="rounded-full border border-bookolive px-4 py-2 sm:py-3" [class.bg-bookolive]="!sortAscending()" [class.text-backgroundbeige]="!sortAscending()" (click)="sortAscending.set(false)">Fallande</button>
+            <app-button width="full" [outlined]="!sortAscending()" [pressed]="sortAscending()" (click)="sortAscending.set(true)">Stigande</app-button>
+            <app-button width="full" [outlined]="sortAscending()" [pressed]="!sortAscending()" (click)="sortAscending.set(false)">Fallande</app-button>
          </div>
 
-         <button type="button" class="mt-3 w-full rounded-full bg-bookolive px-5 py-2.5 text-base text-backgroundbeige sm:mt-5 sm:py-3 sm:text-lg" (click)="mobileMenuOpen.set(false)">Klar</button>
+         <app-button width="full" class="mt-3 block sm:mt-5" (click)="mobileMenuOpen.set(false)">Klar</app-button>
       </section>
    </div>
 }

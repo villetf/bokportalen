@@ -3,10 +3,12 @@ import { UserStore } from '../../../../stores/user.store';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../../services/authService';
 import { UsersService } from '../../../../services/usersService';
+import { Button } from '../../../../shared/components/button/button';
 
 @Component({
    selector: 'app-settings-page',
    standalone: true,
+   imports: [Button],
    templateUrl: './settings-page.html',
    host: { class: 'block min-h-full bg-backgroundbeige' }
 })

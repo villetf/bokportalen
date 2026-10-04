@@ -15,7 +15,7 @@
                      <i class="fa-solid fa-arrow-left"></i>
                   </button>
                }
-               <h2 id="mobile-filter-title" class="text-2xl font-bold text-headerbrown sm:text-3xl">{{ filterAlts().label || 'Filtrering' }}</h2>
+               <h2 id="mobile-filter-title" class="text-2xl font-bold text-bookolive sm:text-3xl">{{ filterAlts().label || 'Filtrering' }}</h2>
             </div>
             <button type="button" aria-label="Stäng filtrering" class="flex size-9 items-center justify-center text-xl text-headerbrown sm:size-10 sm:text-2xl" (click)="mobileMenuOpen.set(false)">
                <i class="fa-solid fa-xmark"></i>
@@ -55,8 +55,8 @@
          </div>
 
          <div class="mt-2 flex shrink-0 items-center gap-3 border-t border-headerbrown/15 pt-3 sm:mt-4 sm:gap-4 sm:pt-4">
-            <button type="button" class="px-1 py-2 text-sm text-headerbrown underline underline-offset-4 disabled:opacity-40 sm:px-2 sm:py-3 sm:text-base" [disabled]="filterBy().length === 0" (click)="filterBy.set([])">Rensa filter</button>
-            <button type="button" class="ml-auto min-w-32 rounded-full bg-bookolive px-5 py-2.5 text-base text-backgroundbeige sm:min-w-40 sm:px-6 sm:py-3 sm:text-lg" (click)="mobileMenuOpen.set(false)">Klar ({{ filterBy().length }})</button>
+            <button type="button" class="px-1 py-2 text-sm text-bookolive underline underline-offset-4 disabled:opacity-60 sm:px-2 sm:py-3 sm:text-base" [disabled]="filterBy().length === 0" (click)="filterBy.set([])">Rensa filter</button>
+            <app-button class="ml-auto" (click)="mobileMenuOpen.set(false)">Klar ({{ filterBy().length }})</app-button>
          </div>
       </section>
    </div>

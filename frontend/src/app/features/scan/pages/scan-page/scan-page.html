@@ -19,14 +19,14 @@
                (input)="updateIsbn($event)"
                (keydown.enter)="search()"
             />
-            <button
+            <app-button
                type="button"
-               class="shrink-0 rounded-full bg-bookolive px-4 py-2 text-white transition-colors hover:bg-bookolive-dark disabled:cursor-not-allowed disabled:opacity-50 sm:px-5"
+               class="shrink-0"
                [disabled]="searching() || !searchIsbn()"
                (click)="search()"
             >
                Sök
-            </button>
+            </app-button>
          </div>
       </div>
 
@@ -77,9 +77,9 @@
                   }
                } @else if (this.scanMode() === 'new') {
                   <h2 class="text-2xl font-bold text-bookolive">Boken finns inte i arkivet eller i din bokhylla.</h2>
-                  <button class="mt-5 rounded-full bg-bookolive px-5 py-2 text-white transition-colors hover:bg-bookolive-dark" (click)="showBookChoices.set(true)">
+                  <app-button class="mt-5" (click)="showBookChoices.set(true)">
                      Jo, den finns visst
-                  </button>
+                  </app-button>
                }
             </section>
          </div>
@@ -130,12 +130,12 @@
             </div>
 
             <div class="mt-5 flex flex-wrap gap-3">
-               <button type="button" class="rounded-full bg-bookolive px-5 py-2 text-white transition-colors hover:bg-bookolive-dark disabled:cursor-not-allowed disabled:opacity-50" [disabled]="savingAuthor()" (click)="saveMissingAuthor(missingAuthorFirstName, missingAuthorLastName)">
+               <app-button type="button" [disabled]="savingAuthor()" (click)="saveMissingAuthor(missingAuthorFirstName, missingAuthorLastName)">
                   Spara och lägg till på boken
-               </button>
-               <button type="button" class="rounded-full border border-[#d8cfbd] bg-[#fefcf5] px-5 py-2 text-headerbrown transition-colors hover:bg-[#f6f0dd]" (click)="closeAuthorForm()">
+               </app-button>
+               <app-button type="button" (click)="closeAuthorForm()">
                   Inte nu
-               </button>
+               </app-button>
             </div>
          </div>
       }
@@ -158,12 +158,12 @@
             </div>
 
             <div class="flex flex-wrap gap-3 mt-4">
-               <button type="button" class="rounded-full bg-bookolive px-5 py-2 text-white transition-colors hover:bg-bookolive-dark" (click)="useSelectedTitleBook()">
+               <app-button type="button" (click)="useSelectedTitleBook()">
                   Använd vald bok
-               </button>
-               <button type="button" class="rounded-full border border-[#d8cfbd] bg-[#fefcf5] px-5 py-2 text-headerbrown transition-colors hover:bg-[#f6f0dd]" (click)="createNewBookAnyway()">
+               </app-button>
+               <app-button type="button" (click)="createNewBookAnyway()">
                   Nej, skapa som ny bok
-               </button>
+               </app-button>
             </div>
          </div>
       }
@@ -201,7 +201,7 @@
                         @if (fieldWasAutofilled('författare')) {
                            <p class="mt-1 text-xs text-green-500"><i class="fa-solid fa-circle-plus mr-1"></i>Ny info tillagd</p>
                         }
-                        <button type="button" (click)="authorFormIsOpen.set(true)" class="mt-2 rounded-full bg-bookolive px-5 py-2 text-white transition-colors hover:bg-bookolive-dark">Lägg till ny</button>
+                        <app-button type="button" (click)="authorFormIsOpen.set(true)" class="mt-2">Lägg till ny</app-button>
                      </div>
 
                      @if (form.get('authors')?.invalid && formIsSubmitted) {
@@ -298,14 +298,14 @@
                      }
 
                      <div class="flex flex-wrap items-center gap-3 mt-5">
-                        <button type="submit" class="rounded-full bg-bookolive px-5 py-2 text-white transition-colors hover:bg-bookolive-dark disabled:cursor-not-allowed disabled:opacity-50" [disabled]="saving()">
+                        <app-button type="submit" [disabled]="saving()">
                            Spara
-                        </button>
+                        </app-button>
 
                         @if (selectedBook() && !currentBookInShelf()) {
-                           <button type="button" class="rounded-full border border-bookolive px-5 py-2 text-headerbrown transition-colors hover:bg-[#f6f0dd]" (click)="addCurrentBookToShelf()">
+                           <app-button type="button" (click)="addCurrentBookToShelf()">
                               Lägg till i bokhyllan
-                           </button>
+                           </app-button>
                         }
 
                         @if (selectedBook() && currentBookInShelf()) {

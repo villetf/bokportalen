@@ -32,7 +32,7 @@
                      class="relative rounded-lg border-2 p-4 text-left transition-all"
                      [class.border-bookolive]="coverDisplayMode() === 'natural'"
                      [class.border-gray-300]="coverDisplayMode() !== 'natural'"
-                     [class.bg-blue-50]="coverDisplayMode() === 'natural'"
+                     [class.bg-bookolive/10]="coverDisplayMode() === 'natural'"
                      [class.bg-gray-50]="coverDisplayMode() !== 'natural'"
                      (click)="coverDisplayMode.set('natural')"
                   >
@@ -57,7 +57,7 @@
                      class="relative rounded-lg border-2 p-4 text-left transition-all"
                      [class.border-bookolive]="coverDisplayMode() === 'uniform'"
                      [class.border-gray-300]="coverDisplayMode() !== 'uniform'"
-                     [class.bg-blue-50]="coverDisplayMode() === 'uniform'"
+                     [class.bg-bookolive/10]="coverDisplayMode() === 'uniform'"
                      [class.bg-gray-50]="coverDisplayMode() !== 'uniform'"
                      (click)="coverDisplayMode.set('uniform')"
                   >
@@ -81,14 +81,13 @@
 
             <!-- Action Buttons -->
             <div class="flex items-center gap-3">
-               <button
+               <app-button
                   type="button"
-                  class="rounded-lg bg-bookolive px-6 py-2 text-white transition-colors hover:bg-bookolive-dark disabled:cursor-not-allowed disabled:opacity-50"
                   [disabled]="!canSubmit"
                   (click)="saveSettings()"
                >
                   Spara inställningar
-               </button>
+               </app-button>
 
                @if (saving()) {
                   <span class="text-sm text-gray-600">Sparar…</span>
@@ -107,9 +106,9 @@
          </div>
       }
       <div class="border-t border-gray-300 pt-6 space-y-3">
-         <button type="button" class="rounded-lg bg-bookolive px-6 py-2 text-white transition-colors hover:bg-bookolive-dark disabled:cursor-not-allowed disabled:opacity-50" [disabled]="loggingOut() || saving()" (click)="logout()">
+         <app-button [disabled]="loggingOut() || saving()" (click)="logout()">
             {{ loggingOut() ? 'Loggar ut…' : 'Logga ut' }}
-         </button>
+         </app-button>
          @if (logoutError()) {
             <p role="alert" class="text-sm text-red-700">{{ logoutError() }}</p>
          }
