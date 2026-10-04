@@ -47,8 +47,8 @@ export class AllBooks {
    private scrollEndTimer?: ReturnType<typeof setTimeout>;
    private mobileToolbarTimer?: ReturnType<typeof setTimeout>;
    private toolbarResizeObserver?: ResizeObserver;
-   private toolbarNaturalBottom = 0;
    private mobileBoundaryFrame: number | null = null;
+   private mobileToolbarFrame: number | null = null;
    private readonly mobileNavigationListener = (event: Event) => {
       this.handleMobileNavigationVisibility((event as CustomEvent<boolean>).detail);
    };
@@ -63,6 +63,7 @@ export class AllBooks {
    };
    @ViewChild('scrollContainer') private scrollContainer?: ElementRef<HTMLElement>;
    @ViewChild('toolbar') private toolbar?: ElementRef<HTMLElement>;
+   @ViewChild('toolbarTitle') private toolbarTitle?: ElementRef<HTMLElement>;
    booksOriginal$ = new BehaviorSubject<(UserBook | Book)[]>([]);
    booksFiltered$ = new BehaviorSubject<(UserBook | Book)[]>([]);
    booksSearched$ = new BehaviorSubject<(UserBook | Book)[]>([]);
@@ -75,6 +76,8 @@ export class AllBooks {
    skipToolbarTransition = signal(false);
    titleVisibility = signal(1);
    controlsVisibility = signal(1);
+   readonly toolbarTitleGap = 20;
+   readonly toolbarCollapsedPadding = 8;
 
    private destroyRef = inject(DestroyRef);
    private userStore = inject(UserStore);
@@ -107,6 +110,7 @@ export class AllBooks {
          clearTimeout(this.scrollEndTimer);
       }
       clearTimeout(this.mobileToolbarTimer);
+      this.cancelMobileToolbarFrame();
       window.removeEventListener('mobile-navigation-visibility', this.mobileNavigationListener);
       window.removeEventListener('mobile-page-top', this.mobilePageTopListener);
       window.removeEventListener('scroll', this.mobileToolbarBoundaryListener);
@@ -134,11 +138,6 @@ export class AllBooks {
          requestAnimationFrame(updateToolbarHeight);
          this.toolbarResizeObserver = new ResizeObserver(updateToolbarHeight);
          this.toolbarResizeObserver.observe(toolbarElement);
-
-         requestAnimationFrame(() => {
-            const bounds = toolbarElement.getBoundingClientRect();
-            this.toolbarNaturalBottom = bounds.bottom + window.scrollY;
-         });
       }
 
       window.addEventListener('mobile-navigation-visibility', this.mobileNavigationListener);
@@ -151,11 +150,15 @@ export class AllBooks {
    private releaseToolbarAtNaturalBoundary() {
       if (!this.toolbarPinned() || window.matchMedia('(min-width: 64rem)').matches) return;
 
-      const topHeader = document.querySelector<HTMLElement>('app-root > main > app-header');
-      const headerHeight = topHeader?.getBoundingClientRect().height ?? 80;
-      const naturalToolbarReachedHeader = window.scrollY <= Math.max(0, this.toolbarNaturalBottom - headerHeight);
+      const scrollElement = this.scrollContainer?.nativeElement;
+      const titleElement = this.toolbarTitle?.nativeElement;
+      if (!scrollElement || !titleElement) return;
 
-      if (naturalToolbarReachedHeader) {
+      const naturalControlsTop = scrollElement.getBoundingClientRect().top
+         + titleElement.getBoundingClientRect().height + this.toolbarTitleGap;
+      const pinnedControlsTop = this.toolbarPinnedTop() + this.toolbarCollapsedPadding;
+
+      if (naturalControlsTop >= pinnedControlsTop) {
          this.restoreNaturalMobileToolbar();
       }
    }
@@ -164,11 +167,16 @@ export class AllBooks {
       if (window.matchMedia('(min-width: 64rem)').matches) return;
 
       this.cancelMobileToolbarTimer();
+      this.cancelMobileToolbarFrame();
 
+      this.skipToolbarTransition.set(true);
       this.useNaturalToolbarScroll = true;
       this.toolbarPinned.set(false);
       this.titleVisibility.set(1);
       this.controlsVisibility.set(1);
+      this.scheduleMobileToolbarFrame(() => {
+         this.scheduleMobileToolbarFrame(() => this.skipToolbarTransition.set(false));
+      });
    }
 
    private handleMobileNavigationVisibility(visible: boolean) {
@@ -180,9 +188,14 @@ export class AllBooks {
       const scrollElement = this.scrollContainer?.nativeElement;
       if (!toolbarElement || !scrollElement) return;
 
-      const toolbarHasScrolledAway = window.scrollY > this.toolbarNaturalBottom;
-      if (visible && toolbarHasScrolledAway) {
+      const toolbarHasScrolledAway = () =>
+         scrollElement.getBoundingClientRect().top + this.toolbarSpacerHeight() < 0;
+      if (visible && toolbarHasScrolledAway()) {
          this.mobileToolbarTimer = setTimeout(() => {
+            this.mobileToolbarTimer = undefined;
+
+            if (!toolbarHasScrolledAway()) return;
+
             const bounds = scrollElement.getBoundingClientRect();
             const topHeader = document.querySelector<HTMLElement>('app-root > main > app-header');
 
@@ -193,15 +206,14 @@ export class AllBooks {
             this.toolbarPinnedWidth.set(bounds.width);
             this.controlsVisibility.set(0);
             this.toolbarPinned.set(true);
-            requestAnimationFrame(() => {
+            this.scheduleMobileToolbarFrame(() => {
                this.skipToolbarTransition.set(false);
-               requestAnimationFrame(() => {
+               this.scheduleMobileToolbarFrame(() => {
                   if (this.toolbarPinned() && !this.mobileToolbarTimer) {
                      this.controlsVisibility.set(1);
                   }
                });
             });
-            this.mobileToolbarTimer = undefined;
          }, 200);
          return;
       }
@@ -218,6 +230,21 @@ export class AllBooks {
    private cancelMobileToolbarTimer() {
       clearTimeout(this.mobileToolbarTimer);
       this.mobileToolbarTimer = undefined;
+   }
+
+   private scheduleMobileToolbarFrame(callback: () => void) {
+      this.cancelMobileToolbarFrame();
+      this.mobileToolbarFrame = requestAnimationFrame(() => {
+         this.mobileToolbarFrame = null;
+         callback();
+      });
+   }
+
+   private cancelMobileToolbarFrame() {
+      if (this.mobileToolbarFrame !== null) {
+         cancelAnimationFrame(this.mobileToolbarFrame);
+         this.mobileToolbarFrame = null;
+      }
    }
 
    @HostListener('window:beforeunload')

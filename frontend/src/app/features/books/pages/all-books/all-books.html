@@ -16,7 +16,7 @@
             [style.transition-duration]="skipToolbarTransition() ? '0ms' : null"
             [style.grid-template-rows]="titleVisibility() + 'fr'">
             <div class="min-h-0 overflow-hidden">
-               <div class="flex items-center justify-between gap-3 w-full pt-6 sm:pt-17 sm:justify-start sm:items-baseline sm:gap-x-6">
+               <div #toolbarTitle class="flex items-center justify-between gap-3 w-full pt-6 sm:pt-17 sm:justify-start sm:items-baseline sm:gap-x-6">
                   <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold mt-20 md:mt-13 lg:mt-0 text-bookolive leading-tight wrap-break-word">{{ title }}</h1>
                </div>
             </div>
@@ -28,8 +28,8 @@
             <div class="min-h-0 overflow-hidden" [class.overflow-visible]="titleVisibility() > 0.5">
                <div
                   class="flex flex-col lg:flex-row lg:justify-between gap-4 pb-5 lg:pb-8"
-                  [style.margin-top.px]="20 * titleVisibility()"
-                  [style.padding-top.px]="8 * (1 - titleVisibility())">
+                  [style.margin-top.px]="toolbarTitleGap * titleVisibility()"
+                  [style.padding-top.px]="toolbarCollapsedPadding * (1 - titleVisibility())">
                   <div class="flex flex-wrap items-start gap-y-2 order-2 lg:order-1">
                      <div class="flex items-center justify-center">
                         <app-sort-list [booksOriginal$]="booksOriginal$" />
