@@ -83,7 +83,7 @@
 </div>
 
 @if (editViewIsOpen()) {
-   <app-edit-panel [closePanel]="closeEditView">
+   <app-edit-panel [closePanel]="closeEditView" [fitContent]="true">
       <app-edit-author-form [author]="author()!" (editViewIsOpen)="editViewIsOpen.set($event)" (authorChange)="updateAuthor($event)" (updateBooks)="updateBooksByAuthor()" />
    </app-edit-panel>
 }

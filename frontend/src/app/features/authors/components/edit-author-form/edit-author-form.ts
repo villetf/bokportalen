@@ -14,7 +14,7 @@ import { EditAuthorDTO } from '../../../../dtos/EditAuthorDTO';
    imports: [ReactiveFormsModule, Button],
    templateUrl: './edit-author-form.html',
    styles: '',
-   host: { class: 'block h-full min-h-0 overflow-hidden md:h-auto md:max-h-[calc(100dvh-2rem)] lg:min-h-full lg:overflow-visible' }
+   host: { class: 'block min-h-0' }
 })
 export class EditBookForm implements OnInit {
    @Input() author!: Author;

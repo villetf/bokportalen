@@ -9,4 +9,6 @@ import { Component, Input } from '@angular/core';
 export class EditPanel {
    @Input()
       closePanel!: () => void;
+
+   @Input() fitContent = false;
 }
