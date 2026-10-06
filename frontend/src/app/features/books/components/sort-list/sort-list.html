@@ -19,7 +19,7 @@
 @if (mobileMenuOpen()) {
    <div class="fixed inset-0 z-50 flex items-end bg-black/45 lg:hidden" (click)="mobileMenuOpen.set(false)">
       <section role="dialog" aria-modal="true" aria-labelledby="mobile-sort-title" class="w-full max-h-[92dvh] overflow-y-auto rounded-t-4xl bg-backgroundbeige px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-3 shadow-2xl sm:max-h-[85dvh] sm:px-6 sm:pb-[max(1.5rem,env(safe-area-inset-bottom))]" (click)="$event.stopPropagation()">
-         <div class="flex items-center justify-between border-b border-headerbrown/15 pb-2 pt-1 sm:pb-4">
+         <div class="-mx-4 flex items-center justify-between border-b border-headerbrown/15 px-4 pb-2 pt-1 sm:-mx-6 sm:px-6 sm:pb-4">
             <h2 id="mobile-sort-title" class="text-2xl font-bold text-bookolive sm:text-3xl">Sortering</h2>
             <button type="button" aria-label="Stäng sortering" class="flex size-9 items-center justify-center text-xl text-headerbrown sm:size-10 sm:text-2xl" (click)="mobileMenuOpen.set(false)">
                <i class="fa-solid fa-xmark"></i>
