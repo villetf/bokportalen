@@ -1,30 +1,66 @@
-<div class="flex flex-col flex-1 ml-25 mr-15 pt-17 h-full">
-   <h1 class="text-5xl font-bold text-bookolive">{{ title }}</h1>
-   <div class="flex justify-between mt-5">
-      <div class="flex">
-         <div class="flex items-center justify-center">
-            <app-sort-list [booksOriginal$]="booksOriginal$" />
+<div class="relative flex flex-col flex-1 min-w-0 mx-4 sm:ml-25 sm:mr-15 lg:h-full lg:overflow-hidden">
+   <div #scrollContainer
+      class="relative grid content-start grid-cols-3 sm:grid-cols-4 xl:grid-cols-5 gap-x-2 gap-y-6 sm:gap-4 overflow-visible lg:flex-1 lg:min-h-0 lg:overflow-y-auto lg:overflow-x-hidden lg:overscroll-contain lg:scroll-pt-0"
+      [style.padding-top.px]="toolbarSpacerHeight()"
+      (scroll)="onBooksScroll($event)">
+      <div
+         #toolbar
+         class="top-0 z-50 w-full [overflow-anchor:none]"
+         [class.absolute]="!toolbarPinned()"
+         [class.fixed]="toolbarPinned()"
+         [style.top.px]="toolbarPinned() ? toolbarPinnedTop() : 0"
+         [style.left.px]="toolbarPinned() ? toolbarPinnedLeft() : 0"
+         [style.width.px]="toolbarPinned() ? toolbarPinnedWidth() : null">
+         <div
+            class="grid grid-rows-[1fr] bg-backgroundbeige transition-[grid-template-rows] duration-350 ease-out"
+            [style.transition-duration]="skipToolbarTransition() ? '0ms' : null"
+            [style.grid-template-rows]="titleVisibility() + 'fr'">
+            <div class="min-h-0 overflow-hidden">
+               <div #toolbarTitle class="flex items-center justify-between gap-3 w-full pt-6 sm:pt-17 sm:justify-start sm:items-baseline sm:gap-x-6">
+                  <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold mt-20 md:mt-13 lg:mt-0 text-bookolive leading-tight wrap-break-word">{{ title }}</h1>
+               </div>
+            </div>
          </div>
-   
-         <div class="flex items-center justify-center">
-            <app-filter-list [booksOriginal$]="booksOriginal$" [booksFiltered$]="booksFiltered$"></app-filter-list>
-         </div>
-      </div>
-      <div>
-         <div class="flex">
-            <app-search-bar [booksFiltered$]="booksFiltered$" [booksSearched$]="booksSearched$" />
-            <i class="fa-solid fa-dice text-5xl -mt-10 ml-5 cursor-pointer text-bookolive" (click)="getRandomBook()"></i>
-         </div>
-         <div class="w-full mt-5 text-right text-xl">
-            <p class="text-headerbrown">Antal böcker: {{ numberOfBooks() }}</p>
-         </div>
-      </div>
-   </div>
+         <div
+            class="grid grid-rows-[1fr] bg-backgroundbeige transition-[grid-template-rows] duration-350 ease-out"
+            [style.transition-duration]="skipToolbarTransition() ? '0ms' : null"
+            [style.grid-template-rows]="controlsVisibility() + 'fr'">
+            <div class="min-h-0 overflow-hidden" [class.overflow-visible]="titleVisibility() > 0.5">
+               <div
+                  class="flex flex-col lg:flex-row lg:justify-between gap-4 pb-5 lg:pb-8"
+                  [style.margin-top.px]="toolbarTitleGap * titleVisibility()"
+                  [style.padding-top.px]="toolbarCollapsedPadding * (1 - titleVisibility())">
+                  <div class="flex flex-wrap items-start gap-y-2 order-2 lg:order-1">
+                     <div class="flex items-center justify-center">
+                        <app-sort-list [booksOriginal$]="booksOriginal$" />
+                     </div>
 
-   <div #scrollContainer class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mt-8 overflow-y-auto overflow-x-hidden">
+                     <div class="flex items-center justify-center">
+                        <app-filter-list [booksOriginal$]="booksOriginal$" [booksFiltered$]="booksFiltered$"></app-filter-list>
+                     </div>
+                     <p class="ml-auto self-center text-sm text-headerbrown whitespace-nowrap lg:hidden">Antal böcker: {{ numberOfBooks() }}</p>
+                  </div>
+                  <div class="min-w-0 order-1 lg:order-2">
+                     <div class="flex items-center gap-3" [class.lg:-mt-10]="titleVisibility() > 0.5">
+                        <ng-content select="[page-actions]" />
+                        <app-search-bar
+                           class="block flex-1 lg:flex-none"
+                           [booksFiltered$]="booksFiltered$"
+                           [booksSearched$]="booksSearched$" />
+                        <i class="fa-solid fa-dice text-3xl sm:text-5xl cursor-pointer text-bookolive shrink-0" (click)="getRandomBook()"></i>
+                     </div>
+                     <div class="hidden lg:block w-full mt-5 text-right text-xl">
+                        <p class="text-headerbrown">Antal böcker: {{ numberOfBooks() }}</p>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
       @if (booksSearched$ | async; as books ) {
          @for (book of books; track book.id) {
             <app-book-card 
+               class="min-w-0"
                [book]="book" 
                [showRealCovers]="user()!.showRealCovers"
                [inShelf]="mode === 'archive' ? book.inShelf : undefined"

@@ -1,3 +1,10 @@
-<button [attr.type]="type || 'button'" [ngClass]="['px-7.5 py-1 text-white text-xl font-normal rounded-full alumni-font uppercase cursor-pointer', color, hoverColor]">
+<button
+   [attr.type]="type || 'button'"
+   [disabled]="disabled"
+   [attr.aria-pressed]="pressed"
+   class="inline-flex max-w-full min-h-11 items-center justify-center gap-2 border rounded-full py-2 text-xl leading-6 font-normal alumni-font uppercase cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 lg:min-h-9 px-7.5 lg:py-1"
+   [class.w-full]="width !== 'auto'"
+   [class.lg:w-auto]="width === 'mobile-full'"
+   [ngClass]="outlined ? 'border-bookolive bg-transparent text-bookolive hover:bg-bookolive/10' : ['border-transparent text-white', color, hoverColor]">
    <ng-content></ng-content>
 </button>

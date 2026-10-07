@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, Output, EventEmitter } from '@angular/core';
 import { Book } from '../../../../types/Book.model';
 import { RouterLink } from '@angular/router';
 import { NgClass } from '@angular/common';
@@ -8,7 +8,8 @@ import { NgClass } from '@angular/common';
    selector: 'app-book-card',
    imports: [RouterLink, NgClass],
    templateUrl: './book-card.html',
-   styles: ''
+   styles: '',
+   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BookCard {
    @Input()

@@ -1,37 +1,41 @@
-<div class="flex justify-center h-full items-center">
-   <form [formGroup]="form" class="mx-20 my-10 w-1/2">
-      <div class="grid grid-cols-[auto_75%] gap-y-2 gap-x-5 [&>label]:justify-self-end">
-         <label for="firstName" class="self-center">Förnamn:</label>
-         <input type="text" formControlName="firstName" class="form-text-input" id="firstName" autocorrect="off" autocapitalize="off" spellcheck="false">
-         
-         <label for="lastName">Efternamn:</label>
-         <input type="text" formControlName="lastName" class="form-text-input" id="lastName" autocorrect="off" autocapitalize="off" spellcheck="false">
-      
-         <label for="genre">Kön:</label>
-         <select formControlName="gender" id="gender">
-            <option value="Kvinna">Kvinna</option>
-            <option value="Man">Man</option>
-            <option value="Annat">Annat</option>
-         </select>
-         
-         <label for="birthYear" class="self-center">Födelseår:</label>
-         <input type="number" formControlName="birthYear" [max]="this.getCurrentYear()" class="form-text-input" id="birthYear" autocorrect="off" autocapitalize="off" spellcheck="false">
-      
-         <label for="country">Land:</label>
-         <select formControlName="countryId" id="country">
-            @for (country of allCountries(); track country.id) {
-               <option [ngValue]="country.id">{{ country.name }}</option>
-            }
-         </select>
-      
-         <label for="imageLink" class="self-center">Bildlänk:</label>
-         <input formControlName="imageLink" class="form-text-input" id="imageLink" autocorrect="off" autocapitalize="off" spellcheck="false">
+<div class="flex justify-center max-md:h-full max-md:min-h-full max-lg:max-h-full max-lg:overflow-hidden md:h-auto md:max-h-[calc(100dvh-2rem)] lg:items-center">
+   <form [formGroup]="form" class="w-full p-6 sm:p-8 max-lg:flex max-md:h-full max-lg:min-h-0 max-lg:max-h-full max-lg:flex-col max-lg:overflow-hidden md:h-auto md:max-h-[calc(100dvh-2rem)] lg:mx-20 lg:my-10 lg:w-1/2 lg:p-0">
+      <div class="min-h-0 flex-1 overflow-y-auto overscroll-contain pr-1 lg:overflow-visible lg:pr-0">
+         <h2 class="mb-6 text-2xl font-bold text-bookolive lg:hidden">Redigera författare</h2>
+
+         <div class="grid grid-cols-1 gap-y-1 lg:grid-cols-[auto_75%] lg:gap-x-5 lg:gap-y-2 lg:[&>label]:justify-self-end">
+            <label for="firstName" class="lg:self-center">Förnamn:</label>
+            <input type="text" formControlName="firstName" class="form-text-input mb-4 w-full py-2.5 lg:mb-0 lg:py-1" id="firstName" autocorrect="off" autocapitalize="words" spellcheck="false">
+
+            <label for="lastName">Efternamn:</label>
+            <input type="text" formControlName="lastName" class="form-text-input mb-4 w-full py-2.5 lg:mb-0 lg:py-1" id="lastName" autocorrect="off" autocapitalize="words" spellcheck="false">
+
+            <label for="gender">Kön:</label>
+            <select formControlName="gender" id="gender" class="mb-4 w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 lg:mb-0 lg:py-1">
+               <option value="Kvinna">Kvinna</option>
+               <option value="Man">Man</option>
+               <option value="Annat">Annat</option>
+            </select>
+
+            <label for="birthYear" class="lg:self-center">Födelseår:</label>
+            <input type="number" inputmode="numeric" formControlName="birthYear" [max]="this.getCurrentYear()" class="form-text-input mb-4 w-full py-2.5 lg:mb-0 lg:py-1" id="birthYear">
+
+            <label for="country">Land:</label>
+            <select formControlName="countryId" id="country" class="mb-4 w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 lg:mb-0 lg:py-1">
+               @for (country of allCountries(); track country.id) {
+                  <option [ngValue]="country.id">{{ country.name }}</option>
+               }
+            </select>
+
+            <label for="imageLink" class="lg:self-center">Bildlänk:</label>
+            <input type="url" inputmode="url" formControlName="imageLink" class="form-text-input w-full py-2.5 lg:py-1" id="imageLink" autocorrect="off" autocapitalize="off" autocomplete="url" spellcheck="false">
+         </div>
       </div>
 
-      <div class="flex justify-around mt-10">
-         <app-button (click)="closeEditView()">Avbryt</app-button>
-         <app-button (click)="resetForm()">Återställ</app-button>
-         <app-button type="submit" (click)="save()">Spara</app-button>
+      <div class="mt-4 grid shrink-0 grid-cols-3 gap-2 border-t border-headerbrown/15 bg-backgroundbeige pt-4 pb-1 lg:mt-10 lg:flex lg:justify-around lg:border-0 lg:bg-transparent lg:pt-0 lg:pb-0">
+         <app-button width="mobile-full" (click)="closeEditView()">Avbryt</app-button>
+         <app-button width="mobile-full" type="reset" (click)="resetForm()">Återställ</app-button>
+         <app-button width="mobile-full" type="submit" (click)="save()">Spara</app-button>
       </div>
    </form>
 </div>

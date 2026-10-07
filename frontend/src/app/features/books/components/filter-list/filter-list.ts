@@ -9,12 +9,13 @@ import { Language } from '../../../../types/Language.model';
 import { KeyValuePipe } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Button } from '../../../../shared/components/button/button';
 
 
 @Component({
    selector: 'app-filter-list',
    standalone: true,
-   imports: [CdkMenuModule, KeyValuePipe],
+   imports: [CdkMenuModule, KeyValuePipe, Button],
    templateUrl: './filter-list.html',
    styles: ''
 })
@@ -25,6 +26,7 @@ export class FilterList {
 
    // Den lista av filter som ska appliceras på böckerna
    filterBy = signal<Filter[]>([]);
+   mobileMenuOpen = signal(false);
 
    // Den bok-egenskap som är vald i filtreringslistan
    filterAlts = signal<{key: string, label: string}>({key: '', label: ''});
@@ -38,6 +40,12 @@ export class FilterList {
       { key: 'genres' as keyof UserBook, label: 'Genre' },
       { key: 'status' as keyof UserBook, label: 'Status' },
       { key: 'authors' as keyof UserBook, label: 'Författare' },
+   ];
+
+   readonly authorFilterOptions = [
+      { key: 'authorName', label: 'Författarnamn', menuLabel: 'Namn' },
+      { key: 'authorGender', label: 'Författarkön', menuLabel: 'Kön' },
+      { key: 'authorCountry', label: 'Författarland', menuLabel: 'Land' },
    ];
 
    private suppressEffect = false;
@@ -78,28 +86,17 @@ export class FilterList {
          const { key, label } = this.filterAlts();
          const filterBy = this.filterBy();
 
-         const queryParams = this.route.snapshot.queryParams;
-         if (filterBy.length > 0) {
+         // Behåll den öppna egenskapen även när sista filtret avmarkeras.
+         const queryParams = {
+            filterPropKey: key || null,
+            filterPropLabel: label || null,
+            filterBy: filterBy.length > 0 ? JSON.stringify(filterBy) : null
+         };
+         const currentParams = this.route.snapshot.queryParams;
+         if (Object.entries(queryParams).some(([name, value]) => (currentParams[name] ?? null) !== value)) {
             this.router.navigate([], {
                relativeTo: this.route,
-               queryParams: {
-                  ...queryParams,
-                  ...(key && { filterPropKey: key }),
-                  ...(label && { filterPropLabel: label }),
-                  filterBy: JSON.stringify(filterBy)
-               },
-               queryParamsHandling: 'merge',
-               replaceUrl: true
-            });
-         } else if (queryParams['filterPropKey'] || queryParams['filterPropLabel'] || queryParams['filterBy']) {
-            this.router.navigate([], {
-               relativeTo: this.route,
-               queryParams: {
-                  ...queryParams,
-                  filterPropKey: null,
-                  filterPropLabel: null,
-                  filterBy: null
-               },
+               queryParams,
                queryParamsHandling: 'merge',
                replaceUrl: true
             });
@@ -312,16 +309,7 @@ export class FilterList {
 
    // Hittar rätt label för en nyckel
    convertKeyToLabel(key: string) {
-      switch (key) {
-      case 'authorName':
-         return 'Författarnamn';
-      case 'authorGender':
-         return 'Författarkön';
-      case 'authorCountry':
-         return 'Författarland';
-      default:
-         break;
-      }
-      return this.filterOptions.find(f => f.key == key)?.label;
+      return this.authorFilterOptions.find(option => option.key === key)?.label
+         ?? this.filterOptions.find(option => option.key === key)?.label;
    }
 }

@@ -1,25 +1,18 @@
-<div class="w-1/2 h-3/4 mr-30">
+<div class="w-full lg:h-3/4">
    <form [formGroup]="form" (ngSubmit)="save()">
-      <div class="grid grid-cols-[auto_75%] gap-y-2 gap-x-5 [&>label]:justify-self-end">
-         <div></div>
-         <h1 class="text-5xl font-bold text-bookolive mb-5">LÄGG TILL SPRÅK</h1>
+      <div class="grid grid-cols-1 gap-y-1">
+         <h1 class="mb-6 text-3xl font-bold text-bookolive sm:text-4xl lg:mb-5 lg:text-5xl">LÄGG TILL SPRÅK</h1>
 
-         <label for="name" class="self-center">Namn på språk:</label>
-         <input type="text" formControlName="name" class="form-text-input" id="name" #languageInput>
-
-         @if (form.get('name')?.invalid && formIsSubmitted) {
-            @if (form.get('name')?.errors?.['required']) {
-               <div></div>
-               <span class="text-red-500">Språknamn är obligatoriskt.</span>
-            }
+         <label for="name">Namn på språk:</label>
+         <input type="text" formControlName="name" class="form-text-input w-full py-2.5 lg:py-1" id="name" #languageInput autocorrect="off" autocapitalize="off" spellcheck="false">
+         @if (form.get('name')?.invalid && formIsSubmitted && form.get('name')?.errors?.['required']) {
+            <span class="text-sm text-red-500 lg:text-base">Språknamn är obligatoriskt.</span>
          }
 
-         <div></div>
-         <div class="flex justify-start gap-10 mt-5">
-            <app-button type="reset" (click)="resetForm()">Återställ</app-button>
-            <app-button type="submit">Spara</app-button>
+         <div class="mt-6 grid grid-cols-2 gap-3 lg:mt-5 lg:flex lg:justify-start lg:gap-10">
+            <app-button width="mobile-full" type="reset" (click)="resetForm()">Återställ</app-button>
+            <app-button width="mobile-full" type="submit">Spara</app-button>
          </div>
       </div>
-
    </form>
 </div>

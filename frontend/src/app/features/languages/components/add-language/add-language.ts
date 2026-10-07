@@ -70,6 +70,8 @@ export class AddLanguage {
    }
 
    private focusTitle() {
-      this.languageInput.nativeElement.focus();
+      if (window.matchMedia('(min-width: 64rem)').matches) {
+         this.languageInput.nativeElement.focus();
+      }
    }
 }

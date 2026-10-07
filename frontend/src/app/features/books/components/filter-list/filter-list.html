@@ -1,4 +1,68 @@
-<div class="flex items-end">
+<button
+   type="button"
+   class="alumni-font flex items-center text-2xl text-headerbrown font-medium cursor-pointer lg:hidden"
+   (click)="filterAlts.set({key: '', label: ''}); mobileMenuOpen.set(true)">
+   filtrering@if (filterBy().length > 0) { ({{ filterBy().length }}) }
+</button>
+
+@if (mobileMenuOpen()) {
+   <div class="fixed inset-0 z-50 flex items-end bg-black/45 lg:hidden" (click)="mobileMenuOpen.set(false)">
+      <section role="dialog" aria-modal="true" aria-labelledby="mobile-filter-title" class="flex max-h-[92dvh] w-full flex-col rounded-t-4xl bg-backgroundbeige px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-3 shadow-2xl sm:max-h-[85dvh] sm:px-6 sm:pb-[max(1.5rem,env(safe-area-inset-bottom))]" (click)="$event.stopPropagation()">
+         <div class="-mx-4 flex shrink-0 items-center justify-between border-b border-headerbrown/15 px-4 pb-2 pt-1 sm:-mx-6 sm:px-6 sm:pb-4">
+            <div class="flex items-center gap-2">
+               @if (filterAlts().key !== '') {
+                  <button type="button" aria-label="Tillbaka" class="flex size-8 items-center justify-center text-lg text-headerbrown sm:size-9 sm:text-xl" (click)="filterAlts.set({key: '', label: ''})">
+                     <i class="fa-solid fa-arrow-left"></i>
+                  </button>
+               }
+               <h2 id="mobile-filter-title" class="text-2xl font-bold text-bookolive sm:text-3xl">{{ filterAlts().label || 'Filtrering' }}</h2>
+            </div>
+            <button type="button" aria-label="Stäng filtrering" class="flex size-9 items-center justify-center text-xl text-headerbrown sm:size-10 sm:text-2xl" (click)="mobileMenuOpen.set(false)">
+               <i class="fa-solid fa-xmark"></i>
+            </button>
+         </div>
+
+         <div class="min-h-0 flex-1 overflow-y-auto divide-y divide-headerbrown/10">
+            @switch (filterAlts().key) {
+               @case ('') {
+                  @for (option of filterOptions; track option.key) {
+                     <button type="button" class="flex min-h-12 w-full items-center justify-between gap-4 py-2 text-left text-base text-headerbrown sm:min-h-16 sm:py-3 sm:text-lg" (click)="filterAlts.set({key: option.key, label: option.label})">
+                        <span>{{ option.label }}</span>
+                        <span class="flex items-center gap-3 text-headerbrown/65">
+                           <i class="fa-solid fa-chevron-right text-base text-headerbrown"></i>
+                        </span>
+                     </button>
+                  }
+               }
+               @case ('authors') {
+                  @for (option of authorFilterOptions; track option.key) {
+                     <button type="button" class="flex min-h-12 w-full items-center justify-between py-2 text-left text-base text-headerbrown sm:min-h-16 sm:py-3 sm:text-lg" (click)="filterAlts.set({key: option.key, label: option.label})">
+                        <span>{{ option.menuLabel }}</span><i class="fa-solid fa-chevron-right"></i>
+                     </button>
+                  }
+               }
+               @default {
+                  @for (filter of getChoosableFilterOptions(stringToKeyof(filterAlts().key)); track filter) {
+                     <button type="button" class="flex min-h-11 w-full items-center justify-between gap-4 py-2 text-left text-base text-headerbrown sm:min-h-14 sm:py-3 sm:text-lg" (click)="setFilter(stringToKeyof(filterAlts().key), filter, stringToKeyof(filterAlts().label))">
+                        <span>{{ filter }}</span>
+                        @if (filterIsApplied(constructFilterObject(stringToKeyof(filterAlts().key), filter, filterAlts().label))) {
+                           <i class="fa-solid fa-check text-bookolive"></i>
+                        }
+                     </button>
+                  }
+               }
+            }
+         </div>
+
+         <div class="mt-2 flex shrink-0 items-center gap-3 border-t border-headerbrown/15 pt-3 sm:mt-4 sm:gap-4 sm:pt-4">
+            <button type="button" class="px-1 py-2 text-sm text-bookolive underline underline-offset-4 disabled:opacity-60 sm:px-2 sm:py-3 sm:text-base" [disabled]="filterBy().length === 0" (click)="filterBy.set([])">Rensa filter</button>
+            <app-button class="ml-auto" (click)="mobileMenuOpen.set(false)">Klar ({{ filterBy().length }})</app-button>
+         </div>
+      </section>
+   </div>
+}
+
+<div class="hidden lg:flex items-end">
    <h5
       [cdkMenuTriggerFor]="filterMenu"
       cdkMenuItem
@@ -38,9 +102,9 @@
       }
 
       @case ('authors') {
-         <button class="example-menu-item" (click)="filterAlts.set({key: 'authorName', label: 'Författarnamn'})">Namn</button>
-         <button class="example-menu-item" (click)="filterAlts.set({key: 'authorGender', label: 'Författarkön'})">Kön</button>
-         <button class="example-menu-item" (click)="filterAlts.set({key: 'authorCountry', label: 'Författarland'})">Land</button>
+         @for (option of authorFilterOptions; track option.key) {
+            <button class="example-menu-item" (click)="filterAlts.set({key: option.key, label: option.label})">{{ option.menuLabel }}</button>
+         }
       }
 
       @default {

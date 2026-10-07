@@ -1,4 +1,5 @@
 import { Component, inject } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { AllBooks } from '../all-books/all-books';
 import { BooksService } from '../../../../services/booksService';
 import { HotToastService } from '@ngxpert/hot-toast';
@@ -6,7 +7,7 @@ import { HotToastService } from '@ngxpert/hot-toast';
 @Component({
    selector: 'app-archive-books',
    standalone: true,
-   imports: [AllBooks],
+   imports: [AllBooks, RouterLink],
    templateUrl: './archive-books.html',
    styles: ''
 })

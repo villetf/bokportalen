@@ -3,13 +3,14 @@ import { Author } from '../../../../types/Author.model';
 import { ActivatedRoute } from '@angular/router';
 import { AuthorsService } from '../../../../services/authorsService';
 import { UserBook } from '../../../../types/UserBook.model';
+import { Book } from '../../../../types/Book.model';
 import { BooksService } from '../../../../services/booksService';
 import { BookCard } from '../../../books/components/book-card/book-card';
 import { EditPanel } from '../../../../shared/components/edit-panel/edit-panel';
 import { EditBookForm } from '../../components/edit-author-form/edit-author-form';
 import { Button } from '../../../../shared/components/button/button';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { switchMap, from, of } from 'rxjs';
+import { switchMap, from, of, combineLatest, take } from 'rxjs';
 
 @Component({
    selector: 'app-author-page',
@@ -19,7 +20,8 @@ import { switchMap, from, of } from 'rxjs';
 })
 export class AuthorPage {
    author = signal<Author | null>(null);
-   booksByAuthor = signal<UserBook[]>([]);
+   shelfBooksByAuthor = signal<UserBook[]>([]);
+   archiveBooksByAuthor = signal<Book[]>([]);
    editViewIsOpen = signal<boolean>(false);
    private destroyRef = inject(DestroyRef);
 
@@ -46,7 +48,8 @@ export class AuthorPage {
             if (author) {
                this.updateBooksByAuthor();
             } else {
-               this.booksByAuthor.set([]);
+               this.shelfBooksByAuthor.set([]);
+               this.archiveBooksByAuthor.set([]);
             }
          });
    }
@@ -65,14 +68,21 @@ export class AuthorPage {
    };
 
    updateBooksByAuthor() {
-      this.booksByAuthor.set([]);
-      this.booksService.getShelfBooksByAuthor(this.author()!.id)
-         .pipe(takeUntilDestroyed(this.destroyRef))
-         .subscribe(value => {
-            value.forEach(book => {
-               this.booksByAuthor.set([...this.booksByAuthor(), book]);
-            });
+      const author = this.author();
+      if (!author) {
+         this.shelfBooksByAuthor.set([]);
+         this.archiveBooksByAuthor.set([]);
+         return;
+      }
+
+      combineLatest([
+         this.booksService.getShelfBooksByAuthor(author.id),
+         this.booksService.getAllBooksByAuthor(author.id)
+      ])
+         .pipe(take(1), takeUntilDestroyed(this.destroyRef))
+         .subscribe(([shelfBooks, archiveBooks]) => {
+            this.shelfBooksByAuthor.set(shelfBooks);
+            this.archiveBooksByAuthor.set(archiveBooks);
          });
    }
 }
-

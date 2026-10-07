@@ -18,7 +18,8 @@ import { DeleteConfirmation } from '../delete-confirmation/delete-confirmation';
    selector: 'app-edit-book-form',
    imports: [ReactiveFormsModule, ArrayInput, Button, DeleteConfirmation],
    templateUrl: './edit-book-form.html',
-   styles: ''
+   styles: '',
+   host: { class: 'block h-full min-h-0 overflow-hidden md:h-auto md:max-h-[calc(100dvh-2rem)] lg:min-h-full lg:overflow-visible' }
 })
 export class EditBookForm implements OnInit {
    @Input() book!: Book;

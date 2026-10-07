@@ -1,4 +1,4 @@
-import { Component, forwardRef, Input, signal } from '@angular/core';
+import { Component, forwardRef, Input } from '@angular/core';
 import { CdkDragDrop, moveItemInArray, CdkDrag, CdkDropList, CdkDragHandle } from '@angular/cdk/drag-drop';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
@@ -20,7 +20,7 @@ export class ArrayInput<T extends { id: number | string }> implements ControlVal
    @Input() displayFn: (item: T) => string = (i: unknown) => String(i);
    @Input() selectableItems: T[] = [];
    @Input() defaultSelectText!: string;
-   selectedItem = signal<T | null>(null);
+   disabled = false;
 
    private onChange: (value: T[]) => void = () => {};
    private onTouched: () => void = () => {};
@@ -43,19 +43,18 @@ export class ArrayInput<T extends { id: number | string }> implements ControlVal
    }
 
 
-   drop(event: CdkDragDrop<string[]>) {
+   drop(event: CdkDragDrop<T[]>) {
       moveItemInArray(this.items, event.previousIndex, event.currentIndex);
       this.notifyChange();
    }
 
    addItem() {
-      this.items.push({} as T);
+      this.items = [...this.items, {} as T];
       this.notifyChange();
    }
 
-   removeItem(item: T) {
-      this.items = this.items.filter(i => i.id !== item.id);
-      this.setSelectedItem(null);
+   removeItem(index: number) {
+      this.items = this.items.filter((_, itemIndex) => itemIndex !== index);
       this.notifyChange();
    }
 
@@ -63,17 +62,17 @@ export class ArrayInput<T extends { id: number | string }> implements ControlVal
       return this.items.some(item => item.id === currentItem.id);
    }
 
-   setSelectedItem(item: T | null) {
-      this.selectedItem.set(item);
+   setDisabledState(isDisabled: boolean): void {
+      this.disabled = isDisabled;
    }
 
    addItemToList(event: Event, item: T) {
-      const selectedIndex = Number((event.target as HTMLSelectElement).value);
-      const selectedObject = this.selectableItems.find(i => i.id === selectedIndex);
+      const selectedValue = (event.target as HTMLSelectElement).value;
+      const selectedObject = this.selectableItems.find(i => String(i.id) === selectedValue);
 
       const index = this.items.indexOf(item);
-      if (index > -1) {
-         this.items[index] = selectedObject!;
+      if (index > -1 && selectedObject) {
+         this.items = this.items.map((currentItem, itemIndex) => itemIndex === index ? selectedObject : currentItem);
          this.notifyChange();
       }
    }
