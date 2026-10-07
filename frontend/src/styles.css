@@ -54,7 +54,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 @layer components {
    .auth-page-shell {
-      @apply flex justify-center p-6 pt-[calc(5.75rem+1.5rem)] lg:pt-6;
+      @apply flex justify-center p-6 pt-29 lg:pt-6;
    }
 
    .form-text-input {
