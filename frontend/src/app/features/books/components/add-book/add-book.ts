@@ -158,7 +158,9 @@ export class AddBook {
    }
 
    private focusTitle() {
-      this.titleInput.nativeElement.focus();
+      if (window.matchMedia('(min-width: 64rem)').matches) {
+         this.titleInput.nativeElement.focus();
+      }
    }
 
    updateAuthorsList() {

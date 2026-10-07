@@ -67,6 +67,12 @@ export class BooksService {
       );
    }
 
+   getAllBooksByAuthor(authorId: number) {
+      return this.getAllBooks().pipe(
+         map(books => books.filter(book => book.authors.some(author => author.id === authorId)))
+      );
+   }
+
    addToShelf(payload: { bookId: number; status?: string | null; rating?: number | null; copies?: number }) {
       return this.http.post<UserBook>(`${this.apiUrl}/users/me/books`, payload).pipe(
          tap(book => this.setShelfBook(book))
@@ -138,17 +144,20 @@ export class BooksService {
    }
 
    updateAuthorInBooks(updatedAuthor: Author) {
-      const currentBooks = this.shelfBooks$.value;
-      if (!currentBooks) {
-         return;
-      }
-
-      const updatedBooks = currentBooks.map(book => ({
+      const updateAuthor = <T extends Book>(books: T[]) => books.map(book => ({
          ...book,
          authors: book.authors.map(author => author.id === updatedAuthor.id ? updatedAuthor : author)
       }));
 
-      this.shelfBooks$.next(updatedBooks);
+      const currentShelfBooks = this.shelfBooks$.value;
+      if (currentShelfBooks) {
+         this.shelfBooks$.next(updateAuthor(currentShelfBooks));
+      }
+
+      const currentAllBooks = this.allBooks$.value;
+      if (currentAllBooks) {
+         this.allBooks$.next(updateAuthor(currentAllBooks));
+      }
    }
 
    deleteBook(book: Book) {

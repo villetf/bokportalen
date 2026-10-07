@@ -18,14 +18,16 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { BookCard } from '../../../books/components/book-card/book-card';
 import { AddAuthorDTO } from '../../../../dtos/AddAuthorDTO';
 import { EditPanel } from '../../../../shared/components/edit-panel/edit-panel';
+import { Button } from '../../../../shared/components/button/button';
 
 type ScanMode = 'idle' | 'choose-title' | 'editing' | 'new';
 
 @Component({
    selector: 'app-scan-page',
    standalone: true,
-   imports: [ReactiveFormsModule, ArrayInput, NgClass, BookCard, EditPanel],
-   templateUrl: './scan-page.html'
+   imports: [ReactiveFormsModule, ArrayInput, NgClass, BookCard, EditPanel, Button],
+   templateUrl: './scan-page.html',
+   host: { class: 'block min-h-full bg-backgroundbeige' }
 })
 export class ScanPage {
    @ViewChild('searchIsbnInput') searchIsbnInput?: ElementRef<HTMLInputElement>;
@@ -634,7 +636,7 @@ export class ScanPage {
 
    private focusSearchInput() {
       const input = this.searchIsbnInput?.nativeElement;
-      if (!input) {
+      if (!input || !window.matchMedia('(min-width: 64rem)').matches) {
          return;
       }
 

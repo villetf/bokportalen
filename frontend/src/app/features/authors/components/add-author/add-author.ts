@@ -101,6 +101,8 @@ export class AddAuthor {
    }
 
    private focusTitle() {
-      this.nameInput.nativeElement.focus();
+      if (window.matchMedia('(min-width: 64rem)').matches) {
+         this.nameInput.nativeElement.focus();
+      }
    }
 }

@@ -1,14 +1,14 @@
 import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, catchError, of, switchMap } from 'rxjs';
 import { BooksService } from '../../../../services/booksService';
 import { Book } from '../../../../types/Book.model';
 import { UserBook } from '../../../../types/UserBook.model';
-import { AsyncPipe, DatePipe, NgClass } from '@angular/common';
-import { Button } from '../../../../shared/components/button/button';
-import { BookCard } from '../../components/book-card/book-card';
+import { AsyncPipe } from '@angular/common';
 import { EditPanel } from '../../../../shared/components/edit-panel/edit-panel';
 import { EditBookForm } from '../../components/edit-book-form/edit-book-form';
+import { BookPageMobile } from '../../components/book-page-mobile/book-page-mobile';
+import { BookPageDesktop } from '../../components/book-page-desktop/book-page-desktop';
 import { HotToastService } from '@ngxpert/hot-toast';
 import { HttpErrorResponse } from '@angular/common/http';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -16,7 +16,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 @Component({
    selector: 'app-book-page',
    standalone: true,
-   imports: [AsyncPipe, RouterLink, Button, BookCard, NgClass, EditPanel, EditBookForm, DatePipe],
+   imports: [AsyncPipe, EditPanel, EditBookForm, BookPageMobile, BookPageDesktop],
    templateUrl: './book-page.html'
 })
 export class BookPage implements OnInit {
@@ -37,15 +37,6 @@ export class BookPage implements OnInit {
       private booksService: BooksService,
       private toast: HotToastService
    ) {}
-
-
-   getTitleClass(title: string) {
-      if (title.length > 25) {
-         return 'text-4xl';
-      }
-
-      return 'text-6xl';
-   }
 
    openEditView = () => {
       this.editViewIsOpen.set(true);

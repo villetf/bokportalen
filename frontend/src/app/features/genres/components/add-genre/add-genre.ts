@@ -70,6 +70,8 @@ export class AddGenre {
    }
 
    private focusTitle() {
-      this.genreInput.nativeElement.focus();
+      if (window.matchMedia('(min-width: 64rem)').matches) {
+         this.genreInput.nativeElement.focus();
+      }
    }
 }
