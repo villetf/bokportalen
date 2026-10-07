@@ -3,7 +3,7 @@ import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/ro
 import { UserStore } from '../../../../stores/user.store';
 import { AuthService } from '../../../../services/authService';
 import { AsyncPipe } from '@angular/common';
-import { filter, map, startWith } from 'rxjs';
+import { filter, map, Observable, startWith } from 'rxjs';
 
 @Component({
    selector: 'app-header',
@@ -22,7 +22,7 @@ export class Header {
       return initials.toUpperCase() || 'U';
    });
 
-   readonly pageTitle$;
+   readonly pageTitle$: Observable<string>;
 
    constructor(public auth: AuthService, router: Router) {
       this.pageTitle$ = router.events.pipe(
