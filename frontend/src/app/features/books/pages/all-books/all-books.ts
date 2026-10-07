@@ -37,7 +37,7 @@ export class AllBooks {
    @Input() title: string = 'MIN BOKHYLLA';
    @Output() addBookToShelf = new EventEmitter<number>();
 
-   private readonly scrollStorageKey = 'all-books-scrollTop';
+   private readonly scrollStorageKey = 'all-books-scrollState';
    private readonly titleCollapseDistance = 200;
    private readonly controlsCollapseDistance = 420;
    private hasRestoredScroll = false;
@@ -273,8 +273,12 @@ export class AllBooks {
       const naturalScrollHeight = this.toolbarSpacerHeight();
 
       if (currentScrollTop <= 1) {
-         this.useNaturalToolbarScroll = true;
-         this.toolbarPinned.set(false);
+         if (this.scrollEndTimer) {
+            clearTimeout(this.scrollEndTimer);
+         }
+         this.expandToolbarAtPageTop();
+         this.lastScrollTop = currentScrollTop;
+         return;
       }
 
       if (this.useNaturalToolbarScroll && naturalScrollHeight > 0 && currentScrollTop <= naturalScrollHeight) {
@@ -300,17 +304,13 @@ export class AllBooks {
          this.schedulePanelSnap(currentScrollTop, isDesktop);
       }
 
-      if (currentScrollTop <= 1) {
-         this.titleVisibility.set(1);
-      } else if (isDesktop && scrollDelta !== 0) {
+      if (isDesktop && scrollDelta !== 0) {
          this.titleVisibility.update(value => this.clamp(value - scrollDelta / this.titleCollapseDistance));
       } else if (!isDesktop) {
          this.titleVisibility.set(this.clamp(1 - currentScrollTop / this.titleCollapseDistance));
       }
 
-      if (currentScrollTop <= 1) {
-         this.controlsVisibility.set(1);
-      } else if (scrollDelta !== 0) {
+      if (scrollDelta !== 0) {
          this.controlsVisibility.update(value => this.clamp(value - scrollDelta / this.controlsCollapseDistance));
       }
 
@@ -319,6 +319,13 @@ export class AllBooks {
 
    private isDesktopViewport() {
       return window.matchMedia('(min-width: 64rem)').matches;
+   }
+
+   private expandToolbarAtPageTop() {
+      this.useNaturalToolbarScroll = true;
+      this.toolbarPinned.set(false);
+      this.titleVisibility.set(1);
+      this.controlsVisibility.set(1);
    }
 
    private pinToolbar(scrollElement: HTMLElement) {
@@ -369,7 +376,10 @@ export class AllBooks {
          const el = this.scrollContainer?.nativeElement;
          if (el) {
             const scrollTop = this.isDesktopViewport() ? el.scrollTop : window.scrollY;
-            sessionStorage.setItem(this.scrollStorageKey, String(Math.max(0, Math.floor(scrollTop || 0))));
+            sessionStorage.setItem(this.scrollStorageKey, JSON.stringify({
+               mode: this.mode,
+               scrollTop: Math.max(0, Math.floor(scrollTop || 0))
+            }));
          }
       } catch {
          // Ignore storage errors (e.g., Safari private mode)
@@ -384,20 +394,39 @@ export class AllBooks {
          const saved = sessionStorage.getItem(this.scrollStorageKey);
          const el = this.scrollContainer?.nativeElement;
          if (saved && el) {
-            const y = parseInt(saved, 10);
-            if (!Number.isNaN(y) && y >= 0) {
+            const state = JSON.parse(saved) as { mode?: unknown; scrollTop?: unknown } | null;
+            const savedMode = state?.mode;
+            const savedScrollTop = state?.scrollTop;
+            const isCurrentListState = savedMode === this.mode
+               && typeof savedScrollTop === 'number'
+               && savedScrollTop >= 0;
+
+            if (isCurrentListState) {
+               const y = savedScrollTop;
                requestAnimationFrame(() => {
                   if (this.isDesktopViewport()) {
                      el.scrollTop = y;
                   } else {
                      window.scrollTo(0, y);
                   }
-                  this.lastScrollTop = y;
-                  if (y > 0) {
-                     this.titleVisibility.set(this.clamp(1 - y / this.titleCollapseDistance));
+
+                  const restoredScrollTop = this.isDesktopViewport() ? el.scrollTop : window.scrollY;
+                  this.lastScrollTop = restoredScrollTop;
+                  if (restoredScrollTop <= 1) {
+                     this.expandToolbarAtPageTop();
+                  } else if (restoredScrollTop > this.toolbarSpacerHeight()) {
+                     this.useNaturalToolbarScroll = false;
+                     this.titleVisibility.set(0);
                      this.controlsVisibility.set(0);
                   }
                });
+            } else {
+               el.scrollTop = 0;
+               if (!this.isDesktopViewport()) {
+                  window.scrollTo(0, 0);
+               }
+               this.lastScrollTop = 0;
+               this.expandToolbarAtPageTop();
             }
             this.hasRestoredScroll = true;
             sessionStorage.removeItem(this.scrollStorageKey);
