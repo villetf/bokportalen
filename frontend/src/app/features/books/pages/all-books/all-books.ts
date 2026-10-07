@@ -53,6 +53,14 @@ export class AllBooks {
       this.handleMobileNavigationVisibility((event as CustomEvent<boolean>).detail);
    };
    private readonly mobilePageTopListener = () => this.restoreNaturalMobileToolbar();
+   private readonly mobileWindowScrollListener = () => {
+      if (this.isDesktopViewport()) return;
+
+      const scrollElement = this.scrollContainer?.nativeElement;
+      if (scrollElement) {
+         this.handleBooksScroll(window.scrollY, false, scrollElement);
+      }
+   };
    private readonly mobileToolbarBoundaryListener = () => {
       if (this.mobileBoundaryFrame !== null) return;
 
@@ -113,6 +121,7 @@ export class AllBooks {
       this.cancelMobileToolbarFrame();
       window.removeEventListener('mobile-navigation-visibility', this.mobileNavigationListener);
       window.removeEventListener('mobile-page-top', this.mobilePageTopListener);
+      window.removeEventListener('scroll', this.mobileWindowScrollListener);
       window.removeEventListener('scroll', this.mobileToolbarBoundaryListener);
       if (this.mobileBoundaryFrame !== null) {
          cancelAnimationFrame(this.mobileBoundaryFrame);
@@ -142,6 +151,7 @@ export class AllBooks {
 
       window.addEventListener('mobile-navigation-visibility', this.mobileNavigationListener);
       window.addEventListener('mobile-page-top', this.mobilePageTopListener);
+      window.addEventListener('scroll', this.mobileWindowScrollListener, { passive: true });
       window.addEventListener('scroll', this.mobileToolbarBoundaryListener, { passive: true });
 
       this.restoreScrollPosition();
@@ -254,9 +264,12 @@ export class AllBooks {
 
    onBooksScroll(event: Event) {
       const element = event.currentTarget as HTMLElement;
-      const currentScrollTop = Math.max(0, element.scrollTop);
+      this.handleBooksScroll(element.scrollTop, this.isDesktopViewport(), element);
+   }
+
+   private handleBooksScroll(scrollTop: number, isDesktop: boolean, scrollElement: HTMLElement) {
+      const currentScrollTop = Math.max(0, scrollTop);
       const scrollDelta = currentScrollTop - this.lastScrollTop;
-      const isDesktop = element.ownerDocument.defaultView?.matchMedia('(min-width: 64rem)').matches ?? false;
       const naturalScrollHeight = this.toolbarSpacerHeight();
 
       if (currentScrollTop <= 1) {
@@ -279,7 +292,7 @@ export class AllBooks {
          this.titleVisibility.set(0);
          this.controlsVisibility.set(0);
       } else if (scrollDelta < 0) {
-         this.pinToolbar(element);
+         this.pinToolbar(scrollElement);
       }
 
       if (scrollDelta !== 0) {
@@ -302,6 +315,10 @@ export class AllBooks {
       }
 
       this.lastScrollTop = currentScrollTop;
+   }
+
+   private isDesktopViewport() {
+      return window.matchMedia('(min-width: 64rem)').matches;
    }
 
    private pinToolbar(scrollElement: HTMLElement) {
@@ -351,7 +368,8 @@ export class AllBooks {
       try {
          const el = this.scrollContainer?.nativeElement;
          if (el) {
-            sessionStorage.setItem(this.scrollStorageKey, String(Math.max(0, Math.floor(el.scrollTop || 0))));
+            const scrollTop = this.isDesktopViewport() ? el.scrollTop : window.scrollY;
+            sessionStorage.setItem(this.scrollStorageKey, String(Math.max(0, Math.floor(scrollTop || 0))));
          }
       } catch {
          // Ignore storage errors (e.g., Safari private mode)
@@ -369,7 +387,11 @@ export class AllBooks {
             const y = parseInt(saved, 10);
             if (!Number.isNaN(y) && y >= 0) {
                requestAnimationFrame(() => {
-                  el.scrollTop = y;
+                  if (this.isDesktopViewport()) {
+                     el.scrollTop = y;
+                  } else {
+                     window.scrollTo(0, y);
+                  }
                   this.lastScrollTop = y;
                   if (y > 0) {
                      this.titleVisibility.set(this.clamp(1 - y / this.titleCollapseDistance));
