@@ -9,6 +9,13 @@ import dotenv from 'dotenv';
 import type { GoogleBooksResponse, ISBNLookupResponse, OpenLibraryBook } from '../types/books-isbn.types.js';
 dotenv.config();
 
+export class DuplicateIsbnError extends Error {
+   constructor() {
+      super('A book with this ISBN already exists');
+      this.name = 'DuplicateIsbnError';
+   }
+}
+
 export class BooksService {
    static async getBooksByQuery(queryParams: Record<string, unknown>) {
       const queryBuilder = AppDataSource.getRepository(Book)
@@ -77,6 +84,8 @@ export class BooksService {
    }
 
    static async createBook(inputBook: BookRequestDTO) {
+      await this.assertIsbnIsAvailable(inputBook.isbn);
+
       let language = null;
 
       // Om språk, originalspråk och genre anges, hämta eller kasta fel
@@ -129,8 +138,27 @@ export class BooksService {
    }
 
    static async updateBook(book: Book, updateData: Partial<BookUpdateDTO>) {
+      if (updateData.isbn !== undefined) {
+         await this.assertIsbnIsAvailable(updateData.isbn, book.id);
+      }
+
       Object.assign(book, updateData);
       await AppDataSource.getRepository(Book).save(book);
+   }
+
+   private static async assertIsbnIsAvailable(isbn: number | null | undefined, excludedBookId?: number) {
+      // Böcker utan ISBN ska fortfarande kunna sparas flera gånger.
+      if (isbn == null) {
+         return;
+      }
+
+      const existingBook = await AppDataSource.getRepository(Book).findOne({
+         where: { isbn }
+      });
+
+      if (existingBook && existingBook.id !== excludedBookId) {
+         throw new DuplicateIsbnError();
+      }
    }
 
    static async markBookAsDeleted(book: Book) {

@@ -97,7 +97,7 @@ export class AddBook {
          delete newBook.addToShelf;
 
          if (newBook.isbn) {
-            newBook.isbn = Number(newBook.isbn);
+            newBook.isbn = Number(String(newBook.isbn).replace(/-/g, ''));
          }
 
          if (newBook.yearWritten) {
@@ -132,7 +132,7 @@ export class AddBook {
                   },
                   error: (err) => {
                      if ((err as HttpErrorResponse).status == 409) {
-                        return 'Denna bok finns redan.';
+                        return 'En bok med detta ISBN finns redan.';
                      }
 
                      return `Något gick fel vid skapande av bok: ${(err as HttpErrorResponse).message}`;
