@@ -19,13 +19,14 @@ import { BookCard } from '../../../books/components/book-card/book-card';
 import { AddAuthorDTO } from '../../../../dtos/AddAuthorDTO';
 import { EditPanel } from '../../../../shared/components/edit-panel/edit-panel';
 import { Button } from '../../../../shared/components/button/button';
+import { MobileBarcodeScanner } from '../../components/mobile-barcode-scanner/mobile-barcode-scanner';
 
 type ScanMode = 'idle' | 'choose-title' | 'editing' | 'new';
 
 @Component({
    selector: 'app-scan-page',
    standalone: true,
-   imports: [ReactiveFormsModule, ArrayInput, NgClass, BookCard, EditPanel, Button],
+   imports: [ReactiveFormsModule, ArrayInput, NgClass, BookCard, EditPanel, Button, MobileBarcodeScanner],
    templateUrl: './scan-page.html',
    host: { class: 'block min-h-full bg-backgroundbeige' }
 })
