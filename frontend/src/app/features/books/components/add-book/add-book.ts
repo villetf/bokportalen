@@ -96,7 +96,9 @@ export class AddBook {
          // Remove UI-only property so backend validation doesn't reject the payload
          delete newBook.addToShelf;
 
-         if (newBook.isbn) {
+         if (newBook.isbn == null || newBook.isbn === '') {
+            newBook.isbn = null;
+         } else {
             newBook.isbn = Number(String(newBook.isbn).replace(/-/g, ''));
          }
 

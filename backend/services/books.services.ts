@@ -124,7 +124,7 @@ export class BooksService {
          newBook.authors.push(author);
       }
       newBook.yearWritten = inputBook.yearWritten ? inputBook.yearWritten : null;
-      newBook.isbn = inputBook.isbn ? inputBook.isbn : null;
+      newBook.isbn = inputBook.isbn ?? null;
       newBook.language = language;
       newBook.originalLanguage = originalLanguage;
       newBook.genres = genres;
