@@ -6,6 +6,8 @@ import { UserBookRequestDTO } from '../dto/UserBookRequestDTO.js';
 import { UserBookUpdateDTO } from '../dto/UserBookUpdateDTO.js';
 import { User } from '../entities/User.js';
 
+type BookIdParams = { bookId: string };
+
 async function getCurrentDbUser(req: Request, res: Response): Promise<User | null> {
    if (!req.user) {
       res.status(401).json({ message: 'No user found' });
@@ -63,7 +65,7 @@ export class UserBooksController {
       res.json(userBooks.map(mapUserBook));
    }
 
-   static async getCurrentUserBookById(req: Request, res: Response) {
+   static async getCurrentUserBookById(req: Request<BookIdParams>, res: Response) {
       const dbUser = await getCurrentDbUser(req, res);
       if (!dbUser) {
          return;
@@ -103,7 +105,7 @@ export class UserBooksController {
       }
    }
 
-   static async updateCurrentUserBook(req: Request, res: Response) {
+   static async updateCurrentUserBook(req: Request<BookIdParams>, res: Response) {
       const dbUser = await getCurrentDbUser(req, res);
       if (!dbUser) {
          return;
@@ -124,7 +126,7 @@ export class UserBooksController {
       res.json(mapUserBook(userBook));
    }
 
-   static async removeCurrentUserBook(req: Request, res: Response) {
+   static async removeCurrentUserBook(req: Request<BookIdParams>, res: Response) {
       const dbUser = await getCurrentDbUser(req, res);
       if (!dbUser) {
          return;
