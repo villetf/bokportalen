@@ -18,7 +18,8 @@
          <div class="grid grid-cols-2 divide-x divide-headerbrown/15">
             <div class="space-y-4 pr-4 sm:space-y-5 sm:pr-8">
                <div><p class="alumni-font text-sm font-semibold text-headerbrown sm:text-lg">GENRER</p><p class="amiri-font text-lg leading-tight sm:text-2xl">{{ book.genres.length ? book.genres.map(genre => genre.name).join(', ') : 'Ej angivet' }}</p></div>
-               <div><p class="alumni-font text-sm font-semibold text-headerbrown sm:text-lg">UTGIVNINGSÅR</p><p class="amiri-font text-lg leading-tight sm:text-2xl">{{ book.yearWritten || 'Ej angivet' }}</p></div>
+               <div><p class="alumni-font text-sm font-semibold text-headerbrown sm:text-lg">UTGIVNINGSÅR (VERK)</p><p class="amiri-font text-lg leading-tight sm:text-2xl">{{ book.yearWritten || 'Ej angivet' }}</p></div>
+               <div><p class="alumni-font text-sm font-semibold text-headerbrown sm:text-lg">UTGIVNINGSÅR (UPPLAGA)</p><p class="amiri-font text-lg leading-tight sm:text-2xl">{{ book.editionPublishedYear || 'Ej angivet' }}</p></div>
                <div><p class="alumni-font text-sm font-semibold text-headerbrown sm:text-lg">SPRÅK</p><p class="amiri-font text-lg leading-tight sm:text-2xl">{{ book.language ? book.language.name : 'Ej angivet' }}</p></div>
                <div><p class="alumni-font text-sm font-semibold text-headerbrown sm:text-lg">ORIGINALSPRÅK</p><p class="amiri-font text-lg leading-tight sm:text-2xl">{{ book.originalLanguage ? book.originalLanguage.name : 'Ej angivet' }}</p></div>
                <div><p class="alumni-font text-sm font-semibold text-headerbrown sm:text-lg">FORMAT</p><p class="amiri-font text-lg leading-tight sm:text-2xl">{{ book.format || 'Ej angivet' }}</p></div>

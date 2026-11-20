@@ -26,9 +26,15 @@
             <i class="fa-solid fa-rotate ml-2 shrink-0 cursor-pointer p-2 active:rotate-180 active:transition-all" (click)="updateGenresList()"></i>
          </div>
 
-         <label for="yearWritten" class="mt-3">Utgivningsår:</label>
+         <label for="yearWritten" class="mt-3">Utgivningsår (verk):</label>
          <input type="number" inputmode="numeric" formControlName="yearWritten" [max]="this.getCurrentYear()" class="form-text-input w-full py-2.5 lg:py-1" id="yearWritten">
          @if (form.get('yearWritten')?.invalid && form.get('yearWritten')?.errors?.['max']) {
+            <span class="mb-3 text-sm text-red-500 lg:mb-0 lg:text-base">Året kan inte vara i framtiden.</span>
+         }
+
+         <label for="editionPublishedYear" class="mt-3">Utgivningsår (upplaga):</label>
+         <input type="number" inputmode="numeric" formControlName="editionPublishedYear" [max]="this.getCurrentYear()" class="form-text-input w-full py-2.5 lg:py-1" id="editionPublishedYear">
+         @if (form.get('editionPublishedYear')?.invalid && form.get('editionPublishedYear')?.errors?.['max']) {
             <span class="mb-3 text-sm text-red-500 lg:mb-0 lg:text-base">Året kan inte vara i framtiden.</span>
          }
 
