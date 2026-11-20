@@ -27,6 +27,11 @@ export class BookUpdateDTO {
    @Expose()
    @IsOptional()
    @IsInt()
+      editionPublishedYear?: number | null;
+
+   @Expose()
+   @IsOptional()
+   @IsInt()
       isbn?: number | null;
 
    @Expose()

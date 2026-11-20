@@ -19,6 +19,11 @@ export class BookRequestDTO {
    @Expose()
    @IsOptional()
    @IsInt()
+      editionPublishedYear?: number | null;
+
+   @Expose()
+   @IsOptional()
+   @IsInt()
       isbn?: number | null;
 
    @Expose()

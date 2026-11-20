@@ -32,6 +32,7 @@ export class BooksService {
          authorFirstName: 'author.firstName',
          authorLastName: 'author.lastName',
          yearWritten: 'book.year_written',
+         editionPublishedYear: 'book.edition_published_year',
          language: 'language.name',
          originalLanguage: 'originalLanguage.name',
          genre: 'genre.name',
@@ -124,6 +125,7 @@ export class BooksService {
          newBook.authors.push(author);
       }
       newBook.yearWritten = inputBook.yearWritten ? inputBook.yearWritten : null;
+      newBook.editionPublishedYear = inputBook.editionPublishedYear ?? null;
       newBook.isbn = inputBook.isbn ?? null;
       newBook.language = language;
       newBook.originalLanguage = originalLanguage;
