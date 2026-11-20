@@ -72,6 +72,7 @@ export class ScanPage {
          title: [null, Validators.required],
          authors: [[] as Author[], this.atLeastOneAuthor()],
          yearWritten: [null, Validators.max(this.getCurrentYear())],
+         editionPublishedYear: [null, Validators.max(this.getCurrentYear())],
          genres: [[] as Genre[]],
          language: [null],
          originalLanguage: [null],
@@ -292,6 +293,7 @@ export class ScanPage {
             title: rawValue.title,
             authors,
             yearWritten: this.toNumberOrNull(rawValue.yearWritten),
+            editionPublishedYear: this.toNumberOrNull(rawValue.editionPublishedYear),
             genres: rawValue.genres,
             language: rawValue.language,
             originalLanguage: rawValue.originalLanguage,
@@ -330,6 +332,7 @@ export class ScanPage {
          title: rawValue.title,
          authors: authors.map((author: Author) => author.id),
          yearWritten: this.toNumberOrNull(rawValue.yearWritten),
+         editionPublishedYear: this.toNumberOrNull(rawValue.editionPublishedYear),
          genres: Array.isArray(rawValue.genres)
             ? rawValue.genres.filter((genre: Genre) => genre && genre.id != null).map((genre: Genre) => genre.id)
             : [],
@@ -467,8 +470,8 @@ export class ScanPage {
          fields.push('författare');
       }
 
-      if (baseBook.yearWritten == null && lookup.publishedYear != null) {
-         fields.push('utgivningsår');
+      if (baseBook.editionPublishedYear == null && lookup.publishedYear != null) {
+         fields.push('upplagans utgivningsår');
       }
 
       if (!baseBook.language && this.matchLanguageId(lookup.language) != null) {
@@ -500,7 +503,8 @@ export class ScanPage {
       return {
          title: baseBook?.title?.trim() ? baseBook.title : lookup.title ?? '',
          authors: baseBook?.authors?.length ? baseBook.authors : this.matchAuthors(lookup.authors),
-         yearWritten: baseBook?.yearWritten ?? lookup.publishedYear ?? null,
+         yearWritten: baseBook?.yearWritten ?? null,
+         editionPublishedYear: baseBook?.editionPublishedYear ?? lookup.publishedYear ?? null,
          genres: baseBook?.genres?.length ? baseBook.genres : this.matchGenres(lookup.categories),
          language: baseBook?.language?.id ?? this.matchLanguageId(lookup.language),
          originalLanguage: baseBook?.originalLanguage?.id ?? null,

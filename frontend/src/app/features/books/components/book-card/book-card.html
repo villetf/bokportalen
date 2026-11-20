@@ -27,7 +27,7 @@
                </a>
             }
          </p>
-         <p class="amiri-font hidden lg:block">{{ book.yearWritten }}</p>
+         <p class="amiri-font hidden lg:block">{{ book.editionPublishedYear ?? book.yearWritten ?? '' }}</p>
       </div>
       @if (inShelf !== undefined) {
          <div class="mt-2">

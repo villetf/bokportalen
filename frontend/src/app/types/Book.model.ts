@@ -6,7 +6,8 @@ export interface Book {
    id: number;
    title: string;
    authors: Author[];
-   yearWritten: number;
+   yearWritten: number | null;
+   editionPublishedYear: number | null;
    language: Language;
    originalLanguage: Language;
    genres: Genre[];

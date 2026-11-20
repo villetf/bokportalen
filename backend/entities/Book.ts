@@ -27,6 +27,9 @@ export class Book {
    @Column('int', { name: 'year_written', nullable: true })
       yearWritten!: number | null;
 
+   @Column('int', { name: 'edition_published_year', nullable: true })
+      editionPublishedYear!: number | null;
+
    @Column('int', { name: 'language_id', nullable: true })
       languageId!: number | null;
 

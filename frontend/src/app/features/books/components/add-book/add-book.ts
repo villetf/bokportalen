@@ -55,6 +55,7 @@ export class AddBook {
          title: [null, Validators.required],
          authors: [[{}], this.atLeastOneAuthor()],
          yearWritten: [null, Validators.max(this.getCurrentYear())],
+         editionPublishedYear: [null, Validators.max(this.getCurrentYear())],
          genres: [[] as Genre[]],
          language: [null],
          originalLanguage: [null],
@@ -74,6 +75,7 @@ export class AddBook {
          title: null,
          authors: [[{}]],
          yearWritten: null,
+         editionPublishedYear: null,
          genres: [],
          language: null,
          originalLanguage: null,
@@ -104,6 +106,10 @@ export class AddBook {
 
          if (newBook.yearWritten) {
             newBook.yearWritten = Number(newBook.yearWritten);
+         }
+
+         if (newBook.editionPublishedYear) {
+            newBook.editionPublishedYear = Number(newBook.editionPublishedYear);
          }
 
          const selectedAuthors = fv.authors;
