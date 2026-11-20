@@ -1,5 +1,5 @@
 import type { Request, Response } from 'express';
-import { AuthorsService } from '../services/authors.services.js';
+import { AuthorsService, InvalidAuthorLifeDataError } from '../services/authors.services.js';
 import { plainToInstance } from 'class-transformer';
 import { Author } from '../entities/Author.js';
 
@@ -43,10 +43,20 @@ export class AuthorsController {
          return;
       }
 
-      const newAuthor = await AuthorsService.createAuthor(req.body);
-      res.status(201).json(plainToInstance(Author, newAuthor, {
-         excludeExtraneousValues: true,
-      }));
+      try {
+         const newAuthor = await AuthorsService.createAuthor(req.body);
+         res.status(201).json(plainToInstance(Author, newAuthor, {
+            excludeExtraneousValues: true,
+         }));
+      } catch (error) {
+         if (error instanceof InvalidAuthorLifeDataError) {
+            res.status(400).json({ error: error.message });
+            return;
+         }
+
+         console.error('Error creating author:', error);
+         res.status(500).json({ error: 'Internal server error' });
+      }
    }
 
    static async updateAuthor(req: Request, res: Response) {
@@ -56,7 +66,18 @@ export class AuthorsController {
          return;
       }
 
-      await AuthorsService.updateAuthor(author, req.body);
+      try {
+         await AuthorsService.updateAuthor(author, req.body);
+      } catch (error) {
+         if (error instanceof InvalidAuthorLifeDataError) {
+            res.status(400).json({ error: error.message });
+            return;
+         }
+
+         console.error('Error updating author:', error);
+         res.status(500).json({ error: 'Internal server error' });
+         return;
+      }
 
       // Hämtar den uppdaterade författaren eftersom en uppdatering inte returnerar det fullständiga objektet
       const updatedAuthor = await AuthorsService.getAuthorById(author.id);

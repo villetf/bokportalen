@@ -1,5 +1,6 @@
 import { Expose } from 'class-transformer';
 import { IsIn, IsInt, IsOptional, IsString } from 'class-validator';
+import type { AuthorLifeStatus } from '../entities/Author.js';
 
 export class AuthorUpdateDTO {
    @Expose()
@@ -26,6 +27,16 @@ export class AuthorUpdateDTO {
    @IsOptional()
    @IsInt()
       birthYear!: number | null;
+
+   @Expose()
+   @IsOptional()
+   @IsInt()
+      deathYear?: number | null;
+
+   @Expose()
+   @IsOptional()
+   @IsIn(['alive', 'deceased', 'unknown'])
+      lifeStatus?: AuthorLifeStatus;
 
    @Expose()
    @IsOptional()
