@@ -19,7 +19,7 @@ export class BookRequestDTO {
    @Expose()
    @IsOptional()
    @IsInt()
-      isbn?: number;
+      isbn?: number | null;
 
    @Expose()
    @IsOptional()

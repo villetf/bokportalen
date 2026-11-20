@@ -15,6 +15,7 @@ import { Genre } from './Genre.js';
 @Index('idx_title', ['title'], {})
 @Index('idx_language_id', ['languageId'], {})
 @Index('idx_original_language_id', ['originalLanguageId'], {})
+@Index('uq_books_isbn', ['isbn'], { unique: true })
 @Entity('books', { schema: 'bokdb' })
 export class Book {
    @PrimaryGeneratedColumn({ type: 'int', name: 'id' })

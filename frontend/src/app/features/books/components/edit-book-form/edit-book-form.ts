@@ -70,7 +70,7 @@ export class EditBookForm implements OnInit {
       this.formIsSubmitted = true;
       if (this.form.valid) {
          const rawIsbn = this.form.get('isbn')?.value as string | number | null;
-         const normalizedIsbn = rawIsbn == null || rawIsbn === '' ? null : Number(rawIsbn);
+         const normalizedIsbn = rawIsbn == null || rawIsbn === '' ? null : Number(String(rawIsbn).replace(/-/g, ''));
 
          const updatedBook: Book = { ...this.form.value, isbn: normalizedIsbn };
 
@@ -84,6 +84,10 @@ export class EditBookForm implements OnInit {
                      return `Uppdaterade ${(res as Book).title}!`;
                   },
                   error: (err) => {
+                     if ((err as HttpErrorResponse).status === 409) {
+                        return 'En bok med detta ISBN finns redan.';
+                     }
+
                      return `Något gick fel vid uppdatering av bok: ${(err as HttpErrorResponse).message}`;
                   }
                })

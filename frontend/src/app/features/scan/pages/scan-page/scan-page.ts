@@ -359,7 +359,7 @@ export class ScanPage {
                },
                error: (err) => {
                   if ((err as HttpErrorResponse).status === 409) {
-                     return 'Denna bok finns redan.';
+                     return 'En bok med detta ISBN finns redan.';
                   }
 
                   return `Något gick fel vid skapande av bok: ${(err as HttpErrorResponse).message}`;
@@ -619,7 +619,7 @@ export class ScanPage {
          return null;
       }
 
-      const parsed = Number(value);
+      const parsed = Number(String(value).replace(/-/g, ''));
       return Number.isFinite(parsed) ? parsed : null;
    }
 

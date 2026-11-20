@@ -11,7 +11,7 @@ export interface Book {
    originalLanguage: Language;
    genres: Genre[];
    format: string;
-   isbn: number;
+   isbn: number | null;
    createdAt: Date | null;
    addedWithScanner: boolean | null;
    isDeleted: boolean;

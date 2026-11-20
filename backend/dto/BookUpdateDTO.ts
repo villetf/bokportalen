@@ -27,7 +27,7 @@ export class BookUpdateDTO {
    @Expose()
    @IsOptional()
    @IsInt()
-      isbn?: number;
+      isbn?: number | null;
 
    @Expose()
    @IsOptional()
