@@ -6,6 +6,9 @@ import { BookUpdateDTO } from '../dto/BookUpdateDTO.js';
 import { LanguagesService } from '../services/languages.services.js';
 import { GenresService } from '../services/genres.services.js';
 
+type BookIdParams = { id: string };
+type BookIsbnParams = { isbn: string };
+
 export class BooksController {
    static async getAllBooks(req: Request, res: Response) {
       try {
@@ -43,7 +46,7 @@ export class BooksController {
       }
    }
 
-   static async getBookById(req: Request, res: Response) {
+   static async getBookById(req: Request<BookIdParams>, res: Response) {
       const book = await BooksService.getBookById(Number.parseInt(req.params.id));
       if (!book) {
          res.status(404).json({ error: 'Book not found' });
@@ -89,7 +92,7 @@ export class BooksController {
       })));
    }
 
-   static async getBookByIsbn(req: Request, res: Response) {
+   static async getBookByIsbn(req: Request<BookIsbnParams>, res: Response) {
       try {
          const result = await BooksService.getBookByIsbn(req.params.isbn);
          res.json(result);
@@ -119,7 +122,7 @@ export class BooksController {
       }
    }
 
-   static async updateBook(req: Request, res: Response) {
+   static async updateBook(req: Request<BookIdParams>, res: Response) {
       const bookToUpdate = await BooksService.getBookById(Number.parseInt(req.params.id));
       if (!bookToUpdate) {
          res.status(404).json({ error: 'Book not found' });
@@ -191,7 +194,7 @@ export class BooksController {
       });
    }
 
-   static async markBookAsDeleted(req: Request, res: Response) {
+   static async markBookAsDeleted(req: Request<BookIdParams>, res: Response) {
       const book = await BooksService.getBookById(Number.parseInt(req.params.id));
       if (book) {
          await BooksService.markBookAsDeleted(book);

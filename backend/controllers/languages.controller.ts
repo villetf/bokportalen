@@ -1,13 +1,15 @@
 import type { Request, Response } from 'express';
 import { LanguagesService } from '../services/languages.services.js';
 
+type LanguageIdParams = { id: string };
+
 export class LanguagesController {
    static async getAllLanguages(req: Request, res: Response) {
       const languages = await LanguagesService.getAllLanguages();
       res.json(languages);
    }
 
-   static async getLanguageById(req: Request, res: Response) {
+   static async getLanguageById(req: Request<LanguageIdParams>, res: Response) {
       const language = await LanguagesService.getLanguageById(Number.parseInt(req.params.id));
       if (language) {
          res.json(language);
