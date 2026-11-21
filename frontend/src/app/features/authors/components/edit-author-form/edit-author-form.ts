@@ -81,15 +81,15 @@ export class EditBookForm implements OnInit {
 
    resetForm() {
       this.form.reset({
-         id: [this.author.id],
-         firstName: [this.author.firstName],
-         lastName: [this.author.lastName],
-         gender: [this.author.gender],
-         birthYear: [this.author.birthYear],
-         lifeStatus: [this.author.lifeStatus],
-         deathYear: [this.author.deathYear],
-         countryId: [this.author.country ? this.author.country.id : null],
-         imageLink: [this.author.imageLink]
+         id: this.author.id,
+         firstName: this.author.firstName,
+         lastName: this.author.lastName,
+         gender: this.author.gender,
+         birthYear: this.author.birthYear,
+         lifeStatus: this.author.lifeStatus,
+         deathYear: this.author.deathYear,
+         countryId: this.author.country ? this.author.country.id : null,
+         imageLink: this.author.imageLink
       });
       this.formIsSubmitted = false;
       this.yearFieldsHaveBeenBlurred = false;
