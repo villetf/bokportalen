@@ -300,7 +300,7 @@ export class ScanPage {
             language: rawValue.language,
             originalLanguage: rawValue.originalLanguage,
             format: rawValue.format,
-            isbn: this.toNumberOrNull(rawValue.isbn),
+            isbn: this.toIsbnNumberOrNull(rawValue.isbn),
             coverLink: rawValue.coverLink,
             addedWithScanner: this.selectedBook()!.addedWithScanner,
             isDeleted: this.selectedBook()!.isDeleted
@@ -341,7 +341,7 @@ export class ScanPage {
          language: rawValue.language ?? undefined,
          originalLanguage: rawValue.originalLanguage ?? undefined,
          format: rawValue.format ?? undefined,
-         isbn: this.toNumberOrNull(rawValue.isbn),
+         isbn: this.toIsbnNumberOrNull(rawValue.isbn),
          coverLink: rawValue.coverLink ?? undefined,
          addedWithScanner: true
       };
@@ -484,7 +484,7 @@ export class ScanPage {
          fields.push('genre');
       }
 
-      if (baseBook.isbn == null && (lookup.isbn != null || this.toNumberOrNull(this.searchIsbn()) != null) ) {
+      if (baseBook.isbn == null && (lookup.isbn != null || this.toIsbnNumberOrNull(this.searchIsbn()) != null) ) {
          fields.push('ISBN');
       }
 
@@ -500,7 +500,7 @@ export class ScanPage {
          ? baseBook.isbn
          : lookup.isbn
             ? lookup.isbn
-            : this.toNumberOrNull(this.searchIsbn());
+            : this.toIsbnNumberOrNull(this.searchIsbn());
 
       return {
          title: baseBook?.title?.trim() ? baseBook.title : lookup.title ?? '',
@@ -621,6 +621,15 @@ export class ScanPage {
    }
 
    private toNumberOrNull(value: unknown) {
+      if (value == null || value === '') {
+         return null;
+      }
+
+      const parsed = Number(value);
+      return Number.isFinite(parsed) ? parsed : null;
+   }
+
+   private toIsbnNumberOrNull(value: unknown) {
       if (value == null || value === '') {
          return null;
       }
