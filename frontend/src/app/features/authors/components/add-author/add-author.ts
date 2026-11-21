@@ -1,5 +1,5 @@
 import { Component, ElementRef, signal, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
 import { AuthorsService } from '../../../../services/authorsService';
 import { Button } from '../../../../shared/components/button/button';
 import { HotToastService } from '@ngxpert/hot-toast';
@@ -36,9 +36,11 @@ export class AddAuthor {
          lastName: [null],
          gender: [null],
          birthYear: [null, Validators.max(this.getCurrentYear())],
+         lifeStatus: ['unknown'],
+         deathYear: [null, Validators.max(this.getCurrentYear())],
          country: [null],
          imageLink: [null]
-      });
+      }, { validators: this.lifeDataValidator() });
    }
 
    ngAfterViewInit() {
@@ -51,6 +53,8 @@ export class AddAuthor {
          lastName: null,
          gender: null,
          birthYear: null,
+         lifeStatus: 'unknown',
+         deathYear: null,
          country: null,
          imageLink: null
       });
@@ -64,6 +68,10 @@ export class AddAuthor {
          const newAuthor: AddAuthorDTO = this.form.value;
          if (newAuthor.birthYear) {
             newAuthor.birthYear = Number(newAuthor.birthYear);
+         }
+
+         if (newAuthor.deathYear) {
+            newAuthor.deathYear = Number(newAuthor.deathYear);
          }
 
          const selectedCountry = this.form.value.country;
@@ -98,6 +106,39 @@ export class AddAuthor {
 
    getCurrentYear() {
       return new Date().getFullYear();
+   }
+
+   get isDeceased() {
+      return this.form?.get('lifeStatus')?.value === 'deceased';
+   }
+
+   onLifeStatusChange() {
+      if (!this.isDeceased) {
+         this.form.get('deathYear')?.setValue(null);
+      }
+   }
+
+   private lifeDataValidator(): ValidatorFn {
+      return (control: AbstractControl) => {
+         const lifeStatus = control.get('lifeStatus')?.value;
+         const deathYear = control.get('deathYear')?.value;
+         const birthYear = control.get('birthYear')?.value;
+
+         if (lifeStatus === 'alive' && deathYear != null) {
+            return { deathYearForLivingAuthor: true };
+         }
+
+         if (deathYear != null && lifeStatus !== 'deceased') {
+            return { deathYearRequiresDeceasedStatus: true };
+         }
+
+         const hasCompleteYear = (value: unknown) => /^\d{4}$/.test(String(value));
+         if (hasCompleteYear(birthYear) && hasCompleteYear(deathYear) && Number(deathYear) < Number(birthYear)) {
+            return { deathYearBeforeBirthYear: true };
+         }
+
+         return null;
+      };
    }
 
    private focusTitle() {

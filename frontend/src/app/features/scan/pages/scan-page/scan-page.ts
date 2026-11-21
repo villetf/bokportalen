@@ -221,6 +221,8 @@ export class ScanPage {
          lastName: lastName || null,
          gender: null,
          birthYear: null,
+         deathYear: null,
+         lifeStatus: 'unknown',
          country: null,
          imageLink: null
       };

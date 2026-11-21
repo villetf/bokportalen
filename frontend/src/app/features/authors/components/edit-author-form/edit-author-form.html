@@ -20,6 +20,26 @@
             <label for="birthYear" class="lg:self-center">Födelseår:</label>
             <input type="number" inputmode="numeric" formControlName="birthYear" [max]="this.getCurrentYear()" class="form-text-input mb-4 w-full py-2.5 lg:mb-0 lg:py-1" id="birthYear">
 
+            <label for="lifeStatus">Livsstatus:</label>
+            <select formControlName="lifeStatus" id="lifeStatus" (change)="onLifeStatusChange()" class="mb-4 w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 lg:mb-0 lg:py-1">
+               <option value="alive">Lever</option>
+               <option value="deceased">Avliden</option>
+               <option value="unknown">Okänt</option>
+            </select>
+
+            @if (isDeceased) {
+               <label for="deathYear" class="lg:self-center">Dödsår:</label>
+               <div>
+                  <input type="number" inputmode="numeric" formControlName="deathYear" [max]="this.getCurrentYear()" class="form-text-input mb-4 w-full py-2.5 lg:mb-0 lg:py-1" id="deathYear">
+                  @if (form.get('deathYear')?.invalid && form.get('deathYear')?.errors?.['max']) {
+                     <span class="text-red-500">Året kan inte vara i framtiden.</span>
+                  }
+                  @if (form.errors?.['deathYearBeforeBirthYear']) {
+                     <span class="text-red-500">Dödsåret kan inte vara före födelseåret.</span>
+                  }
+               </div>
+            }
+
             <label for="country">Land:</label>
             <select formControlName="countryId" id="country" class="mb-4 w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 lg:mb-0 lg:py-1">
                @for (country of allCountries(); track country.id) {
