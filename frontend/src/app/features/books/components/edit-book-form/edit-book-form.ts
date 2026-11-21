@@ -106,18 +106,19 @@ export class EditBookForm implements OnInit {
 
    resetForm() {
       this.form.reset({
-         id: [this.book.id],
-         title: [this.book.title],
+         id: this.book.id,
+         title: this.book.title,
          authors: [...this.book.authors],
-         yearWritten: [this.book.yearWritten],
-         editionPublishedYear: [this.book.editionPublishedYear],
-         genres: [[...this.book.genres]],
-         language: [this.book.language ? this.book.language.id : null],
-         originalLanguage: [this.book.originalLanguage ? this.book.originalLanguage.id : null],
-         format: [this.book.format],
-         isbn: [this.book.isbn],
-         coverLink: [this.book.coverLink]
+         yearWritten: this.book.yearWritten,
+         editionPublishedYear: this.book.editionPublishedYear,
+         genres: [...this.book.genres],
+         language: this.book.language ? this.book.language.id : null,
+         originalLanguage: this.book.originalLanguage ? this.book.originalLanguage.id : null,
+         format: this.book.format,
+         isbn: this.book.isbn,
+         coverLink: this.book.coverLink
       });
+      this.formIsSubmitted = false;
    }
 
    getCurrentYear() {

@@ -12,6 +12,7 @@
 
             <label for="gender">Kön:</label>
             <select formControlName="gender" id="gender" class="mb-4 w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 lg:mb-0 lg:py-1">
+               <option [ngValue]="null">Ej angivet</option>
                <option value="Kvinna">Kvinna</option>
                <option value="Man">Man</option>
                <option value="Annat">Annat</option>
@@ -42,6 +43,7 @@
 
             <label for="country">Land:</label>
             <select formControlName="countryId" id="country" class="mb-4 w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 lg:mb-0 lg:py-1">
+               <option [ngValue]="null">Ej angivet</option>
                @for (country of allCountries(); track country.id) {
                   <option [ngValue]="country.id">{{ country.name }}</option>
                }
@@ -54,7 +56,7 @@
 
       <div class="mt-4 grid shrink-0 grid-cols-3 gap-2 border-t border-headerbrown/15 bg-backgroundbeige pt-4 pb-1 lg:mt-10 lg:flex lg:justify-around lg:border-0 lg:bg-transparent lg:pt-0 lg:pb-0">
          <app-button width="mobile-full" (click)="closeEditView()">Avbryt</app-button>
-         <app-button width="mobile-full" type="reset" (click)="resetForm()">Återställ</app-button>
+         <app-button width="mobile-full" type="button" (click)="resetForm()">Återställ</app-button>
          <app-button width="mobile-full" type="submit" (click)="save()">Spara</app-button>
       </div>
    </form>
