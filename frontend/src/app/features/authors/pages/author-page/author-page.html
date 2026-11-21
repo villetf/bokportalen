@@ -4,6 +4,10 @@
       <div class="flex flex-col">
          <h1 class="text-6xl font-bold text-bookolive mb-5">{{ author()?.firstName }} {{ author()?.lastName }}</h1>
          <p><span class="alumni-font uppercase book-properties">Född: </span> <span class="amiri-font text-2xl">{{ author()?.birthYear ?? 'Ej angivet' }}</span></p>
+         @if (author()?.lifeStatus === 'deceased') {
+            <p><span class="alumni-font uppercase book-properties">Död: </span> <span class="amiri-font text-2xl">{{ author()?.deathYear ?? 'Ej angivet' }}</span></p>
+         }
+         <p><span class="alumni-font uppercase book-properties">Livsstatus: </span> <span class="amiri-font text-2xl">{{ lifeStatusLabel(author()) }}</span></p>
          <p><span class="alumni-font uppercase book-properties">Kön: </span> <span class="amiri-font text-2xl">{{ author()?.gender ?? 'Ej angivet' }} </span></p>
          <p><span class="alumni-font uppercase book-properties">Land: </span> <span class="amiri-font text-2xl">{{ author()?.country ? author()?.country?.name : 'Ej angivet' }}</span></p>
          <div class="mt-auto">
@@ -48,6 +52,10 @@
          <h1 class="wrap-break-word text-3xl font-bold leading-tight text-bookolive sm:text-4xl">{{ author()?.firstName }} {{ author()?.lastName }}</h1>
          <div class="mt-4 mb-2 leading-tight sm:mt-6">
             <p><span class="alumni-font text-lg font-semibold uppercase text-headerbrown sm:text-xl">Född: </span><span class="amiri-font text-lg sm:text-xl">{{ author()?.birthYear ?? 'Ej angivet' }}</span></p>
+            @if (author()?.lifeStatus === 'deceased') {
+               <p><span class="alumni-font text-lg font-semibold uppercase text-headerbrown sm:text-xl">Död: </span><span class="amiri-font text-lg sm:text-xl">{{ author()?.deathYear ?? 'Ej angivet' }}</span></p>
+            }
+            <p><span class="alumni-font text-lg font-semibold uppercase text-headerbrown sm:text-xl">Livsstatus: </span><span class="amiri-font text-lg sm:text-xl">{{ lifeStatusLabel(author()) }}</span></p>
             <p><span class="alumni-font text-lg font-semibold uppercase text-headerbrown sm:text-xl">Kön: </span><span class="amiri-font text-lg sm:text-xl">{{ author()?.gender ?? 'Ej angivet' }}</span></p>
             <p><span class="alumni-font text-lg font-semibold uppercase text-headerbrown sm:text-xl">Land: </span><span class="amiri-font text-lg sm:text-xl">{{ author()?.country ? author()?.country?.name : 'Ej angivet' }}</span></p>
          </div>

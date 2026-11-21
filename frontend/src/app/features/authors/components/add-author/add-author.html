@@ -25,6 +25,24 @@
             <span class="mb-3 text-sm text-red-500 lg:mb-0 lg:text-base">Året kan inte vara i framtiden.</span>
          }
 
+         <label for="lifeStatus" class="mt-3">Livsstatus:</label>
+         <select formControlName="lifeStatus" id="lifeStatus" (change)="onLifeStatusChange()" class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 lg:py-1">
+            <option value="alive">Lever</option>
+            <option value="deceased">Avliden</option>
+            <option value="unknown">Okänd</option>
+         </select>
+
+         @if (isDeceased) {
+            <label for="deathYear" class="mt-3">Dödsår:</label>
+            <input type="number" inputmode="numeric" formControlName="deathYear" [max]="this.getCurrentYear()" class="form-text-input w-full py-2.5 lg:py-1" id="deathYear">
+            @if (form.get('deathYear')?.invalid && form.get('deathYear')?.errors?.['max']) {
+               <span class="mb-3 text-sm text-red-500 lg:mb-0 lg:text-base">Året kan inte vara i framtiden.</span>
+            }
+            @if (form.errors?.['deathYearBeforeBirthYear']) {
+               <span class="mb-3 text-sm text-red-500 lg:mb-0 lg:text-base">Dödsåret kan inte vara före födelseåret.</span>
+            }
+         }
+
          <label for="country" class="mt-3">Land:</label>
          <select formControlName="country" id="country" class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 lg:py-1">
             @for (country of allCountries(); track country.id) {

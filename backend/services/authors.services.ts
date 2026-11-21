@@ -1,10 +1,17 @@
 import { plainToInstance } from 'class-transformer';
 import { AppDataSource } from '../data-source.js';
-import { Author } from '../entities/Author.js';
+import { Author, AuthorLifeStatus } from '../entities/Author.js';
 import { FindOptionsWhere, Like } from 'typeorm';
 import { AuthorRequestDTO } from '../dto/AuthorRequestDTO.js';
 import { CountriesService } from './countries.services.js';
 import { AuthorUpdateDTO } from '../dto/AuthorUpdateDTO.js';
+
+export class InvalidAuthorLifeDataError extends Error {
+   constructor(message: string) {
+      super(message);
+      this.name = 'InvalidAuthorLifeDataError';
+   }
+}
 
 export class AuthorsService {
    static async getAllAuthors(): Promise<Author[]> {
@@ -43,11 +50,17 @@ export class AuthorsService {
    }
 
    static async createAuthor(author: AuthorRequestDTO): Promise<Author> {
+      const lifeStatus = author.lifeStatus ?? 'unknown';
+      const deathYear = author.deathYear ?? null;
+      this.validateLifeData(lifeStatus, deathYear);
+
       const newAuthor = new Author();
       newAuthor.firstName = author.firstName;
       newAuthor.lastName = author.lastName;
       newAuthor.gender = author.gender;
       newAuthor.birthYear = author.birthYear;
+      newAuthor.deathYear = deathYear;
+      newAuthor.lifeStatus = lifeStatus;
       const country = await CountriesService.getCountryById(author.country!);
       newAuthor.country = country;
       newAuthor.imageLink = author.imageLink;
@@ -56,11 +69,25 @@ export class AuthorsService {
    }
 
    static async updateAuthor(author: Author, updatedFields: AuthorUpdateDTO) {
+      const lifeStatus = updatedFields.lifeStatus ?? author.lifeStatus;
+      const deathYear = updatedFields.deathYear !== undefined ? updatedFields.deathYear : author.deathYear;
+      this.validateLifeData(lifeStatus, deathYear);
+
       // Tilldelar de nya fälten till författaren utan att påverka de övriga
       Object.assign(author, updatedFields);
       if (updatedFields.countryId) {
          author.country = await CountriesService.getCountryById(updatedFields.countryId);
       }
       await AppDataSource.getRepository(Author).save(author);
+   }
+
+   private static validateLifeData(lifeStatus: AuthorLifeStatus, deathYear: number | null) {
+      if (lifeStatus === 'alive' && deathYear !== null) {
+         throw new InvalidAuthorLifeDataError('A confirmed living author cannot have a death year');
+      }
+
+      if (deathYear !== null && lifeStatus !== 'deceased') {
+         throw new InvalidAuthorLifeDataError('An author with a death year must be marked as deceased');
+      }
    }
 }

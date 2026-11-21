@@ -11,6 +11,8 @@ import { Book } from './Book.js';
 import { Country } from './Country.js';
 import { Exclude, Expose } from 'class-transformer';
 
+export type AuthorLifeStatus = 'alive' | 'deceased' | 'unknown';
+
 @Index('country_id', ['countryId'], {})
 @Index('idx_last_name', ['lastName'], {})
 @Entity('authors', { schema: 'bokdb' })
@@ -38,6 +40,18 @@ export class Author {
    @Column('int', { name: 'birth_year', nullable: true })
    @Expose()
       birthYear!: number | null;
+
+   @Column('int', { name: 'death_year', nullable: true })
+   @Expose()
+      deathYear!: number | null;
+
+   @Column('enum', {
+      name: 'life_status',
+      enum: ['alive', 'deceased', 'unknown'],
+      default: 'unknown',
+   })
+   @Expose()
+      lifeStatus!: AuthorLifeStatus;
 
    @Column('int', { name: 'country_id', nullable: true })
       @Exclude({ toPlainOnly: true })

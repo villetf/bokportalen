@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output, signal } from '@angular/core';
 import { Author } from '../../../../types/Author.model';
 import { AuthorsService } from '../../../../services/authorsService';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
 import { Button } from '../../../../shared/components/button/button';
 import { BooksService } from '../../../../services/booksService';
 import { Country } from '../../../../types/Country.model';
@@ -42,9 +42,11 @@ export class EditBookForm implements OnInit {
          lastName: [this.author.lastName],
          gender: [this.author.gender],
          birthYear: [this.author.birthYear],
+         lifeStatus: [this.author.lifeStatus],
+         deathYear: [this.author.deathYear, Validators.max(this.getCurrentYear())],
          countryId: [this.author.country ? this.author.country.id : null],
          imageLink: [this.author.imageLink]
-      });
+      }, { validators: this.lifeDataValidator() });
    }
 
    save() {
@@ -52,6 +54,10 @@ export class EditBookForm implements OnInit {
          const updatedAuthor: EditAuthorDTO = this.form.value;
          if (updatedAuthor.birthYear) {
             updatedAuthor.birthYear = Number(updatedAuthor.birthYear);
+         }
+
+         if (updatedAuthor.deathYear) {
+            updatedAuthor.deathYear = Number(updatedAuthor.deathYear);
          }
 
          this.authorsService.editAuthor(updatedAuthor)
@@ -77,6 +83,8 @@ export class EditBookForm implements OnInit {
          lastName: [this.author.lastName],
          gender: [this.author.gender],
          birthYear: [this.author.birthYear],
+         lifeStatus: [this.author.lifeStatus],
+         deathYear: [this.author.deathYear],
          countryId: [this.author.country ? this.author.country.id : null],
          imageLink: [this.author.imageLink]
       });
@@ -84,5 +92,38 @@ export class EditBookForm implements OnInit {
 
    getCurrentYear() {
       return new Date().getFullYear();
+   }
+
+   get isDeceased() {
+      return this.form?.get('lifeStatus')?.value === 'deceased';
+   }
+
+   onLifeStatusChange() {
+      if (!this.isDeceased) {
+         this.form.get('deathYear')?.setValue(null);
+      }
+   }
+
+   private lifeDataValidator(): ValidatorFn {
+      return (control: AbstractControl) => {
+         const lifeStatus = control.get('lifeStatus')?.value;
+         const deathYear = control.get('deathYear')?.value;
+         const birthYear = control.get('birthYear')?.value;
+
+         if (lifeStatus === 'alive' && deathYear != null) {
+            return { deathYearForLivingAuthor: true };
+         }
+
+         if (deathYear != null && lifeStatus !== 'deceased') {
+            return { deathYearRequiresDeceasedStatus: true };
+         }
+
+         const hasCompleteYear = (value: unknown) => /^\d{4}$/.test(String(value));
+         if (hasCompleteYear(birthYear) && hasCompleteYear(deathYear) && Number(deathYear) < Number(birthYear)) {
+            return { deathYearBeforeBirthYear: true };
+         }
+
+         return null;
+      };
    }
 }
