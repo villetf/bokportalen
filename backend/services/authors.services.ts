@@ -52,7 +52,7 @@ export class AuthorsService {
    static async createAuthor(author: AuthorRequestDTO): Promise<Author> {
       const lifeStatus = author.lifeStatus ?? 'unknown';
       const deathYear = author.deathYear ?? null;
-      this.validateLifeData(lifeStatus, deathYear);
+      this.validateLifeData(lifeStatus, deathYear, author.birthYear);
 
       const newAuthor = new Author();
       newAuthor.firstName = author.firstName;
@@ -71,7 +71,8 @@ export class AuthorsService {
    static async updateAuthor(author: Author, updatedFields: AuthorUpdateDTO) {
       const lifeStatus = updatedFields.lifeStatus ?? author.lifeStatus;
       const deathYear = updatedFields.deathYear !== undefined ? updatedFields.deathYear : author.deathYear;
-      this.validateLifeData(lifeStatus, deathYear);
+      const birthYear = updatedFields.birthYear !== undefined ? updatedFields.birthYear : author.birthYear;
+      this.validateLifeData(lifeStatus, deathYear, birthYear);
 
       // Tilldelar de nya fälten till författaren utan att påverka de övriga
       Object.assign(author, updatedFields);
@@ -81,13 +82,17 @@ export class AuthorsService {
       await AppDataSource.getRepository(Author).save(author);
    }
 
-   private static validateLifeData(lifeStatus: AuthorLifeStatus, deathYear: number | null) {
+   private static validateLifeData(lifeStatus: AuthorLifeStatus, deathYear: number | null, birthYear: number | null) {
       if (lifeStatus === 'alive' && deathYear !== null) {
          throw new InvalidAuthorLifeDataError('A confirmed living author cannot have a death year');
       }
 
       if (deathYear !== null && lifeStatus !== 'deceased') {
          throw new InvalidAuthorLifeDataError('An author with a death year must be marked as deceased');
+      }
+
+      if (birthYear !== null && deathYear !== null && deathYear < birthYear) {
+         throw new InvalidAuthorLifeDataError('A death year cannot be before a birth year');
       }
    }
 }
