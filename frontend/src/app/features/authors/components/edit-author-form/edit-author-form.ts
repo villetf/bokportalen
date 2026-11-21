@@ -24,6 +24,8 @@ export class EditBookForm implements OnInit {
 
    allCountries = signal<Country[]>([]);
    form!: FormGroup;
+   formIsSubmitted = false;
+   yearFieldsHaveBeenBlurred = false;
 
    constructor(
       private fb: FormBuilder,
@@ -50,6 +52,7 @@ export class EditBookForm implements OnInit {
    }
 
    save() {
+      this.formIsSubmitted = true;
       if (this.form.valid) {
          const updatedAuthor: EditAuthorDTO = this.form.value;
          if (updatedAuthor.birthYear) {
@@ -88,6 +91,8 @@ export class EditBookForm implements OnInit {
          countryId: [this.author.country ? this.author.country.id : null],
          imageLink: [this.author.imageLink]
       });
+      this.formIsSubmitted = false;
+      this.yearFieldsHaveBeenBlurred = false;
    }
 
    getCurrentYear() {
@@ -118,8 +123,7 @@ export class EditBookForm implements OnInit {
             return { deathYearRequiresDeceasedStatus: true };
          }
 
-         const hasCompleteYear = (value: unknown) => /^\d{4}$/.test(String(value));
-         if (hasCompleteYear(birthYear) && hasCompleteYear(deathYear) && Number(deathYear) < Number(birthYear)) {
+         if (birthYear != null && deathYear != null && Number(deathYear) < Number(birthYear)) {
             return { deathYearBeforeBirthYear: true };
          }
 

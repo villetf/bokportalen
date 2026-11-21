@@ -20,6 +20,7 @@ export class AddAuthor {
    form!: FormGroup;
    allCountries = signal<Country[]>([]);
    formIsSubmitted = false;
+   yearFieldsHaveBeenBlurred = false;
 
    constructor(
       private fb: FormBuilder,
@@ -60,6 +61,7 @@ export class AddAuthor {
       });
       setTimeout(() => this.focusTitle(), 0);
       this.formIsSubmitted = false;
+      this.yearFieldsHaveBeenBlurred = false;
    }
 
    save() {
@@ -132,8 +134,7 @@ export class AddAuthor {
             return { deathYearRequiresDeceasedStatus: true };
          }
 
-         const hasCompleteYear = (value: unknown) => /^\d{4}$/.test(String(value));
-         if (hasCompleteYear(birthYear) && hasCompleteYear(deathYear) && Number(deathYear) < Number(birthYear)) {
+         if (birthYear != null && deathYear != null && Number(deathYear) < Number(birthYear)) {
             return { deathYearBeforeBirthYear: true };
          }
 
