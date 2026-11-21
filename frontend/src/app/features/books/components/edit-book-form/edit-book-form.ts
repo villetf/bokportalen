@@ -57,6 +57,7 @@ export class EditBookForm implements OnInit {
          title: [this.book.title, [Validators.required]],
          authors: [this.book.authors, [this.atLeastOneAuthor()]],
          yearWritten: [this.book.yearWritten, [Validators.max(this.getCurrentYear())]],
+         editionPublishedYear: [this.book.editionPublishedYear, [Validators.max(this.getCurrentYear())]],
          genres: [this.book.genres],
          language: [this.book.language ? this.book.language.id : null],
          originalLanguage: [this.book.originalLanguage ? this.book.originalLanguage.id : null],
@@ -70,7 +71,7 @@ export class EditBookForm implements OnInit {
       this.formIsSubmitted = true;
       if (this.form.valid) {
          const rawIsbn = this.form.get('isbn')?.value as string | number | null;
-         const normalizedIsbn = rawIsbn == null || rawIsbn === '' ? null : Number(rawIsbn);
+         const normalizedIsbn = rawIsbn == null || rawIsbn === '' ? null : Number(String(rawIsbn).replace(/-/g, ''));
 
          const updatedBook: Book = { ...this.form.value, isbn: normalizedIsbn };
 
@@ -84,6 +85,10 @@ export class EditBookForm implements OnInit {
                      return `Uppdaterade ${(res as Book).title}!`;
                   },
                   error: (err) => {
+                     if ((err as HttpErrorResponse).status === 409) {
+                        return 'En bok med detta ISBN finns redan.';
+                     }
+
                      return `Något gick fel vid uppdatering av bok: ${(err as HttpErrorResponse).message}`;
                   }
                })
@@ -101,17 +106,19 @@ export class EditBookForm implements OnInit {
 
    resetForm() {
       this.form.reset({
-         id: [this.book.id],
-         title: [this.book.title],
+         id: this.book.id,
+         title: this.book.title,
          authors: [...this.book.authors],
-         yearWritten: [this.book.yearWritten],
-         genres: [[...this.book.genres]],
-         language: [this.book.language ? this.book.language.id : null],
-         originalLanguage: [this.book.originalLanguage ? this.book.originalLanguage.id : null],
-         format: [this.book.format],
-         isbn: [this.book.isbn],
-         coverLink: [this.book.coverLink]
+         yearWritten: this.book.yearWritten,
+         editionPublishedYear: this.book.editionPublishedYear,
+         genres: [...this.book.genres],
+         language: this.book.language ? this.book.language.id : null,
+         originalLanguage: this.book.originalLanguage ? this.book.originalLanguage.id : null,
+         format: this.book.format,
+         isbn: this.book.isbn,
+         coverLink: this.book.coverLink
       });
+      this.formIsSubmitted = false;
    }
 
    getCurrentYear() {

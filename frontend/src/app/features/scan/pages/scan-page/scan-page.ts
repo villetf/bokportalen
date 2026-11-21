@@ -72,6 +72,7 @@ export class ScanPage {
          title: [null, Validators.required],
          authors: [[] as Author[], this.atLeastOneAuthor()],
          yearWritten: [null, Validators.max(this.getCurrentYear())],
+         editionPublishedYear: [null, Validators.max(this.getCurrentYear())],
          genres: [[] as Genre[]],
          language: [null],
          originalLanguage: [null],
@@ -220,6 +221,8 @@ export class ScanPage {
          lastName: lastName || null,
          gender: null,
          birthYear: null,
+         deathYear: null,
+         lifeStatus: 'unknown',
          country: null,
          imageLink: null
       };
@@ -292,11 +295,12 @@ export class ScanPage {
             title: rawValue.title,
             authors,
             yearWritten: this.toNumberOrNull(rawValue.yearWritten),
+            editionPublishedYear: this.toNumberOrNull(rawValue.editionPublishedYear),
             genres: rawValue.genres,
             language: rawValue.language,
             originalLanguage: rawValue.originalLanguage,
             format: rawValue.format,
-            isbn: this.toNumberOrNull(rawValue.isbn),
+            isbn: this.toIsbnNumberOrNull(rawValue.isbn),
             coverLink: rawValue.coverLink,
             addedWithScanner: this.selectedBook()!.addedWithScanner,
             isDeleted: this.selectedBook()!.isDeleted
@@ -330,13 +334,14 @@ export class ScanPage {
          title: rawValue.title,
          authors: authors.map((author: Author) => author.id),
          yearWritten: this.toNumberOrNull(rawValue.yearWritten),
+         editionPublishedYear: this.toNumberOrNull(rawValue.editionPublishedYear),
          genres: Array.isArray(rawValue.genres)
             ? rawValue.genres.filter((genre: Genre) => genre && genre.id != null).map((genre: Genre) => genre.id)
             : [],
          language: rawValue.language ?? undefined,
          originalLanguage: rawValue.originalLanguage ?? undefined,
          format: rawValue.format ?? undefined,
-         isbn: this.toNumberOrNull(rawValue.isbn),
+         isbn: this.toIsbnNumberOrNull(rawValue.isbn),
          coverLink: rawValue.coverLink ?? undefined,
          addedWithScanner: true
       };
@@ -359,7 +364,7 @@ export class ScanPage {
                },
                error: (err) => {
                   if ((err as HttpErrorResponse).status === 409) {
-                     return 'Denna bok finns redan.';
+                     return 'En bok med detta ISBN finns redan.';
                   }
 
                   return `Något gick fel vid skapande av bok: ${(err as HttpErrorResponse).message}`;
@@ -467,8 +472,8 @@ export class ScanPage {
          fields.push('författare');
       }
 
-      if (baseBook.yearWritten == null && lookup.publishedYear != null) {
-         fields.push('utgivningsår');
+      if (baseBook.editionPublishedYear == null && lookup.publishedYear != null) {
+         fields.push('upplagans utgivningsår');
       }
 
       if (!baseBook.language && this.matchLanguageId(lookup.language) != null) {
@@ -479,7 +484,7 @@ export class ScanPage {
          fields.push('genre');
       }
 
-      if (baseBook.isbn == null && (lookup.isbn != null || this.toNumberOrNull(this.searchIsbn()) != null) ) {
+      if (baseBook.isbn == null && (lookup.isbn != null || this.toIsbnNumberOrNull(this.searchIsbn()) != null) ) {
          fields.push('ISBN');
       }
 
@@ -495,12 +500,13 @@ export class ScanPage {
          ? baseBook.isbn
          : lookup.isbn
             ? lookup.isbn
-            : this.toNumberOrNull(this.searchIsbn());
+            : this.toIsbnNumberOrNull(this.searchIsbn());
 
       return {
          title: baseBook?.title?.trim() ? baseBook.title : lookup.title ?? '',
          authors: baseBook?.authors?.length ? baseBook.authors : this.matchAuthors(lookup.authors),
-         yearWritten: baseBook?.yearWritten ?? lookup.publishedYear ?? null,
+         yearWritten: baseBook?.yearWritten ?? null,
+         editionPublishedYear: baseBook?.editionPublishedYear ?? lookup.publishedYear ?? null,
          genres: baseBook?.genres?.length ? baseBook.genres : this.matchGenres(lookup.categories),
          language: baseBook?.language?.id ?? this.matchLanguageId(lookup.language),
          originalLanguage: baseBook?.originalLanguage?.id ?? null,
@@ -620,6 +626,15 @@ export class ScanPage {
       }
 
       const parsed = Number(value);
+      return Number.isFinite(parsed) ? parsed : null;
+   }
+
+   private toIsbnNumberOrNull(value: unknown) {
+      if (value == null || value === '') {
+         return null;
+      }
+
+      const parsed = Number(String(value).replace(/-/g, ''));
       return Number.isFinite(parsed) ? parsed : null;
    }
 

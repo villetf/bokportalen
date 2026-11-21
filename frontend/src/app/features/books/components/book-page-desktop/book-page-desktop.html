@@ -10,7 +10,8 @@
             <div class="book-metadata mt-3 grid grid-cols-2 divide-x divide-headerbrown/15 leading-tight xl:mt-5 xl:block xl:divide-x-0 xl:leading-normal">
                <div class="space-y-1 pr-4 xl:contents">
                   <p><span class="book-properties alumni-font">GENRER:</span><span class="amiri-font text-2xl"> {{ book.genres.length ? book.genres.map(genre => genre.name).join(', ') : 'Ej angivet' }}</span></p>
-                  <p><span class="book-properties alumni-font">UTGIVNINGSÅR:</span><span class="amiri-font text-2xl"> {{ book.yearWritten ? book.yearWritten : 'Ej angivet' }}</span></p>
+                  <p><span class="book-properties alumni-font">UTGIVNINGSÅR (VERK):</span><span class="amiri-font text-2xl"> {{ book.yearWritten ? book.yearWritten : 'Ej angivet' }}</span></p>
+                  <p><span class="book-properties alumni-font">UTGIVNINGSÅR (UPPLAGA):</span><span class="amiri-font text-2xl"> {{ book.editionPublishedYear ? book.editionPublishedYear : 'Ej angivet' }}</span></p>
                   <p><span class="book-properties alumni-font">SPRÅK:</span><span class="amiri-font text-2xl"> {{ book.language ? book.language.name : 'Ej angivet' }}</span></p>
                   <p><span class="book-properties alumni-font">ORIGINALSPRÅK:</span><span class="amiri-font text-2xl"> {{ book.originalLanguage ? book.originalLanguage.name : 'Ej angivet' }}</span></p>
                   <p><span class="book-properties alumni-font">FORMAT:</span><span class="amiri-font text-2xl"> {{ book.format ? book.format : 'Ej angivet' }}</span></p>

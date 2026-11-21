@@ -27,10 +27,19 @@
             <i class="fa-solid fa-rotate ml-2 cursor-pointer active:rotate-180 active:transition-all" (click)="updateGenresList()"></i>
          </div>
          
-         <label for="yearWritten" class="self-center">Utgivningsår:</label>
+         <label for="yearWritten" class="self-center">Utgivningsår (verk):</label>
          <input id="yearWritten" type="number" inputmode="numeric" formControlName="yearWritten" [max]="this.getCurrentYear()" class="form-text-input w-full">
          @if (form.get('yearWritten')?.invalid) {
             @if (form.get('yearWritten')?.errors?.['max']) {
+               <div class="hidden lg:block"></div>
+               <span class="text-red-500">Året kan inte vara i framtiden.</span>
+            }
+         }
+
+         <label for="editionPublishedYear" class="self-center">Utgivningsår (upplaga):</label>
+         <input id="editionPublishedYear" type="number" inputmode="numeric" formControlName="editionPublishedYear" [max]="this.getCurrentYear()" class="form-text-input w-full">
+         @if (form.get('editionPublishedYear')?.invalid) {
+            @if (form.get('editionPublishedYear')?.errors?.['max']) {
                <div class="hidden lg:block"></div>
                <span class="text-red-500">Året kan inte vara i framtiden.</span>
             }
@@ -39,6 +48,7 @@
          <label for="language">Språk:</label>
          <div class="flex min-w-0 items-center">
             <select formControlName="language" id="language" class="min-w-0 w-full rounded-lg border border-gray-300 bg-white px-3 py-2">
+               <option [ngValue]="null">Ej angivet</option>
                @for (language of allLanguages(); track language.id) {
                   <option [ngValue]="language.id">{{ language.name }}</option>
                }
@@ -50,6 +60,7 @@
          <label for="originalLanguage">Originalspråk:</label>
          <div class="flex min-w-0 items-center">
             <select formControlName="originalLanguage" id="originalLanguage" class="min-w-0 w-full rounded-lg border border-gray-300 bg-white px-3 py-2">
+               <option [ngValue]="null">Ej angivet</option>
                @for (language of allLanguages(); track language.id) {
                   <option [ngValue]="language.id">{{ language.name }}</option>
                }
@@ -60,6 +71,7 @@
          
          <label for="format">Format:</label>
          <select formControlName="format" id="format" class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2">
+            <option [ngValue]="null">Ej angivet</option>
             <option value="Danskt band">Danskt band</option>
             <option value="Flexband">Flexband</option>
             <option value="Häftad">Häftad</option>
@@ -85,7 +97,7 @@
       <div class="mt-4 grid shrink-0 grid-cols-2 gap-3 border-t border-headerbrown/15 bg-backgroundbeige pt-4 pb-1 lg:mt-10 lg:flex lg:justify-around lg:border-0 lg:bg-transparent lg:pt-0 lg:pb-0">
          <app-button width="mobile-full" color="bg-red-700" hoverColor="hover:bg-red-900" (click)="openDeleteConfirmation()">Radera</app-button>
          <app-button width="mobile-full" (click)="closeEditView()">Avbryt</app-button>
-         <app-button width="mobile-full" type="reset" (click)="resetForm()">Återställ</app-button>
+         <app-button width="mobile-full" type="button" (click)="resetForm()">Återställ</app-button>
          <app-button width="mobile-full" type="submit" (click)="save()">Spara</app-button>
       </div>
    </form>

@@ -6,12 +6,13 @@ export interface Book {
    id: number;
    title: string;
    authors: Author[];
-   yearWritten: number;
+   yearWritten: number | null;
+   editionPublishedYear: number | null;
    language: Language;
    originalLanguage: Language;
    genres: Genre[];
    format: string;
-   isbn: number;
+   isbn: number | null;
    createdAt: Date | null;
    addedWithScanner: boolean | null;
    isDeleted: boolean;

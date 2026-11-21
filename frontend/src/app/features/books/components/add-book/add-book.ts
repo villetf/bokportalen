@@ -55,6 +55,7 @@ export class AddBook {
          title: [null, Validators.required],
          authors: [[{}], this.atLeastOneAuthor()],
          yearWritten: [null, Validators.max(this.getCurrentYear())],
+         editionPublishedYear: [null, Validators.max(this.getCurrentYear())],
          genres: [[] as Genre[]],
          language: [null],
          originalLanguage: [null],
@@ -74,6 +75,7 @@ export class AddBook {
          title: null,
          authors: [[{}]],
          yearWritten: null,
+         editionPublishedYear: null,
          genres: [],
          language: null,
          originalLanguage: null,
@@ -96,12 +98,18 @@ export class AddBook {
          // Remove UI-only property so backend validation doesn't reject the payload
          delete newBook.addToShelf;
 
-         if (newBook.isbn) {
-            newBook.isbn = Number(newBook.isbn);
+         if (newBook.isbn == null || newBook.isbn === '') {
+            newBook.isbn = null;
+         } else {
+            newBook.isbn = Number(String(newBook.isbn).replace(/-/g, ''));
          }
 
          if (newBook.yearWritten) {
             newBook.yearWritten = Number(newBook.yearWritten);
+         }
+
+         if (newBook.editionPublishedYear) {
+            newBook.editionPublishedYear = Number(newBook.editionPublishedYear);
          }
 
          const selectedAuthors = fv.authors;
@@ -132,7 +140,7 @@ export class AddBook {
                   },
                   error: (err) => {
                      if ((err as HttpErrorResponse).status == 409) {
-                        return 'Denna bok finns redan.';
+                        return 'En bok med detta ISBN finns redan.';
                      }
 
                      return `Något gick fel vid skapande av bok: ${(err as HttpErrorResponse).message}`;

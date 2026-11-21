@@ -1,11 +1,10 @@
 import type { Request, Response } from 'express';
-import { BooksService } from '../services/books.services.js';
+import { BooksService, DuplicateIsbnError } from '../services/books.services.js';
 import { Book } from '../entities/Book.js';
 import { BookRequestDTO } from '../dto/BookRequestDTO.js';
 import { BookUpdateDTO } from '../dto/BookUpdateDTO.js';
 import { LanguagesService } from '../services/languages.services.js';
 import { GenresService } from '../services/genres.services.js';
-import { AuthorsService } from '../services/authors.services.js';
 
 type BookIdParams = { id: string };
 type BookIsbnParams = { isbn: string };
@@ -21,6 +20,7 @@ export class BooksController {
             title: book.title,
             authors: book.authors,
             yearWritten: book.yearWritten,
+            editionPublishedYear: book.editionPublishedYear,
             language: book.language,
             originalLanguage: book.originalLanguage,
             genres: book.genres,
@@ -59,6 +59,7 @@ export class BooksController {
          title: book.title,
          authors: book.authors,
          yearWritten: book.yearWritten,
+         editionPublishedYear: book.editionPublishedYear,
          language: book.language,
          originalLanguage: book.originalLanguage,
          genres: book.genres,
@@ -78,6 +79,7 @@ export class BooksController {
          title: book.title,
          authors: book.authors,
          yearWritten: book.yearWritten,
+         editionPublishedYear: book.editionPublishedYear,
          language: book.language,
          originalLanguage: book.originalLanguage,
          genres: book.genres,
@@ -106,19 +108,18 @@ export class BooksController {
    }
 
    static async createBook(req: Request, res: Response) {
-      const checkBookReq = {
-         title: (req.body as BookRequestDTO).title,
-         authorFirstName: (await AuthorsService.getAuthorById((req.body as BookRequestDTO).authors[0]))?.firstName,
-         authorLastName: (await AuthorsService.getAuthorById((req.body as BookRequestDTO).authors[0]))?.lastName
-      };
+      try {
+         const newBook = await BooksService.createBook(req.body as BookRequestDTO);
+         res.status(201).json(newBook);
+      } catch (error) {
+         if (this.isDuplicateIsbnError(error)) {
+            res.status(409).json({ message: 'A book with this ISBN already exists' });
+            return;
+         }
 
-      if ((await BooksService.getBooksByQuery(checkBookReq)).length > 0) {
-         res.status(409).json({ message: 'Book already exists' });
-         return;
+         console.error('Error creating book:', error);
+         res.status(500).json({ error: 'Internal server error' });
       }
-
-      const newBook = await BooksService.createBook(req.body as BookRequestDTO);
-      res.status(201).json(newBook);
    }
 
    static async updateBook(req: Request<BookIdParams>, res: Response) {
@@ -160,7 +161,18 @@ export class BooksController {
          req.body.genres = genres;
       }
 
-      await BooksService.updateBook(bookToUpdate, req.body as BookUpdateDTO);
+      try {
+         await BooksService.updateBook(bookToUpdate, req.body as BookUpdateDTO);
+      } catch (error) {
+         if (this.isDuplicateIsbnError(error)) {
+            res.status(409).json({ message: 'A book with this ISBN already exists' });
+            return;
+         }
+
+         console.error('Error updating book:', error);
+         res.status(500).json({ error: 'Internal server error' });
+         return;
+      }
 
       const updatedBook = await BooksService.getBookById(Number.parseInt(req.params.id));
 
@@ -169,6 +181,7 @@ export class BooksController {
          title: updatedBook!.title,
          authors: updatedBook!.authors,
          yearWritten: updatedBook!.yearWritten,
+         editionPublishedYear: updatedBook!.editionPublishedYear,
          language: updatedBook!.language,
          originalLanguage: updatedBook!.originalLanguage,
          genres: updatedBook!.genres,
@@ -189,5 +202,10 @@ export class BooksController {
       } else {
          res.status(404).json({ error: 'Book not found' });
       }
+   }
+
+   private static isDuplicateIsbnError(error: unknown) {
+      return error instanceof DuplicateIsbnError
+         || (typeof error === 'object' && error !== null && 'code' in error && error.code === 'ER_DUP_ENTRY');
    }
 }

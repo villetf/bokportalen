@@ -6,6 +6,7 @@ export interface AddBookDTO {
    title: string;
    authors: number[];
    yearWritten: number | null;
+   editionPublishedYear: number | null;
    genres: number[];
    language: Language | number | null;
    originalLanguage: Language | number | null;

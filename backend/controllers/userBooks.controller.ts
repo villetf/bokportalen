@@ -37,6 +37,7 @@ function mapUserBook(userBook: UserBook) {
       title: book.title,
       authors: book.authors,
       yearWritten: book.yearWritten,
+      editionPublishedYear: book.editionPublishedYear,
       language: book.language,
       originalLanguage: book.originalLanguage,
       genres: book.genres,

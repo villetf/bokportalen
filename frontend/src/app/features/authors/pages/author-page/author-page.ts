@@ -85,4 +85,15 @@ export class AuthorPage {
             this.archiveBooksByAuthor.set(archiveBooks);
          });
    }
+
+   lifeStatusLabel(author: Author | null) {
+      switch (author?.lifeStatus) {
+         case 'alive':
+            return 'Lever';
+         case 'deceased':
+            return 'Avliden';
+         default:
+            return 'Okänt';
+      }
+   }
 }
